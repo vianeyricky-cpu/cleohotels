@@ -3,13 +3,18 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useParams } from "next/navigation"; // Tambah useParams
 import { Menu, X } from "lucide-react";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  
   const pathname = usePathname();
+  const params = useParams();
+  
+  // Ambil locale (bahasa) dari URL, default ke 'id' jika tidak ada
+  const locale = (params?.locale as string) || "id";
 
   // Efek Scroll
   useEffect(() => {
@@ -34,9 +39,9 @@ export function Navbar() {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           
-          {/* --- LOGO JUMBO (SESUAI LINGKARAN MERAH) --- */}
-          {/* Mobile: h-14 w-48 | Desktop: h-28 w-80 (Lebih Lebar & Tinggi) */}
-          <Link href="/" className="relative h-14 w-48 md:h-28 md:w-80 z-[101] -ml-2">
+          {/* LOGO (Ukuran Besar/Jumbo) */}
+          {/* Link logo juga harus diarahkan ke locale yang aktif */}
+          <Link href={`/${locale}`} className="relative h-14 w-48 md:h-28 md:w-80 z-[101] -ml-2">
              <Image 
                src="/logo.png" 
                alt="Cleo Hotels" 
@@ -48,13 +53,30 @@ export function Navbar() {
 
           {/* DESKTOP MENU */}
           <div className="hidden lg:flex items-center gap-10">
-            <NavLink href="/" label="Home" active={pathname === "/"} />
-            <NavLink href="/hotels" label="Our Hotels" active={pathname?.startsWith("/hotels")} />
-            <NavLink href="/facilities" label="Facilities" active={pathname === "/facilities"} />
-            <NavLink href="/contact" label="Contact" active={pathname === "/contact"} />
+            {/* Perhatikan penambahan {`/${locale}...`} pada href */}
+            <NavLink 
+              href={`/${locale}`} 
+              label="Home" 
+              active={pathname === `/${locale}` || pathname === `/${locale}/`} 
+            />
+            <NavLink 
+              href={`/${locale}/hotels`} 
+              label="Our Hotels" 
+              active={pathname?.includes("/hotels")} 
+            />
+            <NavLink 
+              href={`/${locale}/facilities`} 
+              label="Facilities" 
+              active={pathname?.includes("/facilities")} 
+            />
+            <NavLink 
+              href={`/${locale}/contact`} 
+              label="Contact" 
+              active={pathname?.includes("/contact")} 
+            />
             
             <Link
-              href="/hotels"
+              href={`/${locale}/hotels`}
               className="rounded-full bg-gold-500 px-8 py-3 text-base font-bold text-navy-950 transition hover:bg-white hover:text-navy-950 shadow-lg shadow-gold-500/20"
             >
               Book Now
@@ -78,13 +100,13 @@ export function Navbar() {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <NavLink href="/" label="Home" onClick={() => setIsOpen(false)} mobile />
-        <NavLink href="/hotels" label="Our Hotels" onClick={() => setIsOpen(false)} mobile />
-        <NavLink href="/facilities" label="Facilities" onClick={() => setIsOpen(false)} mobile />
-        <NavLink href="/contact" label="Contact" onClick={() => setIsOpen(false)} mobile />
+        <NavLink href={`/${locale}`} label="Home" onClick={() => setIsOpen(false)} mobile />
+        <NavLink href={`/${locale}/hotels`} label="Our Hotels" onClick={() => setIsOpen(false)} mobile />
+        <NavLink href={`/${locale}/facilities`} label="Facilities" onClick={() => setIsOpen(false)} mobile />
+        <NavLink href={`/${locale}/contact`} label="Contact" onClick={() => setIsOpen(false)} mobile />
         
         <Link
-          href="/hotels"
+          href={`/${locale}/hotels`}
           onClick={() => setIsOpen(false)}
           className="mt-6 rounded-full bg-gold-500 px-10 py-4 text-xl font-bold text-navy-950 transition hover:bg-white"
         >
