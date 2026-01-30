@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useParams } from "next/navigation"; // Tambah useParams
+import { usePathname, useParams } from "next/navigation"; 
 import { Menu, X } from "lucide-react";
 
 export function Navbar() {
@@ -39,8 +39,7 @@ export function Navbar() {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           
-          {/* LOGO (Ukuran Besar/Jumbo) */}
-          {/* Link logo juga harus diarahkan ke locale yang aktif */}
+          {/* LOGO JUMBO (Tetap Besar) */}
           <Link href={`/${locale}`} className="relative h-14 w-48 md:h-28 md:w-80 z-[101] -ml-2">
              <Image 
                src="/logo.png" 
@@ -53,7 +52,6 @@ export function Navbar() {
 
           {/* DESKTOP MENU */}
           <div className="hidden lg:flex items-center gap-10">
-            {/* Perhatikan penambahan {`/${locale}...`} pada href */}
             <NavLink 
               href={`/${locale}`} 
               label="Home" 
@@ -64,11 +62,14 @@ export function Navbar() {
               label="Our Hotels" 
               active={pathname?.includes("/hotels")} 
             />
+            
+            {/* GANTI FACILITIES JADI ABOUT US */}
             <NavLink 
-              href={`/${locale}/facilities`} 
-              label="Facilities" 
-              active={pathname?.includes("/facilities")} 
+              href={`/${locale}/about`} 
+              label="About Us" 
+              active={pathname?.includes("/about")} 
             />
+            
             <NavLink 
               href={`/${locale}/contact`} 
               label="Contact" 
@@ -102,7 +103,10 @@ export function Navbar() {
       >
         <NavLink href={`/${locale}`} label="Home" onClick={() => setIsOpen(false)} mobile />
         <NavLink href={`/${locale}/hotels`} label="Our Hotels" onClick={() => setIsOpen(false)} mobile />
-        <NavLink href={`/${locale}/facilities`} label="Facilities" onClick={() => setIsOpen(false)} mobile />
+        
+        {/* GANTI FACILITIES JADI ABOUT US (MOBILE) */}
+        <NavLink href={`/${locale}/about`} label="About Us" onClick={() => setIsOpen(false)} mobile />
+        
         <NavLink href={`/${locale}/contact`} label="Contact" onClick={() => setIsOpen(false)} mobile />
         
         <Link

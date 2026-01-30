@@ -1,107 +1,119 @@
+import { Mail, MapPin, Phone, Clock, Instagram, Facebook } from "lucide-react";
 import Image from "next/image";
-import { MapPin, Phone, Mail, Instagram, Clock } from "lucide-react";
+
+export const metadata = {
+  title: "Contact Us - Cleo Hotels",
+  description: "Get in touch with Cleo Hotels for reservations and inquiries.",
+};
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-navy-950 text-white pb-24">
-      
-      {/* HERO SECTION */}
-      <section className="relative h-[50vh] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0">
-          <Image 
-            src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2069" 
-            alt="Contact Cleo Hotels" 
-            fill 
-            className="object-cover opacity-40"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/20 to-black/40" />
-        </div>
-        <div className="relative z-10 text-center mt-16">
-          <h1 className="text-5xl md:text-7xl font-bold mb-4">Get in Touch</h1>
-          [cite_start]<p className="text-xl text-gray-300">We are here to help you #EnjoyLife [cite: 6]</p>
-        </div>
-      </section>
+    <main className="min-h-screen bg-navy-950 text-white pt-24 pb-20">
+      {/* HEADER SECTION */}
+      <div className="container mx-auto px-6 mb-16 text-center">
+        <p className="text-gold-500 font-bold tracking-[0.2em] text-xs uppercase mb-4">
+          Get In Touch
+        </p>
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          We are here to help you <span className="text-gold-400 italic">#EnjoyLife</span>
+        </h1>
+        <p className="text-gray-300 max-w-2xl mx-auto text-lg">
+          Have questions about your stay? Reach out to our team directly.
+        </p>
+      </div>
 
-      {/* GENERAL INFO */}
-      <section className="py-12 px-6 border-b border-white/5">
-        <div className="max-w-4xl mx-auto flex flex-col md:flex-row justify-center gap-8 md:gap-16 text-center md:text-left">
-          <div className="flex items-center gap-4 justify-center md:justify-start">
-             <Mail className="text-gold-500 h-6 w-6" />
-             <div>
-               <p className="text-xs text-gray-400 uppercase tracking-widest">Email Us</p>
-               <a href="mailto:info@cleohotels.id" className="text-lg font-bold hover:text-gold-400 transition">info@cleohotels.id</a>
-             </div>
-          </div>
-          <div className="flex items-center gap-4 justify-center md:justify-start">
-             <Instagram className="text-gold-500 h-6 w-6" />
-             <div>
-               <p className="text-xs text-gray-400 uppercase tracking-widest">Follow Us</p>
-               <a href="https://instagram.com/cleohotels" target="_blank" className="text-lg font-bold hover:text-gold-400 transition">@cleohotels</a>
-             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* HOTEL DIRECT CONTACTS */}
-      <section className="py-24 px-6 max-w-7xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-16">Our Locations & Contacts</h2>
-        
-        <div className="grid md:grid-cols-3 gap-8">
+      <div className="container mx-auto px-6">
+        <div className="grid lg:grid-cols-3 gap-8">
           
-          [cite_start]{/* JEMURSARI [cite: 10, 11] */}
-          <div className="bg-navy-900 p-8 rounded-2xl border border-white/5 hover:border-gold-500/30 transition group">
-             <h3 className="text-2xl font-bold text-white mb-2">Cleo Jemursari</h3>
-             <p className="text-gold-500 text-xs font-bold tracking-widest uppercase mb-6">Business & Transit</p>
-             
-             <div className="space-y-4 text-gray-300">
-                <div className="flex items-start gap-3">
-                   <MapPin className="h-5 w-5 text-gold-500 shrink-0 mt-1" />
-                   <p className="text-sm">Jl. [cite_start]Raya Jemursari No. 157, Kendangsari, Surabaya [cite: 10]</p>
-                </div>
-                <div className="flex items-center gap-3">
-                   <Phone className="h-5 w-5 text-gold-500 shrink-0" />
-                   [cite_start]<a href="tel:+62318483000" className="text-sm font-bold text-white hover:text-gold-400 transition">+62 31 8483 000 [cite: 11]</a>
-                </div>
-             </div>
+          {/* INFO CARD 1: GENERAL INQUIRIES */}
+          <div className="bg-navy-900/50 p-8 rounded-2xl border border-white/5 text-center hover:border-gold-500/30 transition">
+            <div className="mx-auto w-16 h-16 bg-navy-800 rounded-full flex items-center justify-center text-gold-500 mb-6">
+              <Mail size={32} />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Email Us</h3>
+            <p className="text-gray-400 text-sm mb-4">General inquiries & support</p>
+            <a href="mailto:info@cleohotels.id" className="text-gold-400 hover:text-white font-medium transition">
+              info@cleohotels.id
+            </a>
           </div>
 
-          [cite_start]{/* WALIKOTA [cite: 33, 34] */}
-          <div className="bg-navy-900 p-8 rounded-2xl border border-white/5 hover:border-gold-500/30 transition group">
-             <h3 className="text-2xl font-bold text-white mb-2">Cleo Walikota</h3>
-             <p className="text-gold-500 text-xs font-bold tracking-widest uppercase mb-6">Heritage Center</p>
-             
-             <div className="space-y-4 text-gray-300">
-                <div className="flex items-start gap-3">
-                   <MapPin className="h-5 w-5 text-gold-500 shrink-0 mt-1" />
-                   <p className="text-sm">Jl. [cite_start]Walikota Mustajab No. 59, Genteng, Surabaya [cite: 33]</p>
-                </div>
-                <div className="flex items-center gap-3">
-                   <Phone className="h-5 w-5 text-gold-500 shrink-0" />
-                   [cite_start]<a href="tel:+62315489000" className="text-sm font-bold text-white hover:text-gold-400 transition">+62 31 5489 000 [cite: 34]</a>
-                </div>
-             </div>
+          {/* INFO CARD 2: HEAD OFFICE */}
+          <div className="bg-navy-900/50 p-8 rounded-2xl border border-white/5 text-center hover:border-gold-500/30 transition">
+             <div className="mx-auto w-16 h-16 bg-navy-800 rounded-full flex items-center justify-center text-gold-500 mb-6">
+              <MapPin size={32} />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Head Office</h3>
+            <p className="text-gray-400 text-sm mb-4">Visit our main office</p>
+            <p className="text-gold-400 font-medium">
+              Surabaya, East Java, Indonesia
+            </p>
           </div>
 
-          [cite_start]{/* TUNJUNGAN [cite: 51, 52] */}
-          <div className="bg-navy-900 p-8 rounded-2xl border border-white/5 hover:border-gold-500/30 transition group">
-             <h3 className="text-2xl font-bold text-white mb-2">Cleo Tunjungan</h3>
-             <p className="text-gold-500 text-xs font-bold tracking-widest uppercase mb-6">Lifestyle Hub</p>
-             
-             <div className="space-y-4 text-gray-300">
-                <div className="flex items-start gap-3">
-                   <MapPin className="h-5 w-5 text-gold-500 shrink-0 mt-1" />
-                   <p className="text-sm">Jl. [cite_start]Basuki Rahmat No. 11, Genteng, Surabaya [cite: 51]</p>
-                </div>
-                <div className="flex items-center gap-3">
-                   <Phone className="h-5 w-5 text-gold-500 shrink-0" />
-                   [cite_start]<a href="tel:+62315323330" className="text-sm font-bold text-white hover:text-gold-400 transition">+62 31 5323 330 [cite: 52]</a>
-                </div>
-             </div>
+          {/* INFO CARD 3: SOCIAL MEDIA */}
+          <div className="bg-navy-900/50 p-8 rounded-2xl border border-white/5 text-center hover:border-gold-500/30 transition">
+             <div className="mx-auto w-16 h-16 bg-navy-800 rounded-full flex items-center justify-center text-gold-500 mb-6">
+              <Instagram size={32} />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Follow Us</h3>
+            <p className="text-gray-400 text-sm mb-4">Stay updated with latest offers</p>
+            <div className="flex justify-center gap-4">
+              <a href="https://instagram.com/cleohotels" target="_blank" className="text-gold-400 hover:text-white transition">
+                @cleohotels
+              </a>
+            </div>
           </div>
 
         </div>
-      </section>
 
+        {/* HOTEL DIRECT CONTACTS */}
+        <div className="mt-20">
+          <h2 className="text-2xl font-bold text-center mb-10">Hotel Direct Contacts</h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            
+            <HotelContactCard 
+              name="Cleo Jemursari"
+              type="Business & Transit"
+              phone="+62 31 8483 000"
+              address="Jl. Raya Jemursari No. 157, Surabaya"
+            />
+            
+            <HotelContactCard 
+              name="Cleo Walikota"
+              type="Heritage & Civic Center"
+              phone="+62 31 5489 000"
+              address="Jl. Walikota Mustajab No. 59, Surabaya"
+            />
+
+            <HotelContactCard 
+              name="Cleo Tunjungan"
+              type="Lifestyle & Shopping"
+              phone="+62 31 5323 330"
+              address="Jl. Tunjungan No. 55, Surabaya"
+            />
+
+          </div>
+        </div>
+      </div>
     </main>
   );
+}
+
+function HotelContactCard({ name, type, phone, address }: { name: string, type: string, phone: string, address: string }) {
+  return (
+    <div className="p-6 rounded-2xl bg-white/5 border border-white/5 hover:bg-white/10 transition">
+      <h3 className="text-lg font-bold text-white mb-1">{name}</h3>
+      <p className="text-xs uppercase tracking-widest text-gold-500 mb-4">{type}</p>
+      
+      <div className="space-y-3">
+        <a href={`tel:${phone.replace(/ /g, '')}`} className="flex items-center gap-3 text-gray-300 hover:text-gold-400 transition">
+          <Phone size={16} className="text-gold-500"/>
+          {phone}
+        </a>
+        <div className="flex items-start gap-3 text-gray-300">
+          <MapPin size={16} className="text-gold-500 mt-1 shrink-0"/>
+          <span className="text-sm">{address}</span>
+        </div>
+      </div>
+    </div>
+  )
 }
