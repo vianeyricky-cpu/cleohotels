@@ -38,7 +38,7 @@ export function Navbar() {
           <Link href="/" className="relative h-10 w-32 md:h-12 md:w-40 z-[101]">
              {/* Pastikan file logo ada di public/icon.svg atau sesuaikan src-nya */}
              <Image 
-               src="/icon.svg" 
+               src="/logo.png" 
                alt="Cleo Hotels" 
                fill 
                className="object-contain"

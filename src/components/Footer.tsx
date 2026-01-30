@@ -84,7 +84,7 @@ export function Footer() {
       </div>
 
       <div className="mt-16 border-t border-white/10 pt-8 text-center text-xs text-gray-500">
-        &copy; {new Date().getFullYear()} Cleo Hotels by Tanly Hospitality. All rights reserved.
+        &copy; {new Date().getFullYear()} Cleo Hotels by Tanly Hospitality. All rights reserved. Dev. by Askara Indonesia
       </div>
     </footer>
   );
