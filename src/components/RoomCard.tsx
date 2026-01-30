@@ -10,11 +10,10 @@ import {
   ChevronRight, 
   X, 
   Expand,
-  Bed, // Saya tambah icon Bed karena sekarang ada data bedType
-  Wallet // Icon untuk harga
+  Bed
 } from "lucide-react";
 
-// --- GAMBAR CADANGAN (PASTI JALAN) ---
+// --- GAMBAR CADANGAN ---
 const DEFAULT_IMAGES = [
   "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80&w=1000&auto=format&fit=crop",
   "https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=1000&auto=format&fit=crop",
@@ -25,25 +24,28 @@ export function RoomCard({ room }: { room: Room }) {
   // 1. FILTER URL GAMBAR
   const isValidUrl = room.image && (room.image.startsWith("http") || room.image.startsWith("https"));
   
-  // Jika valid, pakai gambar DB + Defaults. Jika tidak, pakai Defaults saja.
-  // Kita juga cek room.images (gallery) jika ada
   const galleryImages = room.images && room.images.length > 0 ? room.images : [];
   const mainImage = isValidUrl ? [room.image!] : [];
   
-  // Gabungkan semua gambar yang tersedia
   const combinedImages = [...mainImage, ...galleryImages];
-  
-  // Fallback ke default jika tidak ada gambar sama sekali
   const images = combinedImages.length > 0 ? combinedImages : DEFAULT_IMAGES;
   
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
-  // --- LOGIC BARU: PARSING AMENITIES ---
-  // Mengubah "Wifi, AC, TV" menjadi ["Wifi", "AC", "TV"]
-  const amenitiesList = room.amenities 
-    ? room.amenities.split(',').map(item => item.trim()).filter(item => item !== "")
-    : [];
+  // --- PERBAIKAN LOGIC AMENITIES (ANTI-CRASH) ---
+  // Kita buat fungsi helper kecil untuk menangani berbagai tipe data
+  const getAmenitiesList = (data: any) => {
+    if (!data) return []; // Jika null/undefined
+    if (Array.isArray(data)) return data; // Jika sudah Array (Data lama)
+    if (typeof data === 'string') {
+      // Jika String (Data baru), kita split koma
+      return data.split(',').map(item => item.trim()).filter(item => item !== "");
+    }
+    return []; // Fallback aman
+  };
+
+  const amenitiesList = getAmenitiesList(room.amenities);
 
   // Navigasi Slide
   const nextSlide = (e: React.MouseEvent) => {
@@ -81,16 +83,15 @@ export function RoomCard({ room }: { room: Room }) {
             unoptimized 
           />
           
-          {/* Overlay Gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-transparent to-transparent opacity-80 pointer-events-none" />
 
-          {/* HARGA (Baru) */}
+          {/* HARGA */}
           <div className="absolute top-3 left-3 rounded-md bg-navy-900/80 backdrop-blur px-3 py-1.5 border border-white/10 z-10">
              <span className="text-sm font-bold text-gold-400">{formattedPrice}</span>
              <span className="text-[10px] text-white/60"> /night</span>
           </div>
 
-          {/* Tombol Navigasi Kiri/Kanan */}
+          {/* Tombol Navigasi */}
           <div className="absolute inset-0 flex items-center justify-between p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <button 
               onClick={prevSlide}
@@ -106,14 +107,12 @@ export function RoomCard({ room }: { room: Room }) {
             </button>
           </div>
 
-          {/* Icon Expand */}
           <div className="absolute top-3 right-3 rounded-full bg-black/50 p-2 text-white hover:bg-gold-500 hover:text-navy-950 transition backdrop-blur-md z-10 pointer-events-none">
             <Expand size={16} />
           </div>
 
-          {/* Dots Indicator */}
           <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 z-10 pointer-events-none">
-            {images.slice(0, 5).map((_, idx) => ( // Batasi dots max 5 agar rapi
+            {images.slice(0, 5).map((_, idx) => ( 
               <div 
                 key={idx} 
                 className={`h-1.5 rounded-full transition-all shadow-sm ${idx === currentIdx ? "w-6 bg-gold-500" : "w-1.5 bg-white/50"}`} 
@@ -139,7 +138,7 @@ export function RoomCard({ room }: { room: Room }) {
             </div>
             <div className="flex items-center gap-1.5" title="Bed Type">
               <Bed className="h-4 w-4 text-gold-500" />
-              <span>{room.bedType}</span>
+              <span>{room.bedType || "King Bed"}</span>
             </div>
           </div>
 
@@ -148,9 +147,9 @@ export function RoomCard({ room }: { room: Room }) {
           </p>
 
           <div className="mt-auto pt-6 flex flex-wrap gap-2">
-            {/* Ganti room.amenities dengan amenitiesList */}
+            {/* Logic Render Amenities yang sudah aman */}
             {amenitiesList.length > 0 ? (
-                amenitiesList.slice(0, 3).map((amenity, index) => (
+                amenitiesList.slice(0, 3).map((amenity: string, index: number) => (
                 <span key={index} className="rounded-full bg-navy-800 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white/60 border border-white/5">
                     {amenity}
                 </span>
@@ -168,7 +167,7 @@ export function RoomCard({ room }: { room: Room }) {
         </div>
       </div>
 
-      {/* --- POP-UP LIGHTBOX (FULLSCREEN) --- */}
+      {/* --- POP-UP LIGHTBOX --- */}
       {isLightboxOpen && (
         <div 
           className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/95 backdrop-blur-md p-4 animate-in fade-in duration-200"
