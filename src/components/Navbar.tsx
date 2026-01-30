@@ -28,15 +28,15 @@ export function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        scrolled || isOpen ? "bg-navy-950 shadow-md py-2" : "bg-transparent py-6"
+        scrolled || isOpen ? "bg-navy-950 shadow-md py-2" : "bg-transparent py-4"
       }`}
     >
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           
-          {/* --- LOGO (DIPERBESAR) --- */}
-          {/* Mobile: h-12 w-36 | Desktop: h-20 w-64 (Sangat Jelas) */}
-          <Link href="/" className="relative h-12 w-36 md:h-20 md:w-64 z-[101]">
+          {/* --- LOGO JUMBO (SESUAI LINGKARAN MERAH) --- */}
+          {/* Mobile: h-14 w-48 | Desktop: h-28 w-80 (Lebih Lebar & Tinggi) */}
+          <Link href="/" className="relative h-14 w-48 md:h-28 md:w-80 z-[101] -ml-2">
              <Image 
                src="/logo.png" 
                alt="Cleo Hotels" 
@@ -46,7 +46,7 @@ export function Navbar() {
              />
           </Link>
 
-          {/* DESKTOP MENU (TEXT LEBIH BESAR) */}
+          {/* DESKTOP MENU */}
           <div className="hidden lg:flex items-center gap-10">
             <NavLink href="/" label="Home" active={pathname === "/"} />
             <NavLink href="/hotels" label="Our Hotels" active={pathname?.startsWith("/hotels")} />
@@ -95,7 +95,7 @@ export function Navbar() {
   );
 }
 
-// Komponen NavLink (Updated Size)
+// Helper Link Component
 function NavLink({ 
   href, 
   label, 
@@ -113,8 +113,6 @@ function NavLink({
     <Link
       href={href}
       onClick={onClick}
-      // Desktop: text-lg (Lebih besar dari sebelumnya text-base)
-      // Mobile: text-2xl (Agar mudah diklik di HP)
       className={`font-medium transition-colors hover:text-gold-500 tracking-wide ${
         mobile ? "text-2xl" : "text-lg" 
       } ${
