@@ -11,7 +11,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const pathname = usePathname();
 
-  // Efek Scroll: Ubah background saat di-scroll
+  // Efek Scroll
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -20,7 +20,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Tutup menu otomatis saat pindah halaman
+  // Tutup menu saat pindah halaman
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
@@ -28,26 +28,26 @@ export function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        scrolled || isOpen ? "bg-navy-950 shadow-md py-3" : "bg-transparent py-5"
+        scrolled || isOpen ? "bg-navy-950 shadow-md py-2" : "bg-transparent py-6"
       }`}
     >
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           
-          {/* LOGO */}
-          <Link href="/" className="relative h-16 w-52 md:h-18 md:w-54 z-[101]">
-             {/* Pastikan file logo ada di public/icon.svg atau sesuaikan src-nya */}
+          {/* --- LOGO (DIPERBESAR) --- */}
+          {/* Mobile: h-12 w-36 | Desktop: h-20 w-64 (Sangat Jelas) */}
+          <Link href="/" className="relative h-12 w-36 md:h-20 md:w-64 z-[101]">
              <Image 
                src="/logo.png" 
                alt="Cleo Hotels" 
                fill 
-               className="object-contain"
+               className="object-contain object-left"
                priority
              />
           </Link>
 
-          {/* DESKTOP MENU */}
-          <div className="hidden md:flex items-center gap-8">
+          {/* DESKTOP MENU (TEXT LEBIH BESAR) */}
+          <div className="hidden lg:flex items-center gap-10">
             <NavLink href="/" label="Home" active={pathname === "/"} />
             <NavLink href="/hotels" label="Our Hotels" active={pathname?.startsWith("/hotels")} />
             <NavLink href="/facilities" label="Facilities" active={pathname === "/facilities"} />
@@ -55,7 +55,7 @@ export function Navbar() {
             
             <Link
               href="/hotels"
-              className="rounded-full bg-gold-500 px-6 py-2.5 text-sm font-bold text-navy-950 transition hover:bg-white hover:text-navy-950"
+              className="rounded-full bg-gold-500 px-8 py-3 text-base font-bold text-navy-950 transition hover:bg-white hover:text-navy-950 shadow-lg shadow-gold-500/20"
             >
               Book Now
             </Link>
@@ -64,29 +64,29 @@ export function Navbar() {
           {/* MOBILE HAMBURGER BUTTON */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden z-[101] p-2 text-white transition hover:text-gold-500 focus:outline-none"
+            className="lg:hidden z-[101] p-2 text-white transition hover:text-gold-500 focus:outline-none"
             aria-label="Toggle menu"
           >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+            {isOpen ? <X size={32} /> : <Menu size={32} />}
           </button>
         </div>
       </div>
 
       {/* MOBILE MENU OVERLAY */}
       <div
-        className={`fixed inset-0 bg-navy-950 z-[90] flex flex-col items-center justify-center gap-8 transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed inset-0 bg-navy-950 z-[90] flex flex-col items-center justify-center gap-8 transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <NavLink href="/" label="Home" onClick={() => setIsOpen(false)} />
-        <NavLink href="/hotels" label="Our Hotels" onClick={() => setIsOpen(false)} />
-        <NavLink href="/facilities" label="Facilities" onClick={() => setIsOpen(false)} />
-        <NavLink href="/contact" label="Contact" onClick={() => setIsOpen(false)} />
+        <NavLink href="/" label="Home" onClick={() => setIsOpen(false)} mobile />
+        <NavLink href="/hotels" label="Our Hotels" onClick={() => setIsOpen(false)} mobile />
+        <NavLink href="/facilities" label="Facilities" onClick={() => setIsOpen(false)} mobile />
+        <NavLink href="/contact" label="Contact" onClick={() => setIsOpen(false)} mobile />
         
         <Link
           href="/hotels"
           onClick={() => setIsOpen(false)}
-          className="mt-4 rounded-full bg-gold-500 px-8 py-3 text-lg font-bold text-navy-950 transition hover:bg-white"
+          className="mt-6 rounded-full bg-gold-500 px-10 py-4 text-xl font-bold text-navy-950 transition hover:bg-white"
         >
           Book Now
         </Link>
@@ -95,24 +95,30 @@ export function Navbar() {
   );
 }
 
-// Komponen Kecil untuk Link agar rapi
+// Komponen NavLink (Updated Size)
 function NavLink({ 
   href, 
   label, 
   active, 
+  mobile,
   onClick 
 }: { 
   href: string; 
   label: string; 
   active?: boolean; 
+  mobile?: boolean;
   onClick?: () => void; 
 }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`text-sm md:text-base font-medium transition-colors hover:text-gold-500 ${
-        active ? "text-gold-500" : "text-white/90"
+      // Desktop: text-lg (Lebih besar dari sebelumnya text-base)
+      // Mobile: text-2xl (Agar mudah diklik di HP)
+      className={`font-medium transition-colors hover:text-gold-500 tracking-wide ${
+        mobile ? "text-2xl" : "text-lg" 
+      } ${
+        active ? "text-gold-500 font-bold" : "text-white/90"
       }`}
     >
       {label}
