@@ -35,7 +35,7 @@ export function Navbar() {
         <div className="flex items-center justify-between">
           
           {/* LOGO */}
-          <Link href="/" className="relative h-14 w-40 md:h-14 md:w-48 z-[101]">
+          <Link href="/" className="relative h-16 w-52 md:h-18 md:w-54 z-[101]">
              {/* Pastikan file logo ada di public/icon.svg atau sesuaikan src-nya */}
              <Image 
                src="/logo.png" 
