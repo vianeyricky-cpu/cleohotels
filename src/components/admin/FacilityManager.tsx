@@ -78,6 +78,7 @@ function FacilitySection({
         {isPending && <span className="text-xs text-navy-400">Saving...</span>}
       </div>
 
+      {/* FORM CREATE NEW FACILITY */}
       <form
         className="mb-8 grid gap-4 md:grid-cols-2"
         onSubmit={createForm.handleSubmit((values) => {
@@ -87,7 +88,7 @@ function FacilitySection({
               name: values.name,
               type: values.type,
               description: values.description,
-              image: "",
+              image: "", // Default empty string for new facility
             });
             createForm.reset();
           });
@@ -101,20 +102,21 @@ function FacilitySection({
           </label>
           <textarea
             rows={3}
-            className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm"
+            className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:border-gold-500 focus:outline-none"
             {...createForm.register("description")}
           />
         </div>
         <div className="md:col-span-2">
           <button
             type="submit"
-            className="rounded-lg bg-gold-400 px-4 py-2 text-sm font-medium text-navy-900 transition hover:bg-gold-300"
+            className="rounded-lg bg-gold-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-gold-600 shadow-sm"
           >
             Add facility
           </button>
         </div>
       </form>
 
+      {/* LIST EXISTING FACILITIES */}
       <div className="space-y-6">
         {facilities.map((facility) => (
           <FacilityCard key={facility.id} facility={facility} />
@@ -131,12 +133,12 @@ function FacilityCard({ facility }: { facility: Facility }) {
     defaultValues: {
       name: facility.name,
       type: facility.type,
-      description: facility.description,
+      description: facility.description ?? "",
     },
   });
 
   return (
-    <div className="rounded-xl border border-navy-100 p-5">
+    <div className="rounded-xl border border-navy-100 p-5 bg-gray-50/50">
       <div className="mb-4 flex items-center justify-between">
         <h4 className="text-base font-semibold text-navy-900">
           {facility.name}
@@ -145,54 +147,66 @@ function FacilityCard({ facility }: { facility: Facility }) {
           type="button"
           onClick={() =>
             startTransition(async () => {
-              await deleteFacility(facility.id);
+              const confirm = window.confirm("Are you sure?");
+              if (confirm) await deleteFacility(facility.id);
             })
           }
-          className="text-xs text-red-500 hover:text-red-400"
+          className="text-xs text-red-500 hover:text-red-700 font-medium"
         >
           Delete
         </button>
       </div>
-      <form
-        className="grid gap-4 md:grid-cols-2"
-        onSubmit={form.handleSubmit((values) => {
-          startTransition(async () => {
-            await updateFacility(facility.id, values);
-          });
-        })}
-      >
-        <InputField label="Facility name" {...form.register("name")} />
-        <InputField label="Type" {...form.register("type")} />
-        <div className="md:col-span-2">
-          <label className="mb-1 block text-xs font-medium text-navy-700">
-            Description
-          </label>
-          <textarea
-            rows={3}
-            className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm"
-            {...form.register("description")}
-          />
-        </div>
-        <div className="md:col-span-2">
-          <button
-            type="submit"
-            className="rounded-lg bg-navy-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-navy-800"
-          >
-            Update facility
-          </button>
-        </div>
-      </form>
-      <div className="mt-6">
-        <ImageUpload
-          label="Upload facility image"
-          onUploaded={(url) => {
+
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Kolom Kiri: Form Text */}
+        <form
+          className="space-y-4"
+          onSubmit={form.handleSubmit((values) => {
             startTransition(async () => {
-              await updateFacility(facility.id, { image: url });
+              await updateFacility(facility.id, values);
             });
-          }}
-        />
+          })}
+        >
+          <div className="grid grid-cols-2 gap-4">
+             <InputField label="Facility name" {...form.register("name")} />
+             <InputField label="Type" {...form.register("type")} />
+          </div>
+          
+          <div>
+            <label className="mb-1 block text-xs font-medium text-navy-700">
+              Description
+            </label>
+            <textarea
+              rows={3}
+              className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:border-gold-500 focus:outline-none"
+              {...form.register("description")}
+            />
+          </div>
+          
+          <div>
+            <button
+              type="submit"
+              className="rounded-lg bg-navy-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-navy-800"
+            >
+              Update Details
+            </button>
+          </div>
+        </form>
+
+        {/* Kolom Kanan: Image Upload */}
+        <div className="space-y-2">
+            <ImageUpload
+              label="Upload facility image"
+              value={facility.image || ""} // FIX: Menambahkan prop value yang wajib
+              onChange={(url) => {         // FIX: Menggunakan onChange
+                startTransition(async () => {
+                  await updateFacility(facility.id, { image: url });
+                });
+              }}
+            />
+             {isPending && <p className="text-[10px] text-gold-600 animate-pulse">Saving changes...</p>}
+        </div>
       </div>
-      {isPending && <p className="mt-2 text-xs text-navy-400">Saving...</p>}
     </div>
   );
 }
@@ -207,7 +221,7 @@ function InputField({
         {label}
       </label>
       <input
-        className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm"
+        className="w-full rounded-lg border border-navy-200 px-3 py-2 text-sm focus:border-gold-500 focus:outline-none"
         {...props}
       />
     </div>

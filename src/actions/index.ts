@@ -56,20 +56,29 @@ export async function updateHotelImages(id: string, images: string[]) {
   return data as HotelWithImages;
 }
 
+// --- PERBAIKAN DI SINI (updateRoom) ---
 export async function updateRoom(
   id: string,
   data: {
     name?: string;
-    size?: string;
-    capacity?: string;
+    size?: number;     // UBAH KE NUMBER
+    capacity?: number; // UBAH KE NUMBER
+    price?: number;    // TAMBAH PRICE
+    bedType?: string;  // TAMBAH BEDTYPE
     description?: string;
-    amenities?: string[];
+    amenities?: string; // UBAH KE STRING (Teks panjang)
     image?: string;
   }
 ) {
+  // Kita konversi explicit ke Number untuk field angka agar aman
+  const updatePayload: any = { ...data };
+  if (data.size) updatePayload.size = Number(data.size);
+  if (data.capacity) updatePayload.capacity = Number(data.capacity);
+  if (data.price) updatePayload.price = Number(data.price);
+
   const { data: room, error } = await supabase
     .from("Room")
-    .update(data)
+    .update(updatePayload)
     .eq("id", id)
     .select()
     .single();
@@ -192,18 +201,27 @@ export async function deleteFacility(id: string) {
   revalidatePath("/");
 }
 
+// --- PERBAIKAN DI SINI (createRoom) ---
 export async function createRoom(data: {
   name: string;
-  size: string;
-  capacity: string;
+  size: number;      // UBAH KE NUMBER
+  capacity: number;  // UBAH KE NUMBER
+  price: number;     // TAMBAH PRICE
+  bedType: string;   // TAMBAH BEDTYPE
   description: string;
-  amenities: string[];
+  amenities: string; // UBAH KE STRING
   image: string;
   hotelId: string;
 }) {
   const { data: room, error } = await supabase
     .from("Room")
-    .insert(data)
+    .insert({
+      ...data,
+      // Pastikan angka benar-benar angka
+      size: Number(data.size),
+      capacity: Number(data.capacity),
+      price: Number(data.price),
+    })
     .select()
     .single();
 

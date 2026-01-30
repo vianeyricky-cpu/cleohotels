@@ -9,27 +9,29 @@ export type Hotel = {
   phone: string;
   instagram: string;
   created_at?: string;
-
-  // --- FIELD BARU (Update Homepage & Maps) ---
-  // Menggunakan '| null' agar aman jika data database kosong
-  image_url?: string | null;       // Foto Hero Utama
-  maps_url?: string | null;        // Link Iframe Google Maps
-  google_maps_link?: string | null; // Link Tombol ke Google Maps
+  image_url?: string | null;
+  images?: string[];
+  maps_url?: string | null;
+  google_maps_link?: string | null;
 };
 
-// --- ROOM TYPE ---
+// --- ROOM TYPE (FIXED) ---
 export type Room = {
   id: string;
   hotelId: string;
   name: string;
-  size: string;
-  capacity: string;
   description: string;
-  amenities: string[];
+  
+  // Pastikan tipe data ini sesuai dengan Actions dan DB
+  size: number;      
+  capacity: number;  
+  price: number;     
+  bedType: string;   
+  amenities: string | null; // <--- WAJIB STRING (Bukan string[])
 
-  // --- FIELD GAMBAR ---
-  image: string | null; // Foto Utama/Thumbnail (Legacy)
-  images: string[];     // Galeri Foto (Carousel) - Array of strings
+  image: string | null;
+  images: string[];
+  created_at?: string;
 };
 
 // --- FACILITY TYPE ---
@@ -39,19 +41,16 @@ export type Facility = {
   name: string;
   type: string;
   description: string;
-
-  // --- FIELD GAMBAR ---
-  image: string | null; // Foto Utama/Thumbnail (Legacy)
-  images: string[];     // Galeri Foto (Carousel) - Array of strings
+  image: string | null; 
+  images: string[];     
+  created_at?: string;
 };
 
-// --- RELATIONS (Untuk Halaman Detail) ---
 export type HotelWithRelations = Hotel & {
   rooms: Room[];
   facilities: Facility[];
 };
 
-// --- OPTIONAL (Jika masih dipakai di komponen lama) ---
 export type HotelWithImages = Hotel & {
   images?: string[] | null;
 };
