@@ -1,7 +1,8 @@
-import { getHotels } from "@/actions"; 
+import { getHotels } from "@/actions/getHotels"; 
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ArrowRight, Star } from "lucide-react";
+import { BookingWidget } from "@/components/public/BookingWidget"; // <--- IMPORT WIDGET
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-gold-500/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
 
-      {/* HEADER */}
+      {/* HEADER SECTION */}
       <div className="container mx-auto px-6 mb-16 text-center relative z-10">
         <p className="text-gold-500 font-bold tracking-[0.2em] text-xs uppercase mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
           Our Collections
@@ -23,10 +24,15 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
         <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
           Explore Our Hotels
         </h1>
-        <p className="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <p className="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 mb-12">
           Choose the perfect location for your stay in Surabaya. Each Cleo Hotel offers a unique experience, 
           combining <span className="text-gold-400 italic">smart comfort</span> with strategic convenience.
         </p>
+
+        {/* --- BOOKING WIDGET (Disisipkan Disini) --- */}
+        <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-10 duration-700">
+           <BookingWidget />
+        </div>
       </div>
 
       {/* LIST HOTELS */}
@@ -80,7 +86,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
                 
                 <div className="mt-auto flex items-center justify-between">
                   <div className="flex text-gold-500 gap-0.5">
-                     {[...Array(3)].map((_, i) => <Star key={i} size={12} fill="currentColor"/>)}
+                     {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="currentColor"/>)}
                   </div>
                   <span className="flex items-center gap-2 text-sm font-bold text-white group-hover:text-gold-400 transition">
                     View Details <ArrowRight size={16} />
