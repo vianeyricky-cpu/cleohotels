@@ -5,8 +5,6 @@ import Script from "next/script";
 
 export function BookingWidget() {
   useEffect(() => {
-    // Kita perlu memuat CSS Bootstrap & Omni secara manual di komponen ini saja
-    // Agar tidak merusak style Tailwind di halaman lain.
     const cssLinks = [
       "https://omnihotelier.id/css/omnih-client.css",
       "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
@@ -21,21 +19,47 @@ export function BookingWidget() {
         document.head.appendChild(link);
       }
     });
-
-    return () => {
-      // Cleanup (Opsional: Hapus CSS saat pindah halaman agar tidak bentrok)
-      // cssLinks.forEach(href => {
-      //   const link = document.querySelector(`link[href="${href}"]`);
-      //   if (link) document.head.removeChild(link);
-      // });
-    };
   }, []);
 
   return (
-    <div className="w-full bg-white shadow-xl rounded-lg overflow-hidden border border-gray-200">
+    <div className="w-full bg-white rounded-xl shadow-2xl p-4 md:p-6 border border-gray-200 relative z-20">
+      {/* Custom CSS untuk merapikan bentrok dengan Tailwind 
+        dan memaksa form sejajar 
+      */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        .omnih .form-control {
+          height: 45px !important;
+          border-radius: 8px !important;
+          font-size: 14px !important;
+        }
+        .omnih .btn {
+          height: 45px !important;
+          border-radius: 8px !important;
+          font-weight: 600 !important;
+          white-space: nowrap !important; /* Mencegah teks tombol turun ke bawah */
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          padding: 0 20px !important;
+        }
+        @media (min-width: 992px) {
+          .omnih .row {
+            display: flex;
+            align-items: flex-end; /* Sejajarkan ke bawah */
+            justify-content: space-between;
+          }
+          .omnih .col-md-12, .omnih .col-lg-[auto] {
+            flex: 1; /* Membagi ruang secara rata */
+            padding: 0 5px;
+          }
+          .omnih .form-group {
+            margin-bottom: 0 !important; /* Hilangkan margin bawah di desktop */
+          }
+        }
+      `}} />
+
       {/* Area Widget */}
-      <div id="app" className="omnih p-4">
-        {/* Custom Element dari Omni Hotelier */}
+      <div id="app" className="omnih text-left text-gray-800">
         {/* @ts-ignore */} 
         <group-calendar-form group="46" group-by-area="yes" isfallbackcalendar="true" />
       </div>

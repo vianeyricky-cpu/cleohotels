@@ -2,7 +2,7 @@ import { getHotels } from "@/actions/getHotels";
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ArrowRight, Star } from "lucide-react";
-import { BookingWidget } from "@/components/public/BookingWidget"; // <--- IMPORT WIDGET
+import { BookingWidget } from "@/components/public/BookingWidget";
 
 export const dynamic = "force-dynamic";
 
@@ -12,27 +12,28 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
   return (
     <main className="min-h-screen bg-navy-950 text-white pb-20 pt-24 relative overflow-hidden">
       
-      {/* BACKGROUND DECORATION (Agar tidak terlalu polos) */}
+      {/* BACKGROUND DECORATION */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-gold-500/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
       <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[100px] translate-x-1/3 translate-y-1/3 pointer-events-none"></div>
 
       {/* HEADER SECTION */}
       <div className="container mx-auto px-6 mb-16 text-center relative z-10">
-        <p className="text-gold-500 font-bold tracking-[0.2em] text-xs uppercase mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        
+        {/* --- BOOKING WIDGET (Ditaruh Paling Atas Sini) --- */}
+        <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 mb-16">
+           <BookingWidget />
+        </div>
+
+        <p className="text-gold-500 font-bold tracking-[0.2em] text-xs uppercase mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
           Our Collections
         </p>
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700">
+        <h1 className="text-4xl md:text-5xl font-bold text-white mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-200">
           Explore Our Hotels
         </h1>
-        <p className="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 mb-12">
+        <p className="text-gray-300 max-w-2xl mx-auto text-lg leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-300 mb-12">
           Choose the perfect location for your stay in Surabaya. Each Cleo Hotel offers a unique experience, 
           combining <span className="text-gold-400 italic">smart comfort</span> with strategic convenience.
         </p>
-
-        {/* --- BOOKING WIDGET (Disisipkan Disini) --- */}
-        <div className="max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-10 duration-700">
-           <BookingWidget />
-        </div>
       </div>
 
       {/* LIST HOTELS */}
