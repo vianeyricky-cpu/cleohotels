@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export function SingleBookingWidget({ slug }: { slug: string }) {
+  const [isMounted, setIsMounted] = useState(false);
+
   // --- MAPPING ID HOTEL ---
   const omniPropertyIds: Record<string, string> = {
     "jemursari": "ID_JEMURSARI", // Nanti isi dengan ID Jemursari
@@ -13,7 +15,8 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
   const propertyId = omniPropertyIds[slug] || "296";
 
   useEffect(() => {
-    // 1. Load CSS
+    setIsMounted(true);
+
     const cssLinks = [
       "https://omnihotelier.id/css/omnih-client.css",
       "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
@@ -29,30 +32,29 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
       }
     });
 
-    // 2. SUNTIK SCRIPT MANUAL (Solusi Kotak Blank)
-    // Ini memaksa script Omni me-render ulang form ke dalam <div id="app">
-    const scriptId = "omni-single-script";
+    // FORCE RELOAD SCRIPT (Solusi Kotak Putih/Blank)
+    // Menambahkan timestamp agar browser dipaksa mengeksekusi ulang script Omni
+    const scriptId = "omni-booking-script-single";
     const existingScript = document.getElementById(scriptId);
-    
-    // Hapus script lama jika ada (mencegah bentrok saat pindah halaman)
     if (existingScript) {
       document.body.removeChild(existingScript);
     }
 
-    // Buat dan jalankan script baru
     const script = document.createElement("script");
     script.id = scriptId;
-    script.src = "https://omnihotelier.id/js/omnih-client.v.1.js"; // Script Omni Single
+    // Kita gunakan script Group yang sudah PASTI JALAN di website Anda
+    script.src = `https://omnihotelier.id/js/omnih-group-calendar.v.1.js?t=${new Date().getTime()}`;
     script.async = true;
     document.body.appendChild(script);
 
-    // Bersihkan saat komponen ditutup
     return () => {
       if (document.body.contains(script)) {
         document.body.removeChild(script);
       }
     };
-  }, [slug]); // Akan di-reload jika slug (hotel) berubah
+  }, [slug]);
+
+  if (!isMounted) return null;
 
   return (
     <div className="w-full bg-white rounded-xl shadow-2xl p-4 md:p-6 border border-gray-200">
@@ -79,8 +81,9 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
 
       {/* Area Form dari Omni */}
       <div id="app" className="omnih text-left text-gray-800 min-h-[80px]">
+        {/* Menggunakan tag form yang terbukti jalan, tapi diselipkan property ID */}
         {/* @ts-ignore */} 
-        <calendar-form property={propertyId} isfallbackcalendar="true" />
+        <group-calendar-form group="46" property={propertyId} group-by-area="yes" isfallbackcalendar="true" />
       </div>
 
     </div>
