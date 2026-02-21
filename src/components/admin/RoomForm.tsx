@@ -20,7 +20,7 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
     description: room?.description || "",
     size: room?.size || "",
     capacity: room?.capacity || "",
-    price: room?.price || "", // <-- TAMBAHAN: State Harga
+    price: room?.price || "", // State Harga
     amenities: (room?.amenities || []) as string[], 
     images: room?.images || (room?.image ? [room.image] : []) || [] 
   });
@@ -38,13 +38,16 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
         ? amenitiesInput.split(",").map((item: string) => item.trim()) 
         : [];
 
+      // FIX ERROR: Pastikan price diconvert menjadi Angka, atau null jika kosong
+      const parsedPrice = formData.price ? Number(formData.price) : null;
+
       const payload = {
         hotelId,
         name: formData.name,
         description: formData.description,
         size: formData.size,
         capacity: formData.capacity,
-        price: formData.price, // <-- TAMBAHAN: Dikirim ke DB
+        price: parsedPrice, // <-- Kirim sebagai Angka (BigInt) atau Null
         images: formData.images,
         image: formData.images[0] || null, // Thumbnail otomatis ambil urutan 1
         amenities: amenitiesArray
@@ -111,11 +114,10 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
                   placeholder="e.g. 2 Adults"
                 />
              </div>
-             {/* TAMBAHAN: Input Price */}
              <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">Price / Night</label>
                 <input 
-                  type="text" 
+                  type="number" // <-- Ubah type jadi number agar admin tidak bisa ketik huruf
                   value={formData.price} 
                   onChange={e => setFormData({...formData, price: e.target.value})} 
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 outline-none" 
