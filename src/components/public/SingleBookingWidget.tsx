@@ -1,24 +1,23 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export function SingleBookingWidget({ slug }: { slug: string }) {
-  const [isMounted, setIsMounted] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // --- MAPPING ID HOTEL ---
-  // SANGAT PENTING: Harus berupa ANGKA. Jika diisi huruf (misal "ID_JEMURSARI"), widget akan BLANK.
-  // Sementara saya isi "296" semua agar tidak blank. Nanti silakan ganti angka 296 di Jemursari & Walikota dengan ID asli mereka.
+  // Pastikan ID ini adalah ANGKA. Sementara saya isi 296 semua agar form mau muncul.
+  // Segera ganti angka 296 di Jemursari & Walikota dengan ID asli dari Omni jika sudah dapat.
   const omniPropertyIds: Record<string, string> = {
-    "jemursari": "296", // <--- GANTI ANGKA INI JIKA SUDAH DAPAT ID JEMURSARI
+    "jemursari": "296", 
     "tunjungan": "296",
-    "walikota": "296",  // <--- GANTI ANGKA INI JIKA SUDAH DAPAT ID WALIKOTA
+    "walikota": "296",  
   };
 
   const propertyId = omniPropertyIds[slug] || "296";
 
   useEffect(() => {
-    setIsMounted(true);
-
+    // 1. Load CSS
     const cssLinks = [
       "https://omnihotelier.id/css/omnih-client.css",
       "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
@@ -34,28 +33,37 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
       }
     });
 
-    // FORCE RELOAD SINGLE SCRIPT
+    // 2. INJECT HTML MANUAL (Ini rahasia agar tidak BLANK)
+    // Kita buat elemennya manual agar React tidak ikut campur dan Vue bisa jalan
+    if (containerRef.current) {
+      containerRef.current.innerHTML = `
+        <div id="app" class="omnih text-left text-gray-800 min-h-[80px]">
+          <calendar-form property="${propertyId}" isfallbackcalendar="true"></calendar-form>
+        </div>
+      `;
+    }
+
+    // 3. LOAD SCRIPT SINGLE PROPERTY OMNI
     const scriptId = "omni-booking-script-single";
     const existingScript = document.getElementById(scriptId);
+    
+    // Hapus script lama jika user pindah halaman agar me-refresh form
     if (existingScript) {
-      document.body.removeChild(existingScript);
+      existingScript.remove();
     }
 
     const script = document.createElement("script");
     script.id = scriptId;
-    // Menggunakan script khusus Single Property
-    script.src = `https://omnihotelier.id/js/omnih-client.v.1.js?t=${new Date().getTime()}`;
+    script.src = "https://omnihotelier.id/js/omnih-client.v.1.js";
     script.async = true;
     document.body.appendChild(script);
 
     return () => {
       if (document.body.contains(script)) {
-        document.body.removeChild(script);
+        script.remove();
       }
     };
-  }, [slug]);
-
-  if (!isMounted) return null;
+  }, [slug, propertyId]);
 
   return (
     <div className="w-full bg-white rounded-xl shadow-2xl p-5 md:p-6 border border-gray-200">
@@ -78,6 +86,7 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
           border-radius: 8px !important; 
           font-size: 14px !important; 
           border: 1px solid #d1d5db !important;
+          box-shadow: none !important;
         }
         
         /* Tombol Emas */
@@ -94,6 +103,9 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
           padding: 0 24px !important; 
           transition: all 0.3s ease !important;
           width: 100% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
         }
         .omnih .btn:hover, .omnih .btn-primary:hover {
           background-color: #a16207 !important; border-color: #a16207 !important;
@@ -133,7 +145,7 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
             margin: 0 !important;
           }
           .omnih .row > div {
-            flex: 1 1 45% !important;
+            flex: 1 1 48% !important;
             padding: 0 !important;
           }
           .omnih .row > div:last-child {
@@ -143,11 +155,8 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
         }
       `}} />
 
-      {/* Area Form dari Omni (Menggunakan tag Single Property, TANPA DROPDOWN) */}
-      <div id="app" className="omnih text-left text-gray-800 min-h-[80px]">
-        {/* @ts-ignore */} 
-        <calendar-form property={propertyId} isfallbackcalendar="true" />
-      </div>
+      {/* Area yang disediakan untuk diisi oleh React Refs agar Vue bisa bekerja */}
+      <div ref={containerRef}></div>
 
     </div>
   );
