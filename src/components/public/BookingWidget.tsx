@@ -23,37 +23,47 @@ export function BookingWidget() {
 
   return (
     <div className="w-full bg-white rounded-xl shadow-2xl p-4 md:p-6 border border-gray-200 relative z-20">
-      {/* Custom CSS untuk merapikan bentrok dengan Tailwind 
-        dan memaksa form sejajar 
-      */}
       <style dangerouslySetInnerHTML={{ __html: `
         .omnih .form-control {
           height: 45px !important;
           border-radius: 8px !important;
           font-size: 14px !important;
         }
-        .omnih .btn {
+        
+        /* OVERRIDE WARNA TOMBOL BIRU MENJADI EMAS */
+        .omnih .btn, .omnih .btn-primary {
+          background-color: #ca8a04 !important; /* Warna Emas */
+          border-color: #ca8a04 !important;
+          color: #ffffff !important; /* Teks putih */
           height: 45px !important;
           border-radius: 8px !important;
           font-weight: 600 !important;
-          white-space: nowrap !important; /* Mencegah teks tombol turun ke bawah */
+          white-space: nowrap !important;
           display: flex !important;
           align-items: center !important;
           justify-content: center !important;
           padding: 0 20px !important;
+          transition: all 0.3s ease !important;
         }
+
+        /* WARNA TOMBOL SAAT DI-HOVER (Emas Gelap) */
+        .omnih .btn:hover, .omnih .btn-primary:hover {
+          background-color: #a16207 !important; 
+          border-color: #a16207 !important;
+        }
+
         @media (min-width: 992px) {
           .omnih .row {
             display: flex;
-            align-items: flex-end; /* Sejajarkan ke bawah */
+            align-items: flex-end;
             justify-content: space-between;
           }
           .omnih .col-md-12, .omnih .col-lg-[auto] {
-            flex: 1; /* Membagi ruang secara rata */
+            flex: 1;
             padding: 0 5px;
           }
           .omnih .form-group {
-            margin-bottom: 0 !important; /* Hilangkan margin bawah di desktop */
+            margin-bottom: 0 !important;
           }
         }
       `}} />

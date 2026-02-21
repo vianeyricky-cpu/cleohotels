@@ -19,8 +19,9 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
       {/* HEADER SECTION */}
       <div className="container mx-auto px-6 mb-16 text-center relative z-10">
         
-        {/* --- BOOKING WIDGET (Ditaruh Paling Atas Sini) --- */}
-        <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 mb-16">
+        {/* --- BOOKING WIDGET --- */}
+        {/* Tambahan 'mt-10' disini untuk memberi jarak aman dari Header/Navbar */}
+        <div className="max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 mb-16 mt-10">
            <BookingWidget />
         </div>
 
@@ -45,7 +46,6 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
               href={`/${params.locale}/hotels/${hotel.slug}`}
               className="group flex flex-col overflow-hidden rounded-2xl bg-navy-900 border border-white/5 shadow-lg transition-all duration-300 hover:shadow-2xl hover:border-gold-500/30 hover:-translate-y-2"
             >
-              {/* Image Wrapper */}
               <div className="relative h-72 w-full overflow-hidden">
                 {hotel.image_url ? (
                   <Image
@@ -60,10 +60,8 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
                   </div>
                 )}
                 
-                {/* Overlay Gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-transparent opacity-80 group-hover:opacity-70 transition-opacity"></div>
                 
-                {/* Badge Tagline di atas gambar */}
                 <div className="absolute bottom-0 left-0 right-0 p-6">
                    <p className="text-xs font-bold uppercase tracking-wider text-gold-400 mb-2">
                       {hotel.tagline || "Business & Leisure"}
@@ -74,7 +72,6 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
                 </div>
               </div>
 
-              {/* Content */}
               <div className="flex flex-1 flex-col p-6 pt-4">
                 <div className="flex items-start gap-2 text-gray-400 text-sm mb-4 border-b border-white/5 pb-4">
                   <MapPin size={16} className="mt-0.5 shrink-0 text-gold-500" />
