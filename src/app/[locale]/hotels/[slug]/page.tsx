@@ -2,25 +2,28 @@ import Image from "next/image";
 import { getHotelBySlug } from "@/actions/getHotels";
 import { notFound } from "next/navigation";
 import { RoomCard } from "@/components/RoomCard"; 
+// --- IMPORT WIDGET BARU KITA ---
+import { SingleBookingWidget } from "@/components/public/SingleBookingWidget";
+// -------------------------------
 import { 
   MapPin, Instagram, Star, Phone, ArrowRight, Quote
 } from "lucide-react";
 
 // --- DATA REVIEW DARI PDF (HARDCODED SESUAI SLUG) ---
 const REVIEWS_BY_HOTEL: Record<string, { name: string; comment: string }[]> = {
-  // Reviews untuk CLEO JEMURSARI [cite: 20, 22, 25]
+  // Reviews untuk CLEO JEMURSARI
   "cleo-hotel-jemursari": [
     { name: "Guest Review", comment: "Pengalaman menginap yang sangat memuaskan dengan lokasi strategis dan akses transportasi yang mudah. Kebersihan kamar terjaga baik." },
     { name: "Guest Review", comment: "Hotelnya bagus, bersih, dan layanannya sangat memuaskan. Sangat direkomendasikan jika Anda berkunjung ke Surabaya." },
     { name: "Guest Review", comment: "Lokasi strategis, check-in/out cepat. AC dingin dan air mandi hangat. Fasilitas kamar berada di atas standar." }
   ],
-  // Reviews untuk CLEO WALIKOTA [cite: 43, 44, 45]
+  // Reviews untuk CLEO WALIKOTA
   "cleo-hotel-walikota-mustajab": [
     { name: "Guest Review", comment: "Sangat merekomendasikan hotel ini. Tempatnya strategis, nyaman, bersih, dan pelayanan ramah dengan harga terjangkau." },
     { name: "Guest Review", comment: "Staf hotel sangat ramah, kamar sangat bersih, AC dingin, dan water heater bekerja dengan sangat baik." },
     { name: "Guest Review", comment: "Top markotop, AC dingin maksimal dan ruangan bersih. Lokasinya sangat strategis di pusat kota." }
   ],
-  // Reviews untuk CLEO TUNJUNGAN [cite: 62, 63, 65]
+  // Reviews untuk CLEO TUNJUNGAN
   "cleo-hotel-tunjungan": [
     { name: "Guest Review", comment: "Sangat direkomendasikan. Staf ramah, pelayanan 24 jam, kamar bersih. Lokasi juara di depan mal Tunjungan Plaza." },
     { name: "Guest Review", comment: "Lokasi hotel sangat menyenangkan karena tepat berseberangan dengan Tunjungan Plaza. Pelayanan sangat memuaskan." },
@@ -74,6 +77,12 @@ export default async function HotelDetailPage({
         </div>
       </section>
 
+      {/* --- WIDGET AREA (KITA SISIPKAN DI SINI) --- */}
+      <div className="relative z-20 mx-auto max-w-5xl px-6 -mt-16 mb-8">
+        <SingleBookingWidget slug={params.slug} />
+      </div>
+      {/* ------------------------------------------- */}
+
       {/* OVERVIEW */}
       <section className="relative z-10 mx-auto max-w-7xl px-6 py-24">
         <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
@@ -116,7 +125,7 @@ export default async function HotelDetailPage({
         </div>
       </section>
 
-      {/* --- REVIEWS SECTION (BARU DITAMBAHKAN) --- */}
+      {/* --- REVIEWS SECTION --- */}
       <section className="bg-navy-950 py-24 border-t border-white/5">
         <div className="mx-auto max-w-7xl px-6">
            <div className="text-center mb-16">
