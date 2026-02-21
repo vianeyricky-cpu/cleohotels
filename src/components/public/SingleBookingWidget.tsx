@@ -1,163 +1,80 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
 export function SingleBookingWidget({ slug }: { slug: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
-
   // --- MAPPING ID HOTEL ---
-  // Pastikan ID ini adalah ANGKA. Sementara saya isi 296 semua agar form mau muncul.
-  // Segera ganti angka 296 di Jemursari & Walikota dengan ID asli dari Omni jika sudah dapat.
+  // Pastikan ID ini adalah ANGKA (misal: "296"). 
+  // Jika diisi huruf, form akan menolak untuk muncul.
   const omniPropertyIds: Record<string, string> = {
-    "jemursari": "296", 
+    "jemursari": "296", // <--- UPDATE ANGKA INI NANTI
     "tunjungan": "296",
-    "walikota": "296",  
+    "walikota": "296",  // <--- UPDATE ANGKA INI NANTI
   };
 
   const propertyId = omniPropertyIds[slug] || "296";
 
-  useEffect(() => {
-    // 1. Load CSS
-    const cssLinks = [
-      "https://omnihotelier.id/css/omnih-client.css",
-      "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
-      "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
-    ];
-
-    cssLinks.forEach((href) => {
-      if (!document.querySelector(`link[href="${href}"]`)) {
-        const link = document.createElement("link");
-        link.href = href;
-        link.rel = "stylesheet";
-        document.head.appendChild(link);
-      }
-    });
-
-    // 2. INJECT HTML MANUAL (Ini rahasia agar tidak BLANK)
-    // Kita buat elemennya manual agar React tidak ikut campur dan Vue bisa jalan
-    if (containerRef.current) {
-      containerRef.current.innerHTML = `
-        <div id="app" class="omnih text-left text-gray-800 min-h-[80px]">
-          <calendar-form property="${propertyId}" isfallbackcalendar="true"></calendar-form>
-        </div>
-      `;
-    }
-
-    // 3. LOAD SCRIPT SINGLE PROPERTY OMNI
-    const scriptId = "omni-booking-script-single";
-    const existingScript = document.getElementById(scriptId);
-    
-    // Hapus script lama jika user pindah halaman agar me-refresh form
-    if (existingScript) {
-      existingScript.remove();
-    }
-
-    const script = document.createElement("script");
-    script.id = scriptId;
-    script.src = "https://omnihotelier.id/js/omnih-client.v.1.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      if (document.body.contains(script)) {
-        script.remove();
-      }
-    };
-  }, [slug, propertyId]);
-
-  return (
-    <div className="w-full bg-white rounded-xl shadow-2xl p-5 md:p-6 border border-gray-200">
+  // --- KODE HTML ISOLASI UNTUK OMNI ---
+  // Kita membuat "website mini" di dalam website utama agar script Omni bisa hidup tenang
+  const iframeContent = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <base target="_top"> <link href="https://omnihotelier.id/css/omnih-client.css" rel="stylesheet">
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
       
-      {/* CSS SUPER KETAT UNTUK MEMAKSA LAYOUT SEJAJAR SEPERTI CONTOH */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        /* Reset jarak bawah label */
-        .omnih label {
-          font-size: 12px !important;
-          color: #4b5563 !important;
-          margin-bottom: 4px !important;
-          font-weight: 600 !important;
-          text-transform: uppercase !important;
-          letter-spacing: 0.5px !important;
-        }
-
-        /* Tinggi input box */
-        .omnih .form-control { 
-          height: 48px !important; 
-          border-radius: 8px !important; 
-          font-size: 14px !important; 
-          border: 1px solid #d1d5db !important;
-          box-shadow: none !important;
-        }
+      <style>
+        /* Reset Body Iframe */
+        body { margin: 0; padding: 0; background: transparent; font-family: sans-serif; overflow: hidden; }
+        .omnih { padding: 4px; }
         
-        /* Tombol Emas */
-        .omnih .btn, .omnih .btn-primary {
-          background-color: #ca8a04 !important; 
-          border-color: #ca8a04 !important; 
-          color: #ffffff !important; 
-          height: 48px !important; 
-          border-radius: 8px !important; 
-          font-weight: 700 !important;
-          font-size: 13px !important; 
-          letter-spacing: 1px !important; 
-          white-space: nowrap !important;
-          padding: 0 24px !important; 
-          transition: all 0.3s ease !important;
-          width: 100% !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-        }
-        .omnih .btn:hover, .omnih .btn-primary:hover {
-          background-color: #a16207 !important; border-color: #a16207 !important;
-        }
+        /* Desain Label & Input */
+        .omnih label { font-size: 11px !important; color: #4b5563 !important; margin-bottom: 4px !important; font-weight: 700 !important; text-transform: uppercase !important; letter-spacing: 0.5px; }
+        .omnih .form-control { height: 48px !important; border-radius: 8px !important; font-size: 14px !important; border: 1px solid #d1d5db !important; box-shadow: none !important; }
+        
+        /* Desain Tombol Emas */
+        .omnih .btn { background-color: #ca8a04 !important; border-color: #ca8a04 !important; color: #ffffff !important; height: 48px !important; border-radius: 8px !important; font-weight: 700 !important; font-size: 13px !important; letter-spacing: 1px !important; width: 100% !important; transition: background-color 0.3s; }
+        .omnih .btn:hover { background-color: #a16207 !important; border-color: #a16207 !important; cursor: pointer; }
 
         /* MEMAKSA SEJAJAR 1 BARIS (DESKTOP) */
         @media (min-width: 992px) {
-          .omnih .row { 
-            display: flex !important; 
-            flex-wrap: nowrap !important; /* Dilarang turun ke bawah */
-            align-items: flex-end !important; 
-            gap: 16px !important; 
-            margin: 0 !important;
-          }
-          
-          /* Membagi ruang dengan adil untuk input */
-          .omnih .row > div { 
-            flex: 1 1 0 !important; 
-            padding: 0 !important; 
-            max-width: 100% !important;
-          }
-
-          /* Mencegah kolom tombol ikut mengecil/membesar tak wajar */
-          .omnih .row > div:last-child {
-            flex: 0 0 auto !important;
-          }
-          
+          .omnih .row { display: flex !important; align-items: flex-end !important; gap: 12px !important; margin: 0 !important; }
+          .omnih .row > div { flex: 1 1 0 !important; padding: 0 !important; }
+          .omnih .row > div:last-child { flex: 0 0 auto !important; min-width: 180px !important; }
           .omnih .form-group { margin-bottom: 0 !important; }
         }
 
-        /* LAYOUT UNTUK HP / TABLET (Dibikin 2 Baris) */
+        /* MEMAKSA 2 BARIS RAPI (MOBILE) */
         @media (max-width: 991px) {
-          .omnih .row {
-            display: flex !important;
-            flex-wrap: wrap !important;
-            gap: 12px !important;
-            margin: 0 !important;
-          }
-          .omnih .row > div {
-            flex: 1 1 48% !important;
-            padding: 0 !important;
-          }
-          .omnih .row > div:last-child {
-            flex: 1 1 100% !important; /* Tombol jadi full width di HP */
-            margin-top: 8px !important;
-          }
+          .omnih .row { display: flex !important; flex-wrap: wrap !important; gap: 10px !important; margin: 0 !important; }
+          .omnih .row > div { flex: 1 1 45% !important; padding: 0 !important; }
+          .omnih .row > div:last-child { flex: 1 1 100% !important; margin-top: 5px !important; }
         }
-      `}} />
+      </style>
+    </head>
+    <body>
+      <div id="app" class="omnih">
+         <calendar-form property="${propertyId}" isfallbackcalendar="true"></calendar-form>
+      </div>
+      <script src="https://omnihotelier.id/js/omnih-client.v.1.js"></script>
+    </body>
+    </html>
+  `;
 
-      {/* Area yang disediakan untuk diisi oleh React Refs agar Vue bisa bekerja */}
-      <div ref={containerRef}></div>
-
+  return (
+    <div className="w-full bg-white rounded-xl shadow-2xl p-4 md:p-6 border border-gray-200">
+      {/* Tinggi Iframe diatur responsif: 
+        - Desktop (lg): 80px (karena 1 baris)
+        - Mobile/Tablet: 250px (karena numpuk jadi beberapa baris)
+      */}
+      <div className="w-full h-[250px] lg:h-[80px]">
+        <iframe
+          srcDoc={iframeContent}
+          className="w-full h-full border-0"
+          scrolling="no"
+          title="Single Booking Widget"
+        />
+      </div>
     </div>
   );
 }
