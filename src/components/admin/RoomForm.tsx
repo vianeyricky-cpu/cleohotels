@@ -20,12 +20,11 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
     description: room?.description || "",
     size: room?.size || "",
     capacity: room?.capacity || "",
-    // FIX ERROR: Inisialisasi amenities sebagai array kosong [] agar tidak null
+    price: room?.price || "", // <-- TAMBAHAN: State Harga
     amenities: (room?.amenities || []) as string[], 
     images: room?.images || (room?.image ? [room.image] : []) || [] 
   });
 
-  // State khusus untuk input text amenities (dipisah koma)
   const [amenitiesInput, setAmenitiesInput] = useState(
     room?.amenities ? room.amenities.join(", ") : ""
   );
@@ -35,8 +34,6 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
     setIsLoading(true);
 
     try {
-      // Convert input string amenities menjadi Array
-      // Contoh: "WiFi, AC, TV" -> ["WiFi", "AC", "TV"]
       const amenitiesArray = amenitiesInput.length > 0 
         ? amenitiesInput.split(",").map((item: string) => item.trim()) 
         : [];
@@ -47,9 +44,10 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
         description: formData.description,
         size: formData.size,
         capacity: formData.capacity,
+        price: formData.price, // <-- TAMBAHAN: Dikirim ke DB
         images: formData.images,
-        image: formData.images[0] || null, // Thumbnail legacy
-        amenities: amenitiesArray // Kirim array ini agar tidak error Not-Null
+        image: formData.images[0] || null, // Thumbnail otomatis ambil urutan 1
+        amenities: amenitiesArray
       };
 
       let error;
@@ -87,10 +85,12 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
               value={formData.name} 
               onChange={e => setFormData({...formData, name: e.target.value})} 
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 outline-none" 
+              placeholder="e.g. Deluxe Double Room"
             />
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          {/* Grid 3 Kolom untuk Size, Capacity, dan PRICE */}
+          <div className="grid grid-cols-3 gap-4">
              <div>
                 <label className="block text-sm font-bold text-gray-700 mb-1">Size (m²)</label>
                 <input 
@@ -98,6 +98,7 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
                   value={formData.size} 
                   onChange={e => setFormData({...formData, size: e.target.value})} 
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 outline-none" 
+                  placeholder="e.g. 24"
                 />
              </div>
              <div>
@@ -107,6 +108,18 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
                   value={formData.capacity} 
                   onChange={e => setFormData({...formData, capacity: e.target.value})} 
                   className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 outline-none" 
+                  placeholder="e.g. 2 Adults"
+                />
+             </div>
+             {/* TAMBAHAN: Input Price */}
+             <div>
+                <label className="block text-sm font-bold text-gray-700 mb-1">Price / Night</label>
+                <input 
+                  type="text" 
+                  value={formData.price} 
+                  onChange={e => setFormData({...formData, price: e.target.value})} 
+                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 outline-none" 
+                  placeholder="e.g. 450000"
                 />
              </div>
           </div>
@@ -117,7 +130,7 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
               type="text" 
               value={amenitiesInput} 
               onChange={e => setAmenitiesInput(e.target.value)} 
-              placeholder="Example: WiFi, AC, TV, Bathtub (Separate with comma)"
+              placeholder="Example: WiFi, AC, TV, Bathtub"
               className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-gold-500 outline-none" 
             />
             <p className="text-xs text-gray-400 mt-1">Separate items with a comma (,)</p>
@@ -140,10 +153,6 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
              urls={formData.images} 
              onChange={(newUrls) => setFormData({...formData, images: newUrls})} 
            />
-           <p className="text-xs text-gray-400 mt-2">
-             * The first image will be used as the main thumbnail. <br/>
-             * You can upload multiple images at once.
-           </p>
         </div>
       </div>
 
@@ -151,7 +160,7 @@ export default function RoomForm({ hotelId, room, isNew = false }: { hotelId: st
         <button 
           type="submit" 
           disabled={isLoading} 
-          className="flex items-center gap-2 px-8 py-3 bg-navy-950 text-white font-bold rounded-lg hover:bg-gold-500 hover:text-navy-950 transition disabled:opacity-50"
+          className="flex items-center gap-2 px-8 py-3 bg-navy-950 text-white font-bold rounded-lg hover:bg-gold-500 hover:text-navy-950 transition disabled:opacity-50 shadow-md"
         >
            {isLoading ? <Loader2 className="animate-spin"/> : <Save size={18} />}
            Save Room Data

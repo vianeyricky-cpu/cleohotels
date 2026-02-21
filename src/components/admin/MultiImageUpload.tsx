@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { Upload, X, Loader2, Plus } from "lucide-react";
+import { Upload, X, Loader2, Plus, GripVertical } from "lucide-react";
 import Image from "next/image";
 
 interface MultiImageUploadProps {
@@ -17,6 +17,7 @@ export function MultiImageUpload({
   bucket = "images" 
 }: MultiImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
   // Setup Supabase
   const supabase = createClient(
@@ -63,22 +64,76 @@ export function MultiImageUpload({
     onChange(urls.filter((url) => url !== urlToRemove));
   };
 
+  // --- LOGIKA DRAG AND DROP ---
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault(); // Wajib agar onDrop bisa berjalan
+  };
+
+  const handleDrop = (index: number) => {
+    if (draggedIndex === null) return;
+    
+    // Copy array lama
+    const newUrls = [...urls];
+    // Cabut item yang di-drag
+    const draggedItem = newUrls.splice(draggedIndex, 1)[0];
+    // Sisipkan item ke posisi yang baru (drop)
+    newUrls.splice(index, 0, draggedItem);
+    
+    onChange(newUrls);
+    setDraggedIndex(null);
+  };
+
   return (
     <div className="space-y-4">
-      <label className="block text-sm font-bold text-gray-700">Room Gallery (Carousel)</label>
+      <div className="flex justify-between items-center mb-2">
+        <label className="block text-sm font-bold text-gray-700">Room Gallery (Carousel)</label>
+        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">
+          Drag images to reorder
+        </span>
+      </div>
       
       {/* Grid Foto yang sudah ada */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
         {urls.map((url, index) => (
-          <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group">
-            <Image src={url} alt="Gallery" fill className="object-cover" unoptimized/>
+          <div 
+            key={index} 
+            draggable // Mengaktifkan fitur drag bawaan HTML
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={handleDragOver}
+            onDrop={() => handleDrop(index)}
+            className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all group cursor-grab active:cursor-grabbing ${
+              draggedIndex === index ? "border-gold-500 opacity-50 scale-95" : "border-gray-200 hover:border-gold-400"
+            }`}
+          >
+            <Image src={url} alt={`Gallery ${index}`} fill className="object-cover" unoptimized/>
+            
+            {/* Overlay Gradient Hitam untuk tombol */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+               <GripVertical className="text-white h-8 w-8" />
+            </div>
+
+            {/* Tombol Hapus */}
             <button
               type="button"
-              onClick={() => handleRemove(url)}
-              className="absolute top-1 right-1 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition"
+              onClick={(e) => {
+                e.stopPropagation(); // Mencegah drag terpanggil saat klik hapus
+                handleRemove(url);
+              }}
+              className="absolute top-2 right-2 bg-red-500 text-white p-1.5 rounded-full opacity-0 group-hover:opacity-100 transition hover:bg-red-600 z-10"
             >
               <X size={14} />
             </button>
+
+            {/* Label "Thumbnail" Khusus Gambar Pertama */}
+            {index === 0 && (
+              <div className="absolute bottom-0 left-0 right-0 bg-gold-500 text-navy-950 text-[10px] font-bold text-center py-1 uppercase tracking-wider">
+                Main Thumbnail
+              </div>
+            )}
           </div>
         ))}
         
@@ -88,7 +143,7 @@ export function MultiImageUpload({
             <Loader2 className="animate-spin text-gold-500" />
           ) : (
             <>
-              <Plus className="text-gray-400 mb-2" />
+              <Plus className="text-gray-400 mb-2 h-8 w-8" />
               <span className="text-xs text-gray-500 font-bold">Add Images</span>
             </>
           )}
@@ -102,6 +157,10 @@ export function MultiImageUpload({
           />
         </label>
       </div>
+      <p className="text-xs text-gray-400 mt-2">
+         * Gambar paling pertama (Thumbnail) akan muncul di halaman depan list kamar.<br/>
+         * Tahan dan geser (drag) gambar untuk mengubah urutannya.
+      </p>
     </div>
   );
 }
