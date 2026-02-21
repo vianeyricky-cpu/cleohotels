@@ -78,7 +78,7 @@ export default async function HotelDetailPage({
       </section>
 
       {/* --- WIDGET AREA (KITA SISIPKAN DI SINI) --- */}
-      <div className="relative z-20 mx-auto max-w-5xl px-6 -mt-16 mb-8">
+      <div className="relative z-20 mx-auto max-w-5xl px-6 mt-8 mb-8">
         <SingleBookingWidget slug={params.slug} />
       </div>
       {/* ------------------------------------------- */}
