@@ -24,8 +24,12 @@ export function AdminSidebar() {
 
   return (
     <aside className="flex h-full w-full flex-col gap-6 bg-navy-900 px-6 py-8 text-white">
-      <div className="text-lg font-semibold text-gold-400">Cleo Admin</div>
-      <nav className="flex flex-col gap-2 text-sm">
+      {/* TEKS DIUBAH DI SINI */}
+      <div className="text-sm font-bold text-gold-400 uppercase tracking-widest leading-relaxed">
+        Cleo Management Content
+      </div>
+      
+      <nav className="flex flex-col gap-2 text-sm mt-4">
         {links.map((link) => {
           const href = withLocale(pathname, link.href);
           const isActive = pathname?.endsWith(link.href);
