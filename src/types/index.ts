@@ -21,6 +21,9 @@ export type Room = {
   hotelId: string;
   name: string;
   description: string;
+
+  price?: number | string | null; 
+  order_index?: number | null;
   
   // Pastikan tipe data ini sesuai dengan Actions dan DB
   size: number;      
