@@ -33,16 +33,14 @@ export function RoomCard({ room }: { room: Room }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
-  // --- PERBAIKAN LOGIC AMENITIES (ANTI-CRASH) ---
-  // Kita buat fungsi helper kecil untuk menangani berbagai tipe data
+  // --- PERBAIKAN LOGIC AMENITIES ---
   const getAmenitiesList = (data: any) => {
-    if (!data) return []; // Jika null/undefined
-    if (Array.isArray(data)) return data; // Jika sudah Array (Data lama)
+    if (!data) return []; 
+    if (Array.isArray(data)) return data; 
     if (typeof data === 'string') {
-      // Jika String (Data baru), kita split koma
       return data.split(',').map(item => item.trim()).filter(item => item !== "");
     }
-    return []; // Fallback aman
+    return []; 
   };
 
   const amenitiesList = getAmenitiesList(room.amenities);
@@ -59,11 +57,12 @@ export function RoomCard({ room }: { room: Room }) {
   };
 
   // Format Harga Rupiah
+  const priceNumber = Number(room.price) || 0;
   const formattedPrice = new Intl.NumberFormat("id-ID", {
     style: "currency",
     currency: "IDR",
     maximumFractionDigits: 0,
-  }).format(room.price || 0);
+  }).format(priceNumber);
 
   return (
     <>
@@ -85,11 +84,13 @@ export function RoomCard({ room }: { room: Room }) {
           
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-transparent to-transparent opacity-80 pointer-events-none" />
 
-          {/* HARGA */}
-          <div className="absolute top-3 left-3 rounded-md bg-navy-900/80 backdrop-blur px-3 py-1.5 border border-white/10 z-10">
-             <span className="text-sm font-bold text-gold-400">{formattedPrice}</span>
-             <span className="text-[10px] text-white/60"> /night</span>
-          </div>
+          {/* HARGA: Hanya Tampil Jika Price > 0 */}
+          {priceNumber > 0 && (
+            <div className="absolute top-3 left-3 rounded-md bg-navy-900/80 backdrop-blur px-3 py-1.5 border border-white/10 z-10">
+               <span className="text-sm font-bold text-gold-400">{formattedPrice}</span>
+               <span className="text-[10px] text-white/60"> /night</span>
+            </div>
+          )}
 
           {/* Tombol Navigasi */}
           <div className="absolute inset-0 flex items-center justify-between p-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -147,7 +148,6 @@ export function RoomCard({ room }: { room: Room }) {
           </p>
 
           <div className="mt-auto pt-6 flex flex-wrap gap-2">
-            {/* Logic Render Amenities yang sudah aman */}
             {amenitiesList.length > 0 ? (
                 amenitiesList.slice(0, 3).map((amenity: string, index: number) => (
                 <span key={index} className="rounded-full bg-navy-800 px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-white/60 border border-white/5">
@@ -208,7 +208,10 @@ export function RoomCard({ room }: { room: Room }) {
 
             <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/80 to-transparent p-8 text-center">
               <h3 className="text-2xl font-bold text-white">{room.name}</h3>
-              <p className="text-xl font-medium text-gold-400 mt-1">{formattedPrice}</p>
+              {/* HARGA DI DALAM LIGHTBOX: Hanya Tampil Jika Price > 0 */}
+              {priceNumber > 0 && (
+                <p className="text-xl font-medium text-gold-400 mt-1">{formattedPrice} <span className="text-sm font-normal text-gray-400">/night</span></p>
+              )}
               <p className="text-sm text-gray-400 mt-1">
                 Image {currentIdx + 1} of {images.length}
               </p>
