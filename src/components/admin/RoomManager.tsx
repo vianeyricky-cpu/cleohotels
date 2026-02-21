@@ -79,8 +79,8 @@ export function RoomManager({
       // Loop semua kamar yang posisinya berubah dan update 'order_index' di database
       // Kita panggil updateRoom satu per satu
       const updatePromises = orderedRooms.map((room, index) => 
-        updateRoom(room.id, { order_index: index })
-      );
+        updateRoom(room.id, { order_index: index } as any)
+     );
       
       await Promise.all(updatePromises);
       setIsOrderChanged(false);
@@ -111,9 +111,8 @@ export function RoomManager({
                 ...values,
                 amenities: values.amenities || "", 
                 image: "", 
-                // Kamar baru ditaruh di urutan paling akhir
                 order_index: orderedRooms.length 
-              });
+              } as any);
               createForm.reset();
             });
           })}

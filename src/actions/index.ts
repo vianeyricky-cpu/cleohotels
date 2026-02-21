@@ -68,6 +68,7 @@ export async function updateRoom(
     description?: string;
     amenities?: string; // UBAH KE STRING (Teks panjang)
     image?: string;
+    order_index?: number;
   }
 ) {
   // Kita konversi explicit ke Number untuk field angka agar aman
