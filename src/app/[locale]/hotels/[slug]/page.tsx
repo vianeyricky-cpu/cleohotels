@@ -78,7 +78,7 @@ export default async function HotelDetailPage({
       </section>
 
       {/* --- WIDGET AREA (KITA SISIPKAN DI SINI) --- */}
-      <div className="relative z-20 mx-auto max-w-5xl px-6 mt-8 mb-8">
+      <div id="booking" className="relative z-20 mx-auto max-w-5xl px-6 mt-12 mb-8 scroll-mt-32">
         <SingleBookingWidget slug={params.slug} />
       </div>
       {/* ------------------------------------------- */}
@@ -176,7 +176,15 @@ export default async function HotelDetailPage({
       <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-white/10 bg-navy-950/90 px-6 py-4 backdrop-blur-lg">
          <div className="mx-auto flex max-w-7xl items-center justify-between">
             <div className="hidden md:block"><p className="text-xs uppercase tracking-widest text-gray-400">Ready to stay?</p><p className="text-lg font-bold text-white">Book at {hotel.name}</p></div>
-            <div className="flex gap-4"><button className="rounded-full bg-gold-500 px-8 py-3 text-sm font-bold text-navy-950">Book Now</button></div>
+            <div className="flex gap-4">
+               {/* Diubah menjadi tag <a> yang mengarah ke form */}
+               <a 
+                 href="#booking" 
+                 className="rounded-full bg-gold-500 px-8 py-3 text-sm font-bold text-navy-950 transition hover:bg-gold-400 hover:-translate-y-1"
+               >
+                 Book Now
+               </a>
+            </div>
          </div>
       </div>
     </main>
