@@ -22,13 +22,13 @@ export type Room = {
   name: string;
   description: string;
 
+  // Menggunakan tipe price yang fleksibel untuk form & database
   price?: number | string | null; 
   order_index?: number | null;
   
   // Pastikan tipe data ini sesuai dengan Actions dan DB
   size: number;      
   capacity: number;  
-  price: number;     
   bedType: string;   
   amenities: string | null; // <--- WAJIB STRING (Bukan string[])
 
