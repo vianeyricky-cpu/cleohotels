@@ -32,14 +32,12 @@ export function RoomManager({
   const [isPending, startTransition] = useTransition();
   const [isSavingOrder, setIsSavingOrder] = useState(false);
   
-  // --- STATE UNTUK DRAG AND DROP ---
   // Urutkan kamar berdasarkan order_index saat pertama kali dimuat
   const sortedRooms = [...rooms].sort((a, b) => (a.order_index || 0) - (b.order_index || 0));
   const [orderedRooms, setOrderedRooms] = useState<Room[]>(sortedRooms);
   const [draggedIdx, setDraggedIdx] = useState<number | null>(null);
   const [isOrderChanged, setIsOrderChanged] = useState(false);
 
-  // Sync state jika ada perubahan data dari server (misal setelah hapus/tambah kamar)
   useEffect(() => {
     setOrderedRooms([...rooms].sort((a, b) => (a.order_index || 0) - (b.order_index || 0)));
     setIsOrderChanged(false);
@@ -58,9 +56,15 @@ export function RoomManager({
     },
   });
 
-  // --- LOGIKA DRAG & DROP ---
-  const handleDragStart = (index: number) => setDraggedIdx(index);
-  const handleDragOver = (e: React.DragEvent) => e.preventDefault();
+  // LOGIKA DRAG & DROP
+  const handleDragStart = (index: number) => {
+    setDraggedIdx(index);
+  };
+  
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); // Diperlukan agar event drop berfungsi
+  };
+  
   const handleDrop = (index: number) => {
     if (draggedIdx === null) return;
     const newOrder = [...orderedRooms];
@@ -72,22 +76,19 @@ export function RoomManager({
     setIsOrderChanged(true); // Memunculkan tombol Save Order
   };
 
-  // --- FUNGSI SAVE URUTAN KE DATABASE ---
   const handleSaveOrder = async () => {
     setIsSavingOrder(true);
     try {
-      // Panggil updateRoom satu per satu
-      // Kita pakai 'as any' agar Vercel tidak rewel soal tipe data saat build
       const updatePromises = orderedRooms.map((room, index) => 
         updateRoom(room.id, { order_index: index } as any)
       );
       
       await Promise.all(updatePromises);
       setIsOrderChanged(false);
-      alert("Success! Room order saved.");
+      alert("✅ Success! Room order saved.");
     } catch (error) {
       console.error(error);
-      alert("Failed to save order.");
+      alert("❌ Failed to save order.");
     } finally {
       setIsSavingOrder(false);
     }
@@ -156,18 +157,17 @@ export function RoomManager({
         </form>
       </section>
 
-      {/* LIST ROOMS DENGAN DRAG AND DROP */}
+      {/* LIST ROOMS */}
       <section>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
            <div>
               <h3 className="text-lg font-semibold text-navy-900">Room List & Reorder</h3>
               <p className="text-xs text-navy-500 mt-1">
                 <GripVertical size={14} className="inline mr-1"/> 
-                Click and hold the card to drag. The first room will appear on top in the website.
+                Click, hold, and drag the card to reorder. The first room will appear on top in the website.
               </p>
            </div>
            
-           {/* Tombol ini HANYA muncul jika urutan berubah */}
            {isOrderChanged && (
              <button 
                onClick={handleSaveOrder}
@@ -180,7 +180,6 @@ export function RoomManager({
            )}
         </div>
 
-        {/* Menggunakan Layout Grid persis seperti screenshot Anda */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {orderedRooms.map((room, index) => (
             <div 
@@ -193,8 +192,7 @@ export function RoomManager({
                 draggedIdx === index ? "opacity-30 scale-95 z-50 border-gold-500 border-2 rounded-xl" : "opacity-100 hover:-translate-y-1 hover:shadow-lg"
               }`}
             >
-              {/* Icon Drag Handle di pojok kiri atas Card */}
-              <div className="absolute top-3 left-3 z-10 bg-white/90 p-1.5 rounded-md shadow-sm backdrop-blur-md text-gray-400 hover:text-gold-500 transition">
+              <div className="absolute top-3 left-3 z-10 bg-white/90 p-1.5 rounded-md shadow-sm backdrop-blur-md text-gray-400 hover:text-gold-500 transition cursor-grab">
                  <GripVertical size={20} />
               </div>
               
@@ -213,9 +211,6 @@ export function RoomManager({
   );
 }
 
-// ==========================================
-// ROOM CARD COMPONENT (Berisi Edit & Delete)
-// ==========================================
 function RoomCard({ room }: { room: Room }) {
   const [isPending, startTransition] = useTransition();
   const [isEditing, setIsEditing] = useState(false);
@@ -234,19 +229,17 @@ function RoomCard({ room }: { room: Room }) {
   });
 
   return (
-    <div className="rounded-xl border border-navy-100 p-5 bg-white shadow-sm h-full flex flex-col">
-      <div className="mb-4 flex items-center justify-between pl-10"> {/* pl-10 untuk memberi ruang pada icon Drag */}
+    <div className="rounded-xl border border-navy-100 p-5 bg-white shadow-sm h-full flex flex-col pointer-events-auto">
+      <div className="mb-4 flex items-center justify-between pl-10">
         <h4 className="text-base font-bold text-navy-900 truncate pr-2">{room.name}</h4>
       </div>
 
-      {/* Preview Singkat */}
       <div className="flex gap-4 text-xs text-gray-500 mb-4 pb-4 border-b">
          <span>📐 {room.size} m²</span>
          <span>👥 {room.capacity} Pax</span>
       </div>
 
-      {/* Thumbnail Kamar */}
-      <div className="mb-4 aspect-[4/3] rounded-lg bg-gray-100 overflow-hidden relative">
+      <div className="mb-4 aspect-[4/3] rounded-lg bg-gray-100 overflow-hidden relative pointer-events-none">
           {room.image ? (
             <img src={room.image} alt={room.name} className="object-cover w-full h-full" />
           ) : (
@@ -254,7 +247,6 @@ function RoomCard({ room }: { room: Room }) {
           )}
       </div>
 
-      {/* Tombol Aksi */}
       <div className="mt-auto pt-4 flex gap-2">
          <button
            type="button"
@@ -276,7 +268,6 @@ function RoomCard({ room }: { room: Room }) {
           </button>
       </div>
 
-      {/* FORM EDIT (Hanya muncul jika isEditing true) */}
       {isEditing && (
         <div className="mt-4 pt-4 border-t border-dashed">
           <form

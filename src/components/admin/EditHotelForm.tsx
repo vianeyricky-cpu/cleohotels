@@ -5,10 +5,10 @@ import { createClient } from "@supabase/supabase-js";
 import { useRouter } from "next/navigation";
 import { Save, ArrowLeft, Loader2, ExternalLink } from "lucide-react";
 import Link from "next/link";
-// Import komponen upload baru
 import { ImageUpload } from "@/components/admin/ImageUpload"; 
+// Import komponen upload multi image
+import { MultiImageUpload } from "@/components/admin/MultiImageUpload"; 
 
-// Tipe data yang kita terima dari Server
 type HotelData = {
   id: string;
   slug: string;
@@ -19,6 +19,7 @@ type HotelData = {
   image_url: string;
   maps_url: string;
   google_maps_link: string;
+  images?: string[]; // Tambahkan field images untuk The Experience
 };
 
 export function EditHotelForm({ hotel }: { hotel: HotelData }) {
@@ -38,6 +39,7 @@ export function EditHotelForm({ hotel }: { hotel: HotelData }) {
     image_url: hotel.image_url || "",
     maps_url: hotel.maps_url || "",
     google_maps_link: hotel.google_maps_link || "",
+    images: hotel.images || [], // Inisialisasi state images
   });
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -155,13 +157,11 @@ export function EditHotelForm({ hotel }: { hotel: HotelData }) {
           </div>
         </div>
 
-        {/* --- SECTION 3: GAMBAR UTAMA (UPDATED) --- */}
+        {/* --- SECTION 3: GAMBAR UTAMA --- */}
         <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
           <h3 className="text-lg font-bold text-navy-950 mb-6 border-b pb-4 flex items-center gap-2">
              <span className="w-2 h-6 bg-gold-500 rounded-full"></span> Hero Image
           </h3>
-          
-          {/* MENGGUNAKAN KOMPONEN IMAGE UPLOAD BARU */}
           <div className="w-full">
             <ImageUpload 
               value={formData.image_url} 
@@ -172,7 +172,22 @@ export function EditHotelForm({ hotel }: { hotel: HotelData }) {
               Recommended size: 1920x1080px (Landscape). Max 5MB.
             </p>
           </div>
+        </div>
 
+        {/* --- SECTION 4: THE EXPERIENCE (GALLERY) --- */}
+        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
+          <h3 className="text-lg font-bold text-navy-950 mb-6 border-b pb-4 flex items-center gap-2">
+             <span className="w-2 h-6 bg-gold-500 rounded-full"></span> The Experience (Gallery)
+          </h3>
+          <div className="w-full">
+          <MultiImageUpload 
+  urls={formData.images || []} 
+  onChange={(urls) => setFormData({ ...formData, images: urls })}
+/>
+            <p className="mt-2 text-xs text-gray-400">
+              Upload foto-foto untuk bagian The Experience. Foto-foto ini akan tampil berjejer di halaman utama hotel.
+            </p>
+          </div>
         </div>
 
         {/* --- TOMBOL SAVE --- */}
