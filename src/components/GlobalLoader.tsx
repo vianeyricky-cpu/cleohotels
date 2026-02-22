@@ -20,7 +20,7 @@ export function GlobalLoader() {
 
     // Hitung berapa lama loading sudah berjalan
     const elapsed = Date.now() - loadStartTime.current;
-    const MINIMUM_LOADING_TIME = 3000; // 3000 milidetik = 3 detik (Bisa diubah ke 5000 untuk 5 detik)
+    const MINIMUM_LOADING_TIME = 3000; // 3000 milidetik = 3 detik
 
     if (elapsed < MINIMUM_LOADING_TIME) {
       // Jika loading terlalu cepat, tahan sisa waktunya
@@ -76,16 +76,19 @@ export function GlobalLoader() {
   return (
     <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm transition-opacity duration-500">
       <div className="relative flex flex-col items-center animate-fade-in-up">
+        {/* LOGO DIPERBESAR (Ubah angka width & height di bawah ini jika ingin lebih besar/kecil lagi) */}
         <Image 
           src="/loading-cleo.gif" 
           alt="Memuat halaman..." 
-          width={120} 
-          height={120} 
+          width={240} 
+          height={240} 
           className="object-contain"
           unoptimized 
         />
-        <p className="mt-4 text-sm font-bold text-gold-500 uppercase tracking-widest animate-pulse">
-        Please Wait ...
+        
+        {/* TEKS DIPERKECIL (Menggunakan text-xs, jika masih kurang kecil bisa diganti text-[10px]) */}
+        <p className="mt-2 text-xs font-bold text-gold-500 uppercase tracking-widest animate-pulse">
+          Please Wait ...
         </p>
       </div>
     </div>
