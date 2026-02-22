@@ -2,7 +2,9 @@ import type { Metadata } from "next";
 import { Inter, Playfair_Display } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/Navbar";
-import { Footer } from "@/components/Footer"; // <--- PENTING: Import Footer
+import { Footer } from "@/components/Footer"; 
+// 1. IMPORT GLOBAL LOADER DI SINI
+import { GlobalLoader } from "@/components/GlobalLoader"; 
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const playfair = Playfair_Display({ 
@@ -25,6 +27,10 @@ export default function RootLayout({
   return (
     <html lang={locale} className="scroll-smooth">
       <body className={`${inter.variable} ${playfair.variable} font-sans bg-navy-950 text-white antialiased`}>
+        
+        {/* 2. PASANG GLOBAL LOADER DI SINI */}
+        {/* Loader ini akan menutupi layar saat transisi halaman */}
+        <GlobalLoader />
         
         {/* Navbar Selalu di Atas */}
         <Navbar />
