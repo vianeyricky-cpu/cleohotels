@@ -9,7 +9,8 @@ export const metadata = {
 
 export default function AboutPage({ params }: { params: { locale: string } }) {
   return (
-    <main className="min-h-screen bg-navy-950 text-white pt-24 pb-20">
+    // PERUBAHAN DI SINI: pt-24 diubah menjadi pt-36 md:pt-48
+    <main className="min-h-screen bg-navy-950 text-white pt-36 md:pt-48 pb-20">
       
       {/* 1. HERO SECTION */}
       <div className="container mx-auto px-6 mb-20 text-center">

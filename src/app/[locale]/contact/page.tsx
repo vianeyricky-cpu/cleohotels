@@ -8,7 +8,8 @@ export const metadata = {
 
 export default function ContactPage() {
   return (
-    <main className="min-h-screen bg-navy-950 text-white pt-24 pb-20">
+    // PERUBAHAN DI SINI: pt-24 diubah menjadi pt-36 md:pt-48
+    <main className="min-h-screen bg-navy-950 text-white pt-36 md:pt-48 pb-20">
       {/* HEADER SECTION */}
       <div className="container mx-auto px-6 mb-16 text-center">
         <p className="text-gold-500 font-bold tracking-[0.2em] text-xs uppercase mb-4">
