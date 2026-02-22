@@ -22,7 +22,7 @@ export default function AdminLayout({
             {/* Header Sidebar */}
             <div className="flex h-24 flex-col justify-center border-b border-white/10 px-6">
               <h1 className="text-lg font-bold leading-tight text-gold-500">
-                MANAGEMENT CONTENT
+                CLEO MANAGEMENT CONTENT
               </h1>
               <div className="mt-1 flex items-center gap-2 text-[10px] font-medium tracking-wider text-white/60">
                 <span className="uppercase">by Askara Indonesia</span>

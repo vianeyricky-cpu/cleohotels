@@ -24,7 +24,7 @@ export function AdminSidebar() {
 
   return (
     <aside className="flex h-full w-full flex-col gap-6 bg-navy-900 px-6 py-8 text-white">
-      {/* TEKS DIUBAH DI SINI */}
+      {/* TEKS CLEO MANAGEMENT CONTENT */}
       <div className="text-sm font-bold text-gold-400 uppercase tracking-widest leading-relaxed">
         Cleo Management Content
       </div>
