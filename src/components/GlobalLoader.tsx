@@ -85,7 +85,7 @@ export function GlobalLoader() {
           unoptimized 
         />
         <p className="mt-4 text-sm font-bold text-gold-500 uppercase tracking-widest animate-pulse">
-          Cleo Hotels
+        Please Wait ...
         </p>
       </div>
     </div>
