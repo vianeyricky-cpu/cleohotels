@@ -16,7 +16,7 @@ export function Navbar() {
   // Ambil locale (bahasa) dari URL, default ke 'id' jika tidak ada
   const locale = (params?.locale as string) || "id";
 
-  // LOGIKA BARU: Cek apakah halaman saat ini adalah halaman /hotels atau turunannya
+  // Cek apakah halaman saat ini adalah halaman /hotels atau turunannya
   const isHotelsPage = pathname?.includes("/hotels");
 
   // Efek Scroll
@@ -36,14 +36,17 @@ export function Navbar() {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        scrolled || isOpen ? "bg-navy-950 shadow-md py-2" : "bg-transparent py-4"
+        scrolled || isOpen 
+          ? "bg-white shadow-md py-3" 
+          : "bg-white/95 backdrop-blur-sm py-5 border-b border-neutral-100"
       }`}
     >
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between">
           
-          {/* LOGO JUMBO */}
-          <Link href={`/${locale}`} className="relative h-14 w-48 md:h-28 md:w-80 z-[101] -ml-2">
+          {/* LOGO */}
+          <Link href={`/${locale}`} className="relative h-10 w-32 md:h-12 md:w-40 z-[101]">
+             {/* Pastikan '/logo.png' adalah logo Cleo dengan warna yang pas untuk background putih */}
              <Image 
                src="/logo.png" 
                alt="Cleo Hotels" 
@@ -80,7 +83,7 @@ export function Navbar() {
             {!isHotelsPage && (
               <Link
                 href={`/${locale}/hotels`}
-                className="rounded-full bg-gold-500 px-8 py-3 text-base font-bold text-navy-950 transition hover:bg-white hover:text-navy-950 shadow-lg shadow-gold-500/20"
+                className="rounded-full bg-red-600 px-8 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 shadow-md shadow-red-600/20"
               >
                 Book Now
               </Link>
@@ -90,17 +93,17 @@ export function Navbar() {
           {/* MOBILE HAMBURGER BUTTON */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden z-[101] p-2 text-white transition hover:text-gold-500 focus:outline-none"
+            className="lg:hidden z-[101] p-2 text-neutral-800 transition hover:text-red-600 focus:outline-none"
             aria-label="Toggle menu"
           >
-            {isOpen ? <X size={32} /> : <Menu size={32} />}
+            {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
       </div>
 
       {/* MOBILE MENU OVERLAY */}
       <div
-        className={`fixed inset-0 bg-navy-950 z-[90] flex flex-col items-center justify-center gap-8 transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center gap-8 transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -109,12 +112,11 @@ export function Navbar() {
         <NavLink href={`/${locale}/about`} label="About Us" onClick={() => setIsOpen(false)} mobile />
         <NavLink href={`/${locale}/contact`} label="Contact" onClick={() => setIsOpen(false)} mobile />
         
-        {/* HANYA TAMPILKAN TOMBOL JIKA BUKAN DI HALAMAN HOTELS (MOBILE) */}
         {!isHotelsPage && (
           <Link
             href={`/${locale}/hotels`}
             onClick={() => setIsOpen(false)}
-            className="mt-6 rounded-full bg-gold-500 px-10 py-4 text-xl font-bold text-navy-950 transition hover:bg-white"
+            className="mt-6 rounded-full bg-red-600 px-10 py-4 text-xl font-bold text-white transition hover:bg-red-700"
           >
             Book Now
           </Link>
@@ -142,10 +144,10 @@ function NavLink({
     <Link
       href={href}
       onClick={onClick}
-      className={`font-medium transition-colors hover:text-gold-500 tracking-wide ${
-        mobile ? "text-2xl" : "text-lg" 
+      className={`font-medium transition-colors hover:text-red-600 tracking-wide ${
+        mobile ? "text-2xl" : "text-sm" 
       } ${
-        active ? "text-gold-500 font-bold" : "text-white/90"
+        active ? "text-red-600 font-bold" : "text-neutral-600"
       }`}
     >
       {label}

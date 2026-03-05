@@ -5,11 +5,12 @@
 /* stylelint-disable-next-line at-rule-no-unknown */
 @tailwind utilities;
 
-
 /* --- SETUP DASAR --- */
 :root {
-  --background: #f9fafb;
-  --foreground: #0f172a;
+  /* Diubah ke putih murni (#ffffff) sesuai instruksi desain Canva */
+  --background: #ffffff; 
+  /* Teks utama menggunakan warna gelap neutral-900 agar kontras dan mudah dibaca */
+  --foreground: #171717; 
 }
 
 html {
@@ -30,26 +31,27 @@ body {
 
 /* 1. Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 12px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #f8fafc; /* Warna abu-abu sangat terang (slate-50) */
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 6px;
-  border: 3px solid #f1f5f9;
+  background: #cbd5e1; /* Warna abu-abu (slate-300) */
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #b88b3a;
+  /* Diubah dari warna emas (gold) ke warna aksen utama Anda (contoh: Merah / #dc2626) */
+  background: #dc2626; 
 }
 
-/* 2. Selection Color */
+/* 2. Selection Color (Warna blok teks saat disorot/diblok oleh cursor) */
 ::selection {
-  background-color: #c9a449;
+  /* Diubah dari warna emas ke warna merah brand agar senada dengan tombol */
+  background-color: #dc2626; 
   color: #ffffff;
 }
 
