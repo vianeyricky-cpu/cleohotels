@@ -3,6 +3,9 @@ import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 import { Check } from "lucide-react"; 
 
+// TAMBAHKAN BARIS INI: Memaksa Next.js untuk selalu mengambil data terbaru dari database
+export const dynamic = "force-dynamic";
+
 export default async function AboutPage({ params }: { params: { locale: string } }) {
   // Koneksi Supabase untuk mengambil data promo
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -101,9 +104,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
         </div>
       </section>
 
-      {/* --- SECTION FOTO GRID SUDAH DIHAPUS --- */}
-
-      {/* --- 2. OFFERS & PACKAGES SECTION (Sesuai Referensi Gambar 3) --- */}
+      {/* --- 2. OFFERS & PACKAGES SECTION (Desain Baru Gambar 3) --- */}
       <section className="py-20 px-6 bg-white border-y border-neutral-100">
         <div className="w-full max-w-7xl mx-auto">
           {/* Header Offers & Packages */}
@@ -114,12 +115,12 @@ export default async function AboutPage({ params }: { params: { locale: string }
              </p>
           </div>
           
-          {/* Grid Layout Promo */}
+          {/* Grid Layout Promo (Tanpa Border Card) */}
           <div className="grid md:grid-cols-3 gap-x-10 gap-y-12">
             {safePromos.length > 0 ? (
               safePromos.map((promo) => (
                 <div key={promo.id} className="flex flex-col group">
-                  {/* Gambar Promo */}
+                  {/* Gambar Promo dengan Sudut Lengkung */}
                   <div className="relative h-60 w-full mb-5 overflow-hidden rounded-[1.5rem]">
                     <Image 
                       src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
