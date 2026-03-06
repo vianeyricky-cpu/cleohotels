@@ -101,46 +101,9 @@ export default async function AboutPage({ params }: { params: { locale: string }
         </div>
       </section>
 
-      {/* --- 2. PHOTO GRID (Galeri) --- */}
-      <section className="py-24 px-6 max-w-7xl mx-auto bg-white">
-        <div className="grid md:grid-cols-2 gap-4 h-[500px] md:h-[600px]">
-           {/* Kiri - Gambar Besar */}
-           <div className="relative h-full rounded-[2rem] overflow-hidden group shadow-md">
-              <Image 
-                src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80" 
-                alt="Modern Aesthetic Resort" 
-                fill 
-                className="object-cover transition duration-1000 group-hover:scale-105" 
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-90" />
-              <div className="absolute bottom-10 left-10 right-10">
-                 <h4 className="text-3xl md:text-4xl font-bold text-white mb-3">Modern Aesthetic</h4>
-                 <p className="text-white/80 text-base md:text-lg">Stylish interiors designed for your visual comfort.</p>
-              </div>
-           </div>
-           {/* Kanan - 2 Gambar Tumpuk */}
-           <div className="grid grid-rows-2 gap-4">
-              <div className="relative h-full rounded-[2rem] overflow-hidden group shadow-md">
-                 <Image 
-                   src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80" 
-                   alt="Pool View" 
-                   fill 
-                   className="object-cover transition duration-1000 group-hover:scale-105" 
-                 />
-              </div>
-              <div className="relative h-full rounded-[2rem] overflow-hidden group shadow-md">
-                 <Image 
-                   src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?q=80" 
-                   alt="Lounge Area" 
-                   fill 
-                   className="object-cover transition duration-1000 group-hover:scale-105" 
-                 />
-              </div>
-           </div>
-        </div>
-      </section>
+      {/* --- SECTION FOTO GRID SUDAH DIHAPUS --- */}
 
-      {/* --- 3. OFFERS & PACKAGES SECTION (Desain Baru Gambar 3) --- */}
+      {/* --- 2. OFFERS & PACKAGES SECTION (Sesuai Referensi Gambar 3) --- */}
       <section className="py-20 px-6 bg-white border-y border-neutral-100">
         <div className="w-full max-w-7xl mx-auto">
           {/* Header Offers & Packages */}
@@ -151,12 +114,12 @@ export default async function AboutPage({ params }: { params: { locale: string }
              </p>
           </div>
           
-          {/* Grid Layout Promo (Tanpa Border Card) */}
+          {/* Grid Layout Promo */}
           <div className="grid md:grid-cols-3 gap-x-10 gap-y-12">
             {safePromos.length > 0 ? (
               safePromos.map((promo) => (
                 <div key={promo.id} className="flex flex-col group">
-                  {/* Gambar Promo dengan Sudut Lengkung */}
+                  {/* Gambar Promo */}
                   <div className="relative h-60 w-full mb-5 overflow-hidden rounded-[1.5rem]">
                     <Image 
                       src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
@@ -192,7 +155,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
         </div>
       </section>
 
-      {/* --- 4. REVISI: DISCOVER CLEO SECTION --- */}
+      {/* --- 3. DISCOVER CLEO SECTION --- */}
       <section className="py-24 px-6 bg-white">
         <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-white to-[#f8faff] border border-blue-50/50 rounded-[2.5rem] p-12 md:p-20 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
           {/* Subtle Glow Background */}
