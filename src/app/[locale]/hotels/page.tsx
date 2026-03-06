@@ -2,11 +2,21 @@ import { getHotels } from "@/actions/getHotels";
 import Link from "next/link";
 import Image from "next/image";
 import { MapPin, ArrowRight, Star } from "lucide-react";
+import { createClient } from "@supabase/supabase-js"; // Tambahkan import supabase
 
 export const dynamic = "force-dynamic";
 
 export default async function HotelsIndexPage({ params }: { params: { locale: string } }) {
   const hotels = await getHotels();
+
+  // Koneksi Supabase untuk mengambil data promo
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
+  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
+  const supabase = createClient(supabaseUrl, supabaseKey);
+  
+  // Ambil 3 Promo Terbaru
+  const { data: promos } = await supabase.from("promos").select("*").order("created_at", { ascending: false }).limit(3);
+  const safePromos = promos || []; 
 
   return (
     <main className="min-h-screen bg-neutral-50 text-neutral-900 pb-20 pt-[120px] relative overflow-hidden">
@@ -17,7 +27,6 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
 
       {/* --- 1. HEADER SECTION --- */}
       <div className="max-w-7xl mx-auto px-6 mb-16 text-center relative z-10">
-        {/* Warna teks diubah menjadi Biru Logo */}
         <p className="text-[#1a56db] font-bold tracking-[0.2em] text-xs uppercase mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
           Our Collections
         </p>
@@ -32,7 +41,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
         </p>
       </div>
 
-      {/* --- 2. LIST HOTELS (Teks & Bintang Biru) --- */}
+      {/* --- 2. LIST HOTELS --- */}
       <div className="max-w-7xl mx-auto px-6 relative z-10 mb-24">
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
           {hotels.map((hotel, index) => (
@@ -59,8 +68,6 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
 
               {/* Konten Detail Hotel */}
               <div className="flex flex-1 flex-col p-6 md:p-8">
-                
-                {/* Tagline diubah menjadi Biru */}
                 <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#1a56db] mb-2">
                   {hotel.tagline || "Business & Leisure"}
                 </p>
@@ -79,9 +86,8 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
                   {hotel.description}
                 </p>
                 
-                {/* Footer Kartu (Bintang Biru & Tombol Biru) */}
+                {/* Footer Kartu */}
                 <div className="mt-auto flex items-center justify-between">
-                  {/* Warna bintang diubah menjadi Biru */}
                   <div className="flex text-[#1a56db] gap-1">
                      {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" stroke="none" />)}
                   </div>
@@ -95,7 +101,59 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
         </div>
       </div>
 
-      {/* --- 3. READY TO EXPERIENCE CLEO BANNER --- */}
+      {/* --- 3. OFFERS & PACKAGES SECTION (Desain Baru Gambar 3) --- */}
+      <section className="py-20 px-6 bg-white relative z-10 mb-16 rounded-[3rem] mx-4 max-w-7xl lg:mx-auto border border-neutral-100 shadow-sm">
+        <div className="w-full mx-auto">
+          {/* Header Offers & Packages */}
+          <div className="mb-14 text-left border-b border-neutral-100 pb-8 px-4">
+             <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
+             <p className="text-neutral-500 text-base md:text-lg max-w-3xl">
+               Take advantage of our large variety of packages and special offers created by us and designed with your needs in mind.
+             </p>
+          </div>
+          
+          {/* Grid Layout Promo (Tanpa Border Card) */}
+          <div className="grid md:grid-cols-3 gap-x-10 gap-y-12 px-4">
+            {safePromos.length > 0 ? (
+              safePromos.map((promo) => (
+                <div key={promo.id} className="flex flex-col group">
+                  {/* Gambar Promo dengan Sudut Lengkung */}
+                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-[1.5rem]">
+                    <Image 
+                      src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
+                      alt={promo.title} 
+                      fill 
+                      className="object-cover transition-transform duration-700 group-hover:scale-105" 
+                    />
+                  </div>
+                  
+                  {/* Teks Konten */}
+                  <h3 className="text-[19px] font-extrabold text-neutral-900 mb-2 uppercase tracking-wide">
+                    {promo.title}
+                  </h3>
+                  <p className="text-neutral-500 text-[15px] mb-6 flex-1 leading-relaxed">
+                    {promo.description}
+                  </p>
+                  
+                  {/* Tombol Outline Oval */}
+                  <div>
+                    <Link 
+                      href={promo.action_link || "#"} 
+                      className="inline-flex items-center justify-center px-7 py-2.5 border border-neutral-300 rounded-full text-xs font-bold text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 transition-colors uppercase tracking-widest"
+                    >
+                      {promo.action_text || "SEE MORE"} &rarr;
+                    </Link>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-neutral-400 italic col-span-3 py-10 px-4">Belum ada promo yang tersedia.</p>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* --- 4. READY TO EXPERIENCE CLEO BANNER --- */}
       <section className="px-6 relative z-10">
         <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-white to-[#f4f7ff] border border-blue-50/50 rounded-[2.5rem] p-12 md:p-16 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
           {/* Efek Cahaya Halus */}

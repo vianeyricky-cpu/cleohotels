@@ -4,8 +4,6 @@ import { getHotels } from "@/actions/getHotels";
 import { ArrowRight, Star, ShieldCheck, Heart } from "lucide-react"; 
 import { BookingWidget } from "@/components/public/BookingWidget";
 import { createClient } from "@supabase/supabase-js"; 
-
-// ✔️ PERBAIKAN: Import komponen Modal yang benar (sesuai yang kita buat sebelumnya)
 import { PromoModal } from "@/components/PromoModal"; 
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
@@ -16,11 +14,11 @@ export default async function HomePage({ params }: { params: { locale: string } 
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
   const supabase = createClient(supabaseUrl, supabaseKey);
   
-  // 1. Ambil Gambar Hero Dinamis (Gunakan maybeSingle agar tidak error jika kosong)
+  // 1. Ambil Gambar Hero Dinamis
   const { data: setting } = await supabase.from('settings').select('value').eq('key', 'hero_image').maybeSingle();
   const heroImage = setting?.value || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=3270";
 
-  // 2. ✔️ PERBAIKAN: Ambil Data Popup Promo yang Aktif
+  // 2. Ambil Data Popup Promo yang Aktif
   const { data: promoPopupData } = await supabase
     .from("PromoPopup")
     .select("*")
@@ -34,7 +32,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
   return (
     <main className="min-h-screen bg-white text-neutral-900 pt-[60px]">
       
-      {/* --- POPUP DIPASANG DI SINI (Melemparkan data dari Supabase ke Komponen) --- */}
+      {/* --- POPUP DIPASANG DI SINI --- */}
       <PromoModal promo={promoPopupData} />
 
       {/* --- 1. HERO BANNER SECTION --- */}
@@ -69,7 +67,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
          <p className="text-xl font-extrabold text-blue-700">#EnjoyLife</p>
       </section>
 
-      {/* --- 4. OUR VALUES SECTION --- */}
+      {/* --- 4. OUR VALUES SECTION (DIKEMBALIKAN / TIDAK DIHAPUS) --- */}
       <section className="py-20 px-6 bg-neutral-50 border-t border-neutral-100">
         <div className="w-full max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -103,53 +101,55 @@ export default async function HomePage({ params }: { params: { locale: string } 
         </div>
       </section>
 
-      {/* --- 5. OFFERS & PACKAGES SECTION --- */}
+      {/* --- 5. OFFERS & PACKAGES SECTION (DESAIN BARU) --- */}
       <section className="py-20 px-6 bg-white border-t border-neutral-100">
         <div className="w-full max-w-7xl mx-auto">
-          <div className="mb-10 text-left">
-             <h2 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-3">Offers & Packages</h2>
-             <p className="text-neutral-600 text-lg max-w-3xl">
+          {/* Header Offers & Packages */}
+          <div className="mb-14 text-left">
+             <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
+             <p className="text-neutral-500 text-base md:text-lg max-w-3xl">
                Take advantage of our large variety of packages and special offers created by us and designed with your needs in mind.
              </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* Grid Layout Promo (Tanpa Border Card) */}
+          <div className="grid md:grid-cols-3 gap-x-10 gap-y-12">
             {safePromos.length > 0 ? (
               safePromos.map((promo) => (
-                <div key={promo.id} className="bg-white rounded-[1.5rem] overflow-hidden shadow-sm border border-neutral-200 flex flex-col group hover:shadow-xl transition-shadow duration-300">
-                  <div className="relative h-56 w-full overflow-hidden">
+                <div key={promo.id} className="flex flex-col group">
+                  {/* Gambar Promo dengan Sudut Lengkung */}
+                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-[1.5rem]">
                     <Image 
                       src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
                       alt={promo.title} 
                       fill 
-                      className="object-cover group-hover:scale-105 transition-transform duration-500" 
+                      className="object-cover transition-transform duration-700 group-hover:scale-105" 
                     />
                   </div>
-                  <div className="p-6 flex flex-col flex-1">
-                    <h3 className="text-xl font-bold text-neutral-900 mb-2 uppercase">{promo.title}</h3>
-                    <p className="text-neutral-600 text-sm mb-6 flex-1 leading-relaxed line-clamp-3">
-                      {promo.description}
-                    </p>
-                    <div>
-                      <Link href={promo.action_link || "#"} className="inline-flex items-center justify-center px-6 py-2.5 border border-neutral-300 rounded-full text-xs font-bold text-neutral-700 hover:bg-neutral-50 transition uppercase tracking-wider">
-                        {promo.action_text || "SEE MORE"} →
-                      </Link>
-                    </div>
+                  
+                  {/* Teks Konten */}
+                  <h3 className="text-[19px] font-extrabold text-neutral-900 mb-2 uppercase tracking-wide">
+                    {promo.title}
+                  </h3>
+                  <p className="text-neutral-500 text-[15px] mb-6 flex-1 leading-relaxed">
+                    {promo.description}
+                  </p>
+                  
+                  {/* Tombol Outline Oval */}
+                  <div>
+                    <Link 
+                      href={promo.action_link || "#"} 
+                      className="inline-flex items-center justify-center px-7 py-2.5 border border-neutral-300 rounded-full text-xs font-bold text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 transition-colors uppercase tracking-widest"
+                    >
+                      {promo.action_text || "SEE MORE"} &rarr;
+                    </Link>
                   </div>
                 </div>
               ))
             ) : (
-              <p className="text-neutral-500 italic col-span-3">Belum ada promo yang tersedia.</p>
+              <p className="text-neutral-400 italic col-span-3 py-10">Belum ada promo yang tersedia.</p>
             )}
           </div>
-
-          {safePromos.length > 0 && (
-            <div className="mt-12 text-center">
-              <Link href={`/${params.locale}/promos`} className="inline-block bg-blue-700 text-white px-8 py-3 rounded-full font-bold uppercase tracking-wider hover:bg-blue-800 transition shadow-lg shadow-blue-700/30">
-                View All Offers
-              </Link>
-            </div>
-          )}
         </div>
       </section>
 
