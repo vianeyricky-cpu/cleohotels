@@ -85,11 +85,7 @@ export function GlobalLoader() {
           className="object-contain"
           unoptimized 
         />
-        
-        {/* TEKS DIPERKECIL (Menggunakan text-xs, jika masih kurang kecil bisa diganti text-[10px]) */}
-        <p className="mt-2 text-xs font-bold text-gold-500 uppercase tracking-widest animate-pulse">
-          Please Wait ...
-        </p>
+      
       </div>
     </div>
   );

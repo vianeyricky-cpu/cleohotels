@@ -13,13 +13,9 @@ export function Navbar() {
   const pathname = usePathname();
   const params = useParams();
   
-  // Ambil locale (bahasa) dari URL, default ke 'id' jika tidak ada
   const locale = (params?.locale as string) || "id";
-
-  // Cek apakah halaman saat ini adalah halaman /hotels atau turunannya
   const isHotelsPage = pathname?.includes("/hotels");
 
-  // Efek Scroll
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
@@ -28,7 +24,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Tutup menu saat pindah halaman
   useEffect(() => {
     setIsOpen(false);
   }, [pathname]);
@@ -37,16 +32,14 @@ export function Navbar() {
     <nav
       className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
         scrolled || isOpen 
-          ? "bg-white shadow-md py-3" 
-          : "bg-white/95 backdrop-blur-sm py-5 border-b border-neutral-100"
+          ? "bg-white shadow-md py-2" 
+          : "bg-white/95 backdrop-blur-sm py-2 border-b border-neutral-100"
       }`}
     >
-      <div className="container mx-auto px-6">
+      <div className="w-full max-w-7xl mx-auto px-6">
         <div className="flex items-center justify-between">
           
-          {/* LOGO */}
-          <Link href={`/${locale}`} className="relative h-10 w-32 md:h-12 md:w-40 z-[101]">
-             {/* Pastikan '/logo.png' adalah logo Cleo dengan warna yang pas untuk background putih */}
+          <Link href={`/${locale}`} className="relative h-10 w-32 md:h-12 md:w-36 z-[101]">
              <Image 
                src="/logo.png" 
                alt="Cleo Hotels" 
@@ -56,44 +49,16 @@ export function Navbar() {
              />
           </Link>
 
-          {/* DESKTOP MENU */}
           <div className="hidden lg:flex items-center gap-10">
-            <NavLink 
-              href={`/${locale}`} 
-              label="Home" 
-              active={pathname === `/${locale}` || pathname === `/${locale}/`} 
-            />
-            <NavLink 
-              href={`/${locale}/hotels`} 
-              label="Our Hotels" 
-              active={isHotelsPage} 
-            />
-            <NavLink 
-              href={`/${locale}/about`} 
-              label="About Us" 
-              active={pathname?.includes("/about")} 
-            />
-            <NavLink 
-              href={`/${locale}/contact`} 
-              label="Contact" 
-              active={pathname?.includes("/contact")} 
-            />
-            
-            {/* HANYA TAMPILKAN TOMBOL JIKA BUKAN DI HALAMAN HOTELS */}
-            {!isHotelsPage && (
-              <Link
-                href={`/${locale}/hotels`}
-                className="rounded-full bg-red-600 px-8 py-2.5 text-sm font-bold text-white transition hover:bg-red-700 shadow-md shadow-red-600/20"
-              >
-                Book Now
-              </Link>
-            )}
+            <NavLink href={`/${locale}`} label="Home" active={pathname === `/${locale}` || pathname === `/${locale}/`} />
+            <NavLink href={`/${locale}/hotels`} label="Our Hotels" active={isHotelsPage} />
+            <NavLink href={`/${locale}/about`} label="About Us" active={pathname?.includes("/about")} />
+            <NavLink href={`/${locale}/contact`} label="Contact" active={pathname?.includes("/contact")} />
           </div>
 
-          {/* MOBILE HAMBURGER BUTTON */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden z-[101] p-2 text-neutral-800 transition hover:text-red-600 focus:outline-none"
+            className="lg:hidden z-[101] p-2 text-neutral-800 transition hover:text-blue-700 focus:outline-none"
             aria-label="Toggle menu"
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -101,7 +66,6 @@ export function Navbar() {
         </div>
       </div>
 
-      {/* MOBILE MENU OVERLAY */}
       <div
         className={`fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center gap-8 transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? "translate-x-0" : "translate-x-full"
@@ -111,44 +75,19 @@ export function Navbar() {
         <NavLink href={`/${locale}/hotels`} label="Our Hotels" onClick={() => setIsOpen(false)} mobile />
         <NavLink href={`/${locale}/about`} label="About Us" onClick={() => setIsOpen(false)} mobile />
         <NavLink href={`/${locale}/contact`} label="Contact" onClick={() => setIsOpen(false)} mobile />
-        
-        {!isHotelsPage && (
-          <Link
-            href={`/${locale}/hotels`}
-            onClick={() => setIsOpen(false)}
-            className="mt-6 rounded-full bg-red-600 px-10 py-4 text-xl font-bold text-white transition hover:bg-red-700"
-          >
-            Book Now
-          </Link>
-        )}
       </div>
     </nav>
   );
 }
 
-// Helper Link Component
-function NavLink({ 
-  href, 
-  label, 
-  active, 
-  mobile,
-  onClick 
-}: { 
-  href: string; 
-  label: string; 
-  active?: boolean; 
-  mobile?: boolean;
-  onClick?: () => void; 
-}) {
+function NavLink({ href, label, active, mobile, onClick }: { href: string; label: string; active?: boolean; mobile?: boolean; onClick?: () => void; }) {
   return (
     <Link
       href={href}
       onClick={onClick}
-      className={`font-medium transition-colors hover:text-red-600 tracking-wide ${
+      className={`font-medium transition-colors hover:text-blue-700 tracking-wide ${
         mobile ? "text-2xl" : "text-sm" 
-      } ${
-        active ? "text-red-600 font-bold" : "text-neutral-600"
-      }`}
+      } ${active ? "text-blue-700 font-bold" : "text-neutral-600"}`}
     >
       {label}
     </Link>

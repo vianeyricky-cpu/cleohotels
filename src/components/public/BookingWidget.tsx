@@ -1,91 +1,146 @@
 "use client";
 
-import { useEffect } from "react";
-import Script from "next/script";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export function BookingWidget() {
+// Daftar hotel sesuai dengan referensi Anda
+const HOTELS = [
+  { id: "tunjungan", name: "Cleo Hotel Tunjungan", code: "tunjungan" },
+  { id: "jemursari", name: "Cleo Hotel Jemursari", code: "jemursari" },
+  { id: "walikota", name: "Cleo Hotel Walikota", code: "walikota" },
+];
+
+export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string }) {
+  const router = useRouter();
+  
+  // State untuk form
+  const [property, setProperty] = useState("");
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [adults, setAdults] = useState("1");
+  const [children, setChildren] = useState("0");
+  const [promoCode, setPromoCode] = useState("");
+
+  // Efek ini akan otomatis memilih hotel di dropdown berdasarkan halaman yang sedang dibuka
   useEffect(() => {
-    // Memuat CSS eksternal secara dinamis agar tidak merusak Tailwind global
-    const cssLinks = [
-      "https://omnihotelier.id/css/omnih-client.css",
-      "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
-      "https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css",
-    ];
-
-    cssLinks.forEach((href) => {
-      if (!document.querySelector(`link[href="${href}"]`)) {
-        const link = document.createElement("link");
-        link.href = href;
-        link.rel = "stylesheet";
-        document.head.appendChild(link);
+    if (defaultHotelSlug) {
+      // Cocokkan slug dari URL (misal 'jemursari') dengan id hotel di atas
+      const matchedHotel = HOTELS.find(h => defaultHotelSlug.includes(h.id));
+      if (matchedHotel) {
+        setProperty(matchedHotel.code);
       }
-    });
-  }, []);
+    }
+  }, [defaultHotelSlug]);
+
+  const handleCheckAvailability = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Di sini Anda bisa mengarahkan ke link Omnihotelier asli Anda
+    // Contoh format URL Omnihotelier:
+    // const url = `https://booking.omnihotelier.com/...&hotel=${property}&checkin=${checkIn}&checkout=${checkOut}`;
+    // router.push(url);
+    
+    alert(`Mengecek ketersediaan untuk: ${property || 'Semua Hotel'} \nCheck-in: ${checkIn}\nCheck-out: ${checkOut}`);
+  };
 
   return (
-    <div className="w-full bg-white rounded-xl shadow-2xl p-4 md:p-6 border border-gray-200 relative z-20">
-      
-      {/* --- CUSTOM CSS OVERRIDES --- */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        /* Menyesuaikan tinggi input form */
-        .omnih .form-control {
-          height: 45px !important;
-          border-radius: 8px !important;
-          font-size: 14px !important;
-        }
+    <div className="w-full bg-[#1c1c1c] text-white rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-black/30 border border-white/5 relative z-30">
+      <form onSubmit={handleCheckAvailability} className="flex flex-col lg:flex-row items-end gap-4 lg:gap-6">
         
-        /* OVERRIDE WARNA TOMBOL BIRU MENJADI EMAS & SESUAIKAN FONT */
-        .omnih .btn, .omnih .btn-primary {
-          background-color: #ca8a04 !important; /* Warna Emas */
-          border-color: #ca8a04 !important;
-          color: #ffffff !important; /* Teks putih */
-          height: 45px !important;
-          border-radius: 8px !important;
-          font-weight: 600 !important;
-          font-size: 13px !important; /* <--- Font diperkecil agar lega */
-          letter-spacing: 0.5px !important; /* <--- Jarak antar huruf */
-          white-space: nowrap !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-          padding: 0 16px !important; /* <--- Padding disesuaikan */
-          transition: all 0.3s ease !important;
-        }
+        {/* SELECT PROPERTY */}
+        <div className="flex-1 w-full">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Select Property</label>
+          <div className="relative">
+            <select 
+              value={property}
+              onChange={(e) => setProperty(e.target.value)}
+              className="w-full appearance-none bg-[#2a2a2a] border border-white/10 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#1a56db] cursor-pointer"
+            >
+              <option value="">Semua Lokasi</option>
+              {HOTELS.map((h) => (
+                <option key={h.id} value={h.code}>{h.name}</option>
+              ))}
+            </select>
+            {/* Panah Dropdown Custom */}
+            <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+              <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1 1.5L6 6.5L11 1.5" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
 
-        /* WARNA TOMBOL SAAT DI-HOVER (Emas Gelap) */
-        .omnih .btn:hover, .omnih .btn-primary:hover {
-          background-color: #a16207 !important; 
-          border-color: #a16207 !important;
-        }
+        {/* CHECKIN DATE */}
+        <div className="flex-1 w-full">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Checkin Date</label>
+          <input 
+            type="date" 
+            value={checkIn}
+            onChange={(e) => setCheckIn(e.target.value)}
+            className="w-full bg-[#2a2a2a] border border-white/10 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#1a56db] color-scheme-dark" 
+          />
+        </div>
 
-        /* Memaksa form menjadi horizontal (sejajar) di layar besar */
-        @media (min-width: 992px) {
-          .omnih .row {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-          }
-          .omnih .col-md-12, .omnih .col-lg-[auto] {
-            flex: 1;
-            padding: 0 5px;
-          }
-          .omnih .form-group {
-            margin-bottom: 0 !important;
-          }
-        }
-      `}} />
+        {/* CHECKOUT DATE */}
+        <div className="flex-1 w-full">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Checkout Date</label>
+          <input 
+            type="date" 
+            value={checkOut}
+            onChange={(e) => setCheckOut(e.target.value)}
+            className="w-full bg-[#2a2a2a] border border-white/10 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#1a56db] color-scheme-dark" 
+          />
+        </div>
 
-      {/* --- AREA WIDGET --- */}
-      <div id="app" className="omnih text-left text-gray-800">
-        {/* @ts-ignore */} 
-        <group-calendar-form group="46" group-by-area="yes" isfallbackcalendar="true" />
-      </div>
+        {/* ADULT & CHILDREN (Digabung dalam 1 flex row agar rapi) */}
+        <div className="flex gap-4 w-full lg:w-auto">
+          <div className="w-20">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Adult</label>
+            <div className="relative">
+              <select value={adults} onChange={(e) => setAdults(e.target.value)} className="w-full appearance-none bg-[#2a2a2a] border border-white/10 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#1a56db] cursor-pointer">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"><svg width="10" height="6" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
+            </div>
+          </div>
+          <div className="w-20">
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Children</label>
+            <div className="relative">
+              <select value={children} onChange={(e) => setChildren(e.target.value)} className="w-full appearance-none bg-[#2a2a2a] border border-white/10 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#1a56db] cursor-pointer">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+              </select>
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"><svg width="10" height="6" viewBox="0 0 12 8" fill="none"><path d="M1 1.5L6 6.5L11 1.5" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
+            </div>
+          </div>
+        </div>
 
-      {/* --- SCRIPT LOAD --- */}
-      <Script 
-        src="https://omnihotelier.id/js/omnih-group-calendar.v.1.js" 
-        strategy="lazyOnload" 
-      />
+        {/* PROMO CODE */}
+        <div className="flex-1 w-full lg:w-32">
+          <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Promo Code</label>
+          <input 
+            type="text" 
+            placeholder="promocode"
+            value={promoCode}
+            onChange={(e) => setPromoCode(e.target.value)}
+            className="w-full bg-[#2a2a2a] border border-white/10 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#1a56db] placeholder-gray-500" 
+          />
+        </div>
+
+        {/* BUTTON */}
+        <div className="w-full lg:w-auto mt-4 lg:mt-0">
+          <button 
+            type="submit" 
+            className="w-full lg:w-auto bg-[#1a56db] hover:bg-blue-700 text-white text-[11px] font-extrabold uppercase tracking-widest px-8 py-4 rounded-xl transition-all shadow-lg shadow-blue-600/20 whitespace-nowrap"
+          >
+            Check Availability
+          </button>
+        </div>
+
+      </form>
     </div>
   );
 }
