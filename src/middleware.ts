@@ -53,7 +53,7 @@ export async function middleware(request: NextRequest) {
   // 1. Jika BELUM Login & mencoba masuk ke Admin
   if (!user && isAdminPath) {
     // Redirect ke halaman login (dengan prefix bahasa agar tidak error)
-    return NextResponse.redirect(new URL('/en/login', request.url));
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   // 2. Jika SUDAH Login & mencoba masuk ke Login lagi
