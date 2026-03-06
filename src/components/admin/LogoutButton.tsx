@@ -1,12 +1,15 @@
 "use client";
 
-import { createClient } from "@supabase/supabase-js";
+// 1. GANTI IMPORT INI: Gunakan library SSR
+import { createBrowserClient } from '@supabase/ssr';
 import { useRouter } from "next/navigation";
 import { LogOut } from "lucide-react";
 
 export function LogoutButton() {
   const router = useRouter();
-  const supabase = createClient(
+  
+  // 2. SETUP CLIENT: Gunakan createBrowserClient agar cookie ikut terhapus
+  const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
@@ -15,16 +18,16 @@ export function LogoutButton() {
     const confirmLogout = confirm("Apakah Anda yakin ingin keluar dari sistem?");
     if (!confirmLogout) return;
 
-    // 1. Perintahkan Supabase untuk hapus session
+    // 1. Hapus session di Supabase (Ini sekarang akan menghapus Cookies juga)
     await supabase.auth.signOut();
     
-    // 2. Bersihkan sisa data di browser (opsional tapi bagus)
+    // 2. Bersihkan sisa data lokal (opsional)
     localStorage.clear();
     sessionStorage.clear();
 
-    // 3. Tendang balik ke halaman depan atau login
-    router.push("/"); 
-    router.refresh(); // Segarkan halaman agar sistem tahu Anda sudah logout
+    // 3. Arahkan ke login dan paksa refresh agar middleware membaca ulang status tanpa cookie
+    router.push("/en/login"); // Arahkan ke route login dengan prefix bahasa
+    router.refresh(); 
   };
 
   return (
