@@ -26,7 +26,7 @@ export function LogoutButton() {
     sessionStorage.clear();
 
     // 3. Arahkan ke login dan paksa refresh agar middleware membaca ulang status tanpa cookie
-    router.push("/en/login"); // Arahkan ke route login dengan prefix bahasa
+    router.push("/login"); // Arahkan ke route login dengan prefix bahasa
     router.refresh(); 
   };
 
