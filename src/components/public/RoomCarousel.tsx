@@ -2,10 +2,13 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Maximize, Users, BedDouble, ChevronLeft, ChevronRight } from "lucide-react";
+import { Maximize, Users, BedDouble, ChevronLeft, ChevronRight, X } from "lucide-react";
 
 export function RoomCarousel({ rooms }: { rooms: any[] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
+  
+  // 1. TAMBAHAN: State untuk menyimpan gambar yang sedang di-klik
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   if (!rooms || rooms.length === 0) {
     return (
@@ -23,7 +26,6 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
     setCurrentIndex((prev) => (prev === rooms.length - 1 ? 0 : prev + 1));
   };
 
-  // Mengambil data kamar yang sedang aktif dilihat
   const activeRoom = rooms[currentIndex];
 
   return (
@@ -56,7 +58,6 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
           {rooms.map((room) => (
             <div key={room.id} className="relative w-full h-[450px] md:h-[550px] flex-shrink-0 group">
               
-              {/* Gambar Utama Kamar */}
               <Image 
                 src={room.image || "https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80"} 
                 alt={room.name} 
@@ -64,11 +65,9 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
               />
               
-              {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-r from-black/95 via-black/50 to-transparent z-0" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent z-0" />
 
-              {/* Konten Teks Kamar */}
               <div className="absolute inset-0 p-8 md:p-16 flex flex-col justify-center text-white z-10 w-full md:w-3/4 lg:w-[60%]">
                 <h3 className="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 drop-shadow-md tracking-tight">
                   {room.name}
@@ -77,7 +76,6 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
                   {room.description || "Enjoy stylish comfort for a relaxing and restful stay."}
                 </p>
 
-                {/* Spesifikasi Ikon */}
                 <div className="flex flex-wrap items-center gap-6 md:gap-10 text-sm md:text-base font-semibold mt-auto absolute bottom-8 md:bottom-12">
                   {room.size && (
                     <div className="flex items-center gap-3">
@@ -122,7 +120,6 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
       )}
 
       {/* --- SUB GALLERY (FOTO TAMBAHAN / THUMBNAILS) --- */}
-      {/* Sesuai desain kotak-kotak merah Anda */}
       {activeRoom?.images && activeRoom.images.length > 0 && (
         <div className="w-full mt-4">
           <p className="text-sm font-bold text-neutral-500 mb-3 uppercase tracking-widest">More Views</p>
@@ -130,6 +127,8 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
             {activeRoom.images.map((imgUrl: string, idx: number) => (
               <div 
                 key={idx} 
+                // 2. TAMBAHAN: Fungsi onClick saat gambar kecil ditekan
+                onClick={() => setSelectedImage(imgUrl)}
                 className="relative w-28 h-24 md:w-36 md:h-28 rounded-2xl overflow-hidden flex-shrink-0 border-2 border-transparent hover:border-[#1a56db] transition-all cursor-pointer shadow-sm hover:shadow-md"
               >
                 <Image 
@@ -140,6 +139,38 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
                 />
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* 3. TAMBAHAN: MODAL POP-UP GAMBAR BESAR */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm p-4"
+          onClick={() => setSelectedImage(null)} // Tutup jika klik area hitam
+        >
+          {/* Tombol Close (X) */}
+          <button 
+            className="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors z-[10000] bg-black/50 rounded-full p-2"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedImage(null);
+            }}
+          >
+            <X size={32} />
+          </button>
+
+          {/* Kontainer Gambar Membesar */}
+          <div 
+            className="relative w-full max-w-5xl h-[85vh]"
+            onClick={(e) => e.stopPropagation()} // Biar nggak nutup kalau gambarnya yang diklik
+          >
+            <Image 
+              src={selectedImage}
+              alt="Enlarged view"
+              fill
+              className="object-contain" // Agar gambar tidak terpotong
+            />
           </div>
         </div>
       )}
