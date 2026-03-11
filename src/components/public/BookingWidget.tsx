@@ -23,10 +23,9 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
   }, []);
 
   return (
-    <div className="w-full bg-[#1c1c1c] text-white rounded-[2.5rem] p-6 md:p-8 shadow-2xl shadow-black/30 border border-white/5 relative z-30">
+    <div className="w-full max-w-6xl mx-auto bg-[#1e1e1e] text-white rounded-2xl md:rounded-[2rem] p-4 md:p-6 shadow-2xl border border-[#2a2a2a] relative z-30">
       
-      {/* --- CUSTOM CSS OVERRIDES UNTUK TEMA DARK MODE CLEO HOTELS --- */}
-      {/* Widget asli menggunakan bootstrap putih, kita timpa dengan CSS ini agar sesuai dengan desain UI Anda */}
+      {/* --- CUSTOM CSS OVERRIDES UNTUK TEMA DARK MODE --- */}
       <style dangerouslySetInnerHTML={{ __html: `
         .omnih {
           font-family: inherit !important;
@@ -38,18 +37,48 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
             display: flex !important;
             flex-wrap: nowrap !important;
             align-items: flex-end !important;
-            margin: 0 -8px !important;
+            margin: 0 !important;
             gap: 12px !important;
           }
+          
+          /* Kolom Umum (Property, Dates, Promo) mengambil sisa ruang */
           .omnih .row > div {
             padding: 0 !important;
             flex: 1 1 auto !important;
+            min-width: 130px !important; /* Mencegah kolom terlalu gepeng */
           }
+
+          /* KUNCI PERBAIKAN: Target spesifik kolom Adult (ke-4) & Children (ke-5) agar TIDAK menyusut */
+          .omnih .row > div:nth-child(4),
+          .omnih .row > div:nth-child(5) {
+            flex: 0 0 80px !important;
+            min-width: 80px !important;
+          }
+
           /* Kolom tombol search jangan ikut melebar berlebihan */
           .omnih .row > div:last-child {
             flex: 0 0 auto !important;
             min-width: 180px !important;
           }
+        }
+
+        /* Perbaikan untuk Mobile (di bawah 992px) */
+        @media (max-width: 991px) {
+           .omnih .row {
+              display: flex !important;
+              flex-wrap: wrap !important;
+              gap: 12px !important;
+              margin: 0 !important;
+           }
+           .omnih .row > div {
+              padding: 0 !important;
+              flex: 1 1 calc(50% - 6px) !important; /* Membagi 2 kolom di mobile */
+           }
+           /* Tombol submit full width di mobile */
+           .omnih .row > div:last-child {
+              flex: 1 1 100% !important;
+              margin-top: 8px !important;
+           }
         }
 
         /* Label Input Form */
@@ -67,19 +96,29 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
         .omnih .form-control {
           width: 100% !important;
           background-color: #2a2a2a !important;
-          border: 1px solid rgba(255, 255, 255, 0.1) !important;
+          border: 1px solid transparent !important;
           color: #ffffff !important;
           font-size: 14px !important;
           border-radius: 0.75rem !important; 
-          padding: 14px 16px !important; 
-          height: 50px !important;
+          padding: 12px 16px !important; 
+          height: 46px !important;
           box-shadow: none !important;
+          transition: border-color 0.2s ease !important;
+        }
+
+        .omnih .form-control:focus {
+          border-color: #3b82f6 !important; /* Highlight biru saat diklik */
+          background-color: #333333 !important;
         }
         
-        /* Ubah warna icon kalender bawaan browser agar putih (terlihat di dark mode) */
+        /* Ubah warna icon kalender bawaan browser agar putih */
         .omnih input[type="date"]::-webkit-calendar-picker-indicator {
           filter: invert(1);
           cursor: pointer;
+          opacity: 0.6;
+        }
+        .omnih input[type="date"]::-webkit-calendar-picker-indicator:hover {
+          opacity: 1;
         }
 
         /* Kustomisasi Dropdown Panah */
@@ -94,18 +133,18 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
 
         /* Tombol Check Availability */
         .omnih .btn-primary {
-          background-color: #1a56db !important;
+          background-color: #2563eb !important;
           border: none !important;
           color: white !important;
           font-size: 11px !important;
           font-weight: 800 !important;
           text-transform: uppercase !important;
           letter-spacing: 0.1em !important;
-          padding: 0 32px !important;
+          padding: 0 24px !important;
           border-radius: 0.75rem !important;
-          height: 50px !important;
+          height: 46px !important;
           width: 100% !important;
-          box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.2) !important;
+          box-shadow: 0 4px 14px 0 rgba(37, 99, 235, 0.39) !important;
           transition: all 0.3s ease !important;
           white-space: nowrap !important;
           display: flex !important;
@@ -115,6 +154,8 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
 
         .omnih .btn-primary:hover {
           background-color: #1d4ed8 !important; 
+          transform: translateY(-1px) !important;
+          box-shadow: 0 6px 20px rgba(37, 99, 235, 0.23) !important;
         }
 
         /* Sembunyikan pesan error bawah input agar form tidak goyang */
