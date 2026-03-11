@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import Script from "next/script";
 
 export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string }) {
   useEffect(() => {
+    // 1. Memuat CSS Eksternal (Omnihotelier & Bootstrap)
     const cssLinks = [
       "https://omnihotelier.id/css/omnih-client.css",
       "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
@@ -19,7 +19,29 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
         document.head.appendChild(link);
       }
     });
-  }, []);
+
+    // 2. Memuat JS Omnihotelier secara dinamis (Solusi untuk masalah harus F5)
+    const scriptId = "omnih-booking-script";
+    let existingScript = document.getElementById(scriptId);
+
+    // Hapus script lama jika ada, agar memaksa re-inisialisasi saat pindah rute Next.js
+    if (existingScript) {
+      existingScript.remove();
+    }
+
+    // Buat dan jalankan script baru
+    const script = document.createElement("script");
+    script.id = scriptId;
+    script.src = "https://omnihotelier.id/js/omnih-group-calendar.v.1.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    // 3. Cleanup: Hapus script saat komponen dibongkar (user pindah ke halaman lain)
+    return () => {
+      const s = document.getElementById(scriptId);
+      if (s) s.remove();
+    };
+  }, []); // Kosongkan dependency array agar hanya jalan saat mount
 
   return (
     <div className="w-full max-w-7xl mx-auto bg-[#1e1e1e] text-white rounded-2xl md:rounded-[2rem] p-4 md:p-6 shadow-2xl border border-[#2a2a2a] relative z-30">
@@ -149,10 +171,6 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
         <group-calendar-form group="46" group-by-area="yes" isfallbackcalendar="true"></group-calendar-form>
       </div>
 
-      <Script 
-        src="https://omnihotelier.id/js/omnih-group-calendar.v.1.js" 
-        strategy="lazyOnload" 
-      />
     </div>
   );
 }
