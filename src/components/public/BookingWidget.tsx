@@ -20,28 +20,57 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
       }
     });
 
-    // 2. Memuat JS Omnihotelier secara dinamis (Solusi untuk masalah harus F5)
+    // 2. Memuat JS Omnihotelier secara dinamis
     const scriptId = "omnih-booking-script";
     let existingScript = document.getElementById(scriptId);
 
-    // Hapus script lama jika ada, agar memaksa re-inisialisasi saat pindah rute Next.js
     if (existingScript) {
       existingScript.remove();
     }
 
-    // Buat dan jalankan script baru
     const script = document.createElement("script");
     script.id = scriptId;
     script.src = "https://omnihotelier.id/js/omnih-group-calendar.v.1.js";
     script.async = true;
     document.body.appendChild(script);
 
-    // 3. Cleanup: Hapus script saat komponen dibongkar (user pindah ke halaman lain)
+    // 3. LOGIKA AUTO-SELECT HOTEL
+    let checkInterval: NodeJS.Timeout;
+
+    if (defaultHotelSlug) {
+      // Kita buat interval untuk mengecek setiap 500ms apakah form sudah selesai di-render
+      checkInterval = setInterval(() => {
+        // Ambil elemen dropdown select pertama (ini biasanya Select Property)
+        const selectProperty = document.querySelector('.omnih select') as HTMLSelectElement;
+        
+        if (selectProperty && selectProperty.options.length > 0) {
+          // Jika elemen sudah muncul, hentikan pencarian
+          clearInterval(checkInterval);
+
+          // Loop semua pilihan (option) di dalam dropdown
+          Array.from(selectProperty.options).forEach((option, index) => {
+            // Jika teks di dropdown mengandung kata dari defaultHotelSlug (misal: "jemursari")
+            if (option.text.toLowerCase().includes(defaultHotelSlug.toLowerCase())) {
+              selectProperty.selectedIndex = index; // Ubah pilihan ke hotel ini
+              
+              // WAJIB: Trigger event 'change' agar sistem Omnihotelier tahu kita mengubahnya
+              selectProperty.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          });
+        }
+      }, 500);
+      
+      // Hentikan interval otomatis setelah 10 detik untuk mencegah loop tanpa batas jika terjadi error
+      setTimeout(() => clearInterval(checkInterval), 10000);
+    }
+
+    // 4. Cleanup saat komponen dibongkar
     return () => {
       const s = document.getElementById(scriptId);
       if (s) s.remove();
+      if (checkInterval) clearInterval(checkInterval); // Bersihkan interval juga
     };
-  }, []); // Kosongkan dependency array agar hanya jalan saat mount
+  }, [defaultHotelSlug]); // Tambahkan dependency defaultHotelSlug
 
   return (
     <div className="w-full max-w-7xl mx-auto bg-[#1e1e1e] text-white rounded-2xl md:rounded-[2rem] p-4 md:p-6 shadow-2xl border border-[#2a2a2a] relative z-30">
@@ -55,14 +84,12 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
         @media (min-width: 1024px) {
           .omnih .row {
             display: flex !important;
-            flex-wrap: nowrap !important; /* Kunci 1 baris */
+            flex-wrap: nowrap !important;
             align-items: flex-end !important;
             gap: 12px !important; 
             margin: 0 !important;
             width: 100% !important;
           }
-
-          /* Biarkan browser mengatur lebar secara otomatis berdasarkan isi input */
           .omnih .row > div {
             padding: 0 !important;
             flex: 1 1 auto !important; 
@@ -70,8 +97,6 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
             max-width: none !important;
             min-width: 0 !important; 
           }
-
-          /* Kunci ukuran kolom terakhir (Tombol) */
           .omnih .row > div:last-child {
             flex: 0 0 auto !important;
           }
@@ -108,19 +133,16 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
           box-shadow: none !important;
         }
 
-        /* Input Tanggal: Beri ruang lebar mutlak minimal 130px */
         .omnih input[type="date"].form-control {
           min-width: 130px !important;
         }
 
-        /* Input Promo Code: Beri ruang minimal 100px */
         .omnih input[type="text"].form-control {
           min-width: 100px !important;
         }
 
-        /* Select Dropdown (Adult, Children, Property): Biarkan menyusut proporsional */
         .omnih select.form-control {
-          min-width: 65px !important; /* Batas terkecil Adult/Children */
+          min-width: 65px !important;
           appearance: none !important;
           background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
           background-repeat: no-repeat !important;
