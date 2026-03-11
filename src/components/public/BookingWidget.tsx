@@ -29,39 +29,33 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
           font-family: inherit !important;
         }
 
-        /* --- MODE DESKTOP: PAKSA 1 BARIS SEJAJAR --- */
+        /* --- 1. PAKSA 1 BARIS DI DESKTOP --- */
         @media (min-width: 1024px) {
           .omnih .row {
             display: flex !important;
-            flex-wrap: nowrap !important; /* INI KUNCI UTAMA: Paksa 1 baris mutlak */
+            flex-wrap: nowrap !important; /* Kunci 1 baris */
             align-items: flex-end !important;
             gap: 12px !important; 
             margin: 0 !important;
+            width: 100% !important;
           }
 
-          /* Setingan untuk kolom yang panjang (Property, Dates, Promo) */
+          /* Biarkan browser mengatur lebar secara otomatis berdasarkan isi input */
           .omnih .row > div {
             padding: 0 !important;
             flex: 1 1 auto !important; 
-            min-width: 110px !important; 
+            width: auto !important;
+            max-width: none !important;
+            min-width: 0 !important; 
           }
 
-          /* KUNCI PERBAIKAN: Perkecil ekstrim kolom Adult (4) & Children (5) */
-          .omnih .row > div:nth-child(4),
-          .omnih .row > div:nth-child(5) {
-            flex: 0 0 70px !important; /* Paksa lebar maksimal 70px */
-            width: 70px !important;
-            min-width: 70px !important;
-          }
-
-          /* Kunci ukuran tombol di ujung kanan */
+          /* Kunci ukuran kolom terakhir (Tombol) */
           .omnih .row > div:last-child {
             flex: 0 0 auto !important;
-            min-width: 180px !important;
           }
         }
 
-        /* --- MODE MOBILE & TABLET: BUNGKUS RAPI --- */
+        /* --- 2. PERBAIKAN DI MOBILE (DIBUNGKUS RAPI) --- */
         @media (max-width: 1023px) {
           .omnih .row {
             display: flex !important;
@@ -79,7 +73,41 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
           }
         }
 
-        /* --- STYLING GLOBAL FORM --- */
+        /* --- 3. KUNCI UKURAN AMAN MASING-MASING INPUT --- */
+        .omnih .form-control {
+          width: 100% !important;
+          background-color: #2a2a2a !important;
+          border: 1px solid transparent !important;
+          color: #ffffff !important;
+          font-size: 13px !important;
+          border-radius: 0.75rem !important; 
+          padding: 0 12px !important; 
+          height: 48px !important;
+          box-shadow: none !important;
+        }
+
+        /* Input Tanggal: Beri ruang lebar mutlak minimal 130px */
+        .omnih input[type="date"].form-control {
+          min-width: 130px !important;
+        }
+
+        /* Input Promo Code: Beri ruang minimal 100px */
+        .omnih input[type="text"].form-control {
+          min-width: 100px !important;
+        }
+
+        /* Select Dropdown (Adult, Children, Property): Biarkan menyusut proporsional */
+        .omnih select.form-control {
+          min-width: 65px !important; /* Batas terkecil Adult/Children */
+          appearance: none !important;
+          background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+          background-repeat: no-repeat !important;
+          background-position: right 10px center !important;
+          padding-right: 28px !important;
+          cursor: pointer;
+        }
+
+        /* --- 4. STYLING KECIL LAINNYA --- */
         .omnih label {
           display: block !important;
           font-size: 10px !important;
@@ -93,37 +121,12 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
           text-overflow: ellipsis !important; 
         }
 
-        .omnih .form-control {
-          width: 100% !important;
-          background-color: #2a2a2a !important;
-          border: 1px solid transparent !important;
-          color: #ffffff !important;
-          font-size: 13px !important;
-          border-radius: 0.75rem !important; 
-          padding: 0 12px !important; 
-          height: 48px !important;
-          box-shadow: none !important;
-        }
-
-        /* Kustomisasi Icon Kalender */
         .omnih input[type="date"]::-webkit-calendar-picker-indicator {
           filter: invert(1);
           cursor: pointer;
           opacity: 0.7;
         }
 
-        /* Kustomisasi Dropdown (Termasuk Adult & Children) */
-        .omnih select.form-control {
-          appearance: none !important;
-          background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
-          background-repeat: no-repeat !important;
-          background-position: right 8px center !important; /* Geser panah ke kanan agar tidak menabrak angka */
-          padding-left: 10px !important; /* Kecilkan padding kiri */
-          padding-right: 24px !important; /* Beri ruang kecil untuk panah */
-          cursor: pointer;
-        }
-
-        /* Tombol Utama */
         .omnih .btn-primary {
           background-color: #2563eb !important;
           border: none !important;
@@ -133,9 +136,10 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
           text-transform: uppercase !important;
           border-radius: 0.75rem !important;
           height: 48px !important;
-          width: 100% !important;
+          padding: 0 24px !important;
           transition: background-color 0.3s ease !important;
         }
+        
         .omnih .btn-primary:hover { background-color: #1d4ed8 !important; }
         .omnih .help-block { display: none !important; }
       `}} />
