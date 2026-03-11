@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-// Daftar hotel sesuai dengan referensi Anda
+// Tambahkan omniId sesuai dengan mapping di SingleBookingWidget
 const HOTELS = [
-  { id: "tunjungan", name: "Cleo Hotel Tunjungan", code: "tunjungan" },
-  { id: "jemursari", name: "Cleo Hotel Jemursari", code: "jemursari" },
-  { id: "walikota", name: "Cleo Hotel Walikota", code: "walikota" },
+  { id: "tunjungan", name: "Cleo Hotel Tunjungan", code: "tunjungan", omniId: "296" },
+  { id: "jemursari", name: "Cleo Hotel Jemursari", code: "jemursari", omniId: "297" },
+  { id: "walikota", name: "Cleo Hotel Walikota", code: "walikota", omniId: "298" },
 ];
 
 export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string }) {
@@ -21,10 +21,8 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
   const [children, setChildren] = useState("0");
   const [promoCode, setPromoCode] = useState("");
 
-  // Efek ini akan otomatis memilih hotel di dropdown berdasarkan halaman yang sedang dibuka
   useEffect(() => {
     if (defaultHotelSlug) {
-      // Cocokkan slug dari URL (misal 'jemursari') dengan id hotel di atas
       const matchedHotel = HOTELS.find(h => defaultHotelSlug.includes(h.id));
       if (matchedHotel) {
         setProperty(matchedHotel.code);
@@ -34,12 +32,34 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
 
   const handleCheckAvailability = (e: React.FormEvent) => {
     e.preventDefault();
-    // Di sini Anda bisa mengarahkan ke link Omnihotelier asli Anda
-    // Contoh format URL Omnihotelier:
-    // const url = `https://booking.omnihotelier.com/...&hotel=${property}&checkin=${checkIn}&checkout=${checkOut}`;
-    // router.push(url);
+
+    // 1. Cari data hotel yang dipilih
+    const selectedHotel = HOTELS.find(h => h.code === property);
+    let baseUrl = "";
+
+    // 2. Tentukan Base URL Omnihotelier (Group vs Single Property)
+    if (selectedHotel) {
+      // Jika user memilih spesifik hotel
+      baseUrl = `https://book.omnihotelier.com/v1/property/${selectedHotel.omniId}`;
+    } else {
+      // Jika user memilih "Semua Lokasi", arahkan ke halaman Group Booking (ID 46)
+      baseUrl = `https://book.omnihotelier.com/v1/group/46`;
+    }
+
+    // 3. Susun parameter URL secara dinamis
+    const params = new URLSearchParams();
+    if (checkIn) params.append("checkIn", checkIn);
+    if (checkOut) params.append("checkOut", checkOut);
+    if (adults) params.append("adult", adults);
+    if (children) params.append("child", children);
+    if (promoCode) params.append("promoCode", promoCode);
+
+    // 4. Gabungkan URL dan buka di tab baru
+    const finalUrl = `${baseUrl}?${params.toString()}`;
+    window.open(finalUrl, "_blank"); // Buka di tab baru
     
-    alert(`Mengecek ketersediaan untuk: ${property || 'Semua Hotel'} \nCheck-in: ${checkIn}\nCheck-out: ${checkOut}`);
+    // Opsional: Jika ingin buka di tab yang sama, gunakan:
+    // window.location.href = finalUrl;
   };
 
   return (
@@ -60,7 +80,6 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
                 <option key={h.id} value={h.code}>{h.name}</option>
               ))}
             </select>
-            {/* Panah Dropdown Custom */}
             <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
               <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1 1.5L6 6.5L11 1.5" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -76,6 +95,7 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
             type="date" 
             value={checkIn}
             onChange={(e) => setCheckIn(e.target.value)}
+            required
             className="w-full bg-[#2a2a2a] border border-white/10 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#1a56db] color-scheme-dark" 
           />
         </div>
@@ -87,11 +107,12 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
             type="date" 
             value={checkOut}
             onChange={(e) => setCheckOut(e.target.value)}
+            required
             className="w-full bg-[#2a2a2a] border border-white/10 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:ring-2 focus:ring-[#1a56db] color-scheme-dark" 
           />
         </div>
 
-        {/* ADULT & CHILDREN (Digabung dalam 1 flex row agar rapi) */}
+        {/* ADULT & CHILDREN */}
         <div className="flex gap-4 w-full lg:w-auto">
           <div className="w-20">
             <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Adult</label>
