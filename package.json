@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "next build && node prepare-deploy.js",
     "start": "next start",
     "lint": "eslint"
   },
@@ -23,6 +23,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
     "recharts": "^3.7.0",
+    "sharp": "^0.34.5",
     "tailwind-merge": "^2.2.1",
     "zod": "^3.22.4"
   },

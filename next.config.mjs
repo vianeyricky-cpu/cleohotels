@@ -1,21 +1,14 @@
 import createNextIntlPlugin from "next-intl/plugin";
-
 const withNextIntl = createNextIntlPlugin();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
   images: {
+    unoptimized: true,
     remotePatterns: [
-      // 1. Izin untuk Supabase (Database Anda)
-      {
-        protocol: "https",
-        hostname: "**.supabase.co",
-      },
-      // 2. TAMBAHAN BARU: Izin untuk Unsplash (Gambar Placeholder)
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
+      { protocol: "https", hostname: "**.supabase.co" },
+      { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
 };
