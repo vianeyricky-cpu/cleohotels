@@ -4,16 +4,19 @@ import { useEffect } from "react";
 import Script from "next/script";
 
 export function SingleBookingWidget({ slug }: { slug: string }) {
-  // --- MAPPING ID HOTEL ---
-  // Pastikan ID ini ANGKA. Nanti ganti 296 di Jemursari & Walikota dengan ID asli dari link booking mereka.
-  const omniPropertyIds: Record<string, string> = {
-    "jemursari": "297", 
-    "tunjungan": "296",
-    "walikota": "298", 
-    "balaikota surabaya": "298", 
-  };
-
-  const propertyId = omniPropertyIds[slug] || "296";
+  // --- MAPPING ID HOTEL (PERBAIKAN) ---
+  // Menggunakan .includes() agar kebal terhadap variasi slug dari database 
+  // (misal slug-nya "cleo-hotel-walikota" tetap akan terbaca "walikota")
+  let propertyId = "296"; // Default fallback (Tunjungan)
+  
+  const normalizedSlug = slug.toLowerCase();
+  if (normalizedSlug.includes("jemursari")) {
+    propertyId = "297";
+  } else if (normalizedSlug.includes("walikota")) {
+    propertyId = "298";
+  } else if (normalizedSlug.includes("tunjungan")) {
+    propertyId = "296";
+  }
 
   useEffect(() => {
     // 1. Load CSS Eksternal
@@ -32,8 +35,7 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
       }
     });
 
-    // 2. AUTO-SELECT HOTEL HACK (ILUSI MAGIC)
-    // Mencari dropdown hotel yang disembunyikan CSS, lalu memaksanya memilih hotel yang benar
+    // 2. AUTO-SELECT HOTEL HACK (PERBAIKAN EVENT VUE)
     const interval = setInterval(() => {
       const selects = document.querySelectorAll('.omnih select');
       if (selects.length > 0) {
@@ -44,9 +46,11 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
 
         if (propertySelect) {
           if (propertySelect.value !== propertyId) {
-            // Paksa pilih hotel secara gaib
+            // Paksa pilih hotel
             propertySelect.value = propertyId;
-            // Beritahu sistem Vue milik Omni bahwa kita sudah merubahnya
+            
+            // PERBAIKAN: Trigger 'input' dan 'change' agar state Vue/OmniHotelier benar-benar terupdate
+            propertySelect.dispatchEvent(new Event('input', { bubbles: true }));
             propertySelect.dispatchEvent(new Event('change', { bubbles: true }));
           }
           // Berhenti mencari jika sudah sukses
@@ -114,18 +118,16 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
         @media (min-width: 992px) {
           .omnih .row {
             display: flex !important;
-            flex-wrap: nowrap !important; /* Dilarang turun baris */
+            flex-wrap: nowrap !important;
             align-items: flex-end !important;
             justify-content: space-between !important;
             gap: 12px !important;
             margin: 0 !important;
           }
-          /* Kolom sisanya dipaksa membesar merata untuk mengisi kekosongan kolom pertama */
           .omnih .row > div {
             flex: 1 1 auto !important;
             padding: 0 !important;
           }
-          /* Kolom tombol jangan ikut melebar berlebihan */
           .omnih .row > div:last-child {
             flex: 0 0 auto !important;
             min-width: 180px !important;
@@ -155,7 +157,6 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
       `}} />
 
       {/* --- AREA WIDGET --- */}
-      {/* Kita panggil Group Form, TANPA tag group-by-area="yes" agar dropdownnya sesedikit mungkin */}
       <div id="app" className="omnih text-left text-gray-800" key={slug}>
         {/* @ts-ignore */} 
         <group-calendar-form group="46" isfallbackcalendar="true"></group-calendar-form>
