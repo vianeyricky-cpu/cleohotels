@@ -3,7 +3,7 @@ name: Deploy to cPanel
 on:
   push:
     branches:
-      - main
+      - main # Pastikan sesuai dengan nama branch utama Anda (main/master)
 
 jobs:
   deploy:
@@ -14,18 +14,19 @@ jobs:
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        passphrase: ${{ secrets.SSH_PASSPHRASE }} # <--- INI BARIS TAMBAHANNYA
+        password: ${{ secrets.SSH_PASSWORD }} # <--- Menggunakan Password cPanel
         port: ${{ secrets.SSH_PORT }}
         script: |
-          cd /home/USERNAME_CPANEL_ANDA/cleohotels
+          # 1. Masuk ke folder project Anda (Ubah path di bawah ini!)
+          cd /home/balibite/cleohotels.id
           
+          # 2. Tarik kode terbaru
           git pull origin main
           
+          # 3. Install dan Build Next.js
           npm install
           npm run build
           
+          # 4. Trik Auto-Restart Node.js App
           mkdir -p tmp
           touch tmp/restart.txt
-
-           
