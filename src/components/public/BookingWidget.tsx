@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string }) {
   useEffect(() => {
-    // 1. Memuat CSS Eksternal
+    // 1. Memuat CSS
     const cssLinks = [
       "https://omnihotelier.id/css/omnih-client.css",
       "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
@@ -24,9 +24,7 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
     const scriptId = "omnih-booking-script";
     let existingScript = document.getElementById(scriptId);
 
-    if (existingScript) {
-      existingScript.remove();
-    }
+    if (existingScript) existingScript.remove();
 
     const script = document.createElement("script");
     script.id = scriptId;
@@ -34,70 +32,76 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
     script.async = true;
     document.body.appendChild(script);
 
-    // 3. LOGIKA AUTO-SELECT (FIXED: WALIKOTA -> BALAIKOTA & ID 298)
-    let targetPropertyId = "296"; // Default Tunjungan
-    let targetTextSearch = "";
+    // 3. LOGIKA AUTO-SELECT (BRUTE-FORCE LOCK)
+    let targetPropertyId = "296";
+    // Tambahkan variasi nama Tunjungan jika slug tidak dikenali
+    let targetTexts: string[] = ["tunjungan", "basuki rahmat"]; 
 
     if (defaultHotelSlug) {
       const s = defaultHotelSlug.toLowerCase();
       if (s.includes("jemursari")) {
         targetPropertyId = "297";
-        targetTextSearch = "jemursari";
-      } else if (s.includes("walikota")) {
+        targetTexts = ["jemursari"];
+      } else if (s.includes("walikota") || s.includes("mustajab")) {
         targetPropertyId = "298";
-        targetTextSearch = "balaikota"; // Koreksi teks pencarian sesuai dropdown
+        targetTexts = ["walikota", "mustajab", "balaikota"];
       } else if (s.includes("tunjungan")) {
         targetPropertyId = "296";
-        targetTextSearch = "tunjungan";
+        targetTexts = ["tunjungan", "basuki rahmat"];
       }
     }
 
     let checkInterval: NodeJS.Timeout;
+    let forceKeepAlive = 0; // Penghitung untuk menahan pilihan dari reset Vue
 
     if (defaultHotelSlug) {
       checkInterval = setInterval(() => {
         const selects = document.querySelectorAll('.omnih select');
-        
+
         if (selects.length > 0) {
-          let found = false;
+          let foundOption = false;
 
           selects.forEach((select) => {
             const selectElement = select as HTMLSelectElement;
             const options = Array.from(selectElement.options);
-            
-            // Cari index berdasarkan ID (298) atau Teks (Balaikota)
-            const targetIndex = options.findIndex(opt => 
-              opt.value === targetPropertyId || 
-              opt.text.toLowerCase().includes(targetTextSearch)
+
+            const targetIndex = options.findIndex(opt =>
+              opt.value === targetPropertyId ||
+              targetTexts.some(text => opt.text.toLowerCase().includes(text))
             );
 
             if (targetIndex !== -1) {
-              if (selectElement.selectedIndex !== targetIndex) {
-                // Paksa pilih index yang ditemukan
-                selectElement.selectedIndex = targetIndex;
-                
-                // Trigger event agar sistem Vue/Omni mendeteksi perubahan
+              foundOption = true;
+              const correctValue = options[targetIndex].value;
+
+              // Jika Vue mencoba me-reset nilainya, paksa kembalikan!
+              if (selectElement.value !== correctValue) {
+                selectElement.value = correctValue;
                 selectElement.dispatchEvent(new Event('input', { bubbles: true }));
                 selectElement.dispatchEvent(new Event('change', { bubbles: true }));
               }
-              found = true;
             }
           });
 
-          // Berhenti mengecek jika hotel sudah berhasil terpilih
-          if (found) {
-            clearInterval(checkInterval);
+          if (foundOption) {
+            forceKeepAlive++;
+            // KUNCI UTAMA: Pertahankan pilihan selama ~2 detik (10 kali interval)
+            // agar Vue tidak sempat meresetnya kembali ke Tunjungan
+            if (forceKeepAlive >= 10) {
+              clearInterval(checkInterval);
+            }
           }
         }
-      }, 300); // Cek setiap 300ms untuk respon lebih cepat
-      
-      setTimeout(() => clearInterval(checkInterval), 10000);
+      }, 200);
+
+      // Batas maksimal keamanan (matikan total setelah 8 detik)
+      setTimeout(() => clearInterval(checkInterval), 8000);
     }
 
     return () => {
       const s = document.getElementById(scriptId);
       if (s) s.remove();
-      if (checkInterval) clearInterval(checkInterval); 
+      if (checkInterval) clearInterval(checkInterval);
     };
   }, [defaultHotelSlug]);
 
