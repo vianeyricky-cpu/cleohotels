@@ -7,9 +7,10 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
   // --- MAPPING ID HOTEL ---
   // Pastikan ID ini ANGKA. Nanti ganti 296 di Jemursari & Walikota dengan ID asli dari link booking mereka.
   const omniPropertyIds: Record<string, string> = {
-    "jemursari": "297", // <--- GANTI ANGKA INI NANTI
+    "jemursari": "297", 
     "tunjungan": "296",
-    "walikota": "298",  // <--- GANTI ANGKA INI NANTI
+    "walikota": "298", 
+    "balaikota surabaya": "298", 
   };
 
   const propertyId = omniPropertyIds[slug] || "296";
