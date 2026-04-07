@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string }) {
   useEffect(() => {
-    // 1. Memuat CSS
+    // 1. Memuat CSS Eksternal
     const cssLinks = [
       "https://omnihotelier.id/css/omnih-client.css",
       "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
@@ -34,23 +34,27 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
     script.async = true;
     document.body.appendChild(script);
 
-    // 3. LOGIKA AUTO-SELECT (TRANSLATE WALIKOTA -> BALAIKOTA)
-    let searchTerm = "";
-    
+    // 3. LOGIKA AUTO-SELECT (FIXED: WALIKOTA -> BALAIKOTA & ID 298)
+    let targetPropertyId = "296"; // Default Tunjungan
+    let targetTextSearch = "";
+
     if (defaultHotelSlug) {
-      const slug = defaultHotelSlug.toLowerCase();
-      if (slug.includes("jemursari")) {
-        searchTerm = "jemursari";
-      } else if (slug.includes("walikota")) {
-        searchTerm = "balaikota"; // <--- INI KUNCI PENYELESAIANNYA
-      } else if (slug.includes("tunjungan")) {
-        searchTerm = "tunjungan";
+      const s = defaultHotelSlug.toLowerCase();
+      if (s.includes("jemursari")) {
+        targetPropertyId = "297";
+        targetTextSearch = "jemursari";
+      } else if (s.includes("walikota")) {
+        targetPropertyId = "298";
+        targetTextSearch = "balaikota"; // Koreksi teks pencarian sesuai dropdown
+      } else if (s.includes("tunjungan")) {
+        targetPropertyId = "296";
+        targetTextSearch = "tunjungan";
       }
     }
 
     let checkInterval: NodeJS.Timeout;
 
-    if (searchTerm) {
+    if (defaultHotelSlug) {
       checkInterval = setInterval(() => {
         const selects = document.querySelectorAll('.omnih select');
         
@@ -59,32 +63,37 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
 
           selects.forEach((select) => {
             const selectElement = select as HTMLSelectElement;
+            const options = Array.from(selectElement.options);
             
-            Array.from(selectElement.options).forEach((option, index) => {
-              // Sekarang sistem akan mencari kata "balaikota"
-              if (option.text.toLowerCase().includes(searchTerm)) {
+            // Cari index berdasarkan ID (298) atau Teks (Balaikota)
+            const targetIndex = options.findIndex(opt => 
+              opt.value === targetPropertyId || 
+              opt.text.toLowerCase().includes(targetTextSearch)
+            );
+
+            if (targetIndex !== -1) {
+              if (selectElement.selectedIndex !== targetIndex) {
+                // Paksa pilih index yang ditemukan
+                selectElement.selectedIndex = targetIndex;
                 
-                if (selectElement.selectedIndex !== index) {
-                  selectElement.selectedIndex = index; 
-                  selectElement.dispatchEvent(new Event('input', { bubbles: true }));
-                  selectElement.dispatchEvent(new Event('change', { bubbles: true }));
-                }
-                
-                found = true;
+                // Trigger event agar sistem Vue/Omni mendeteksi perubahan
+                selectElement.dispatchEvent(new Event('input', { bubbles: true }));
+                selectElement.dispatchEvent(new Event('change', { bubbles: true }));
               }
-            });
+              found = true;
+            }
           });
 
+          // Berhenti mengecek jika hotel sudah berhasil terpilih
           if (found) {
             clearInterval(checkInterval);
           }
         }
-      }, 500);
+      }, 300); // Cek setiap 300ms untuk respon lebih cepat
       
       setTimeout(() => clearInterval(checkInterval), 10000);
     }
 
-    // 4. Cleanup
     return () => {
       const s = document.getElementById(scriptId);
       if (s) s.remove();
@@ -108,12 +117,9 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
           .omnih .row > div:last-child { flex: 1 1 100% !important; margin-top: 8px !important; }
         }
         .omnih .form-control { width: 100% !important; background-color: #2a2a2a !important; border: 1px solid transparent !important; color: #ffffff !important; font-size: 13px !important; border-radius: 0.75rem !important; padding: 0 12px !important; height: 48px !important; box-shadow: none !important; }
-        .omnih input[type="date"].form-control { min-width: 130px !important; }
-        .omnih input[type="text"].form-control { min-width: 100px !important; }
         .omnih select.form-control { min-width: 65px !important; appearance: none !important; background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%239CA3AF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important; background-repeat: no-repeat !important; background-position: right 10px center !important; padding-right: 28px !important; cursor: pointer; }
-        .omnih label { display: block !important; font-size: 10px !important; font-weight: 700 !important; color: #9ca3af !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; margin-bottom: 8px !important; white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important; }
-        .omnih input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; opacity: 0.7; }
-        .omnih .btn-primary { background-color: #2563eb !important; border: none !important; color: white !important; font-size: 12px !important; font-weight: 800 !important; text-transform: uppercase !important; border-radius: 0.75rem !important; height: 48px !important; padding: 0 24px !important; transition: background-color 0.3s ease !important; }
+        .omnih label { display: block !important; font-size: 10px !important; font-weight: 700 !important; color: #9ca3af !important; text-transform: uppercase !important; letter-spacing: 0.05em !important; margin-bottom: 8px !important; white-space: nowrap !important; }
+        .omnih .btn-primary { background-color: #2563eb !important; border: none !important; color: white !important; font-size: 12px !important; font-weight: 800 !important; text-transform: uppercase !important; border-radius: 0.75rem !important; height: 48px !important; padding: 0 24px !important; transition: all 0.3s ease !important; }
         .omnih .btn-primary:hover { background-color: #1d4ed8 !important; }
         .omnih .help-block { display: none !important; }
       `}} />
