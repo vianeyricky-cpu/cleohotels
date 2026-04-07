@@ -34,33 +34,43 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
     script.async = true;
     document.body.appendChild(script);
 
-    // 3. LOGIKA AUTO-SELECT HOTEL
+    // 3. LOGIKA AUTO-SELECT HOTEL (SUDAH DIPERBAIKI)
     let checkInterval: NodeJS.Timeout;
 
     if (defaultHotelSlug) {
-      // Kita buat interval untuk mengecek setiap 500ms apakah form sudah selesai di-render
       checkInterval = setInterval(() => {
-        // Ambil elemen dropdown select pertama (ini biasanya Select Property)
-        const selectProperty = document.querySelector('.omnih select') as HTMLSelectElement;
+        // PERBAIKAN 1: Cari SEMUA dropdown select, bukan cuma yang pertama
+        const selects = document.querySelectorAll('.omnih select');
         
-        if (selectProperty && selectProperty.options.length > 0) {
-          // Jika elemen sudah muncul, hentikan pencarian
-          clearInterval(checkInterval);
+        if (selects.length > 0) {
+          let found = false;
 
-          // Loop semua pilihan (option) di dalam dropdown
-          Array.from(selectProperty.options).forEach((option, index) => {
-            // Jika teks di dropdown mengandung kata dari defaultHotelSlug (misal: "jemursari")
-            if (option.text.toLowerCase().includes(defaultHotelSlug.toLowerCase())) {
-              selectProperty.selectedIndex = index; // Ubah pilihan ke hotel ini
-              
-              // WAJIB: Trigger event 'change' agar sistem Omnihotelier tahu kita mengubahnya
-              selectProperty.dispatchEvent(new Event('change', { bubbles: true }));
-            }
+          selects.forEach((select) => {
+            const selectElement = select as HTMLSelectElement;
+            
+            // Loop semua pilihan di dalam dropdown ini
+            Array.from(selectElement.options).forEach((option, index) => {
+              if (option.text.toLowerCase().includes(defaultHotelSlug.toLowerCase())) {
+                // Jika ketemu, pilih opsi ini
+                selectElement.selectedIndex = index; 
+                
+                // PERBAIKAN 2: Trigger event 'input' DAN 'change' agar sistem Vue merespon
+                selectElement.dispatchEvent(new Event('input', { bubbles: true }));
+                selectElement.dispatchEvent(new Event('change', { bubbles: true }));
+                
+                found = true;
+              }
+            });
           });
+
+          // Jika sudah berhasil menemukan dan merubah hotel, matikan pencarian
+          if (found) {
+            clearInterval(checkInterval);
+          }
         }
       }, 500);
       
-      // Hentikan interval otomatis setelah 10 detik untuk mencegah loop tanpa batas jika terjadi error
+      // Hentikan interval otomatis setelah 10 detik
       setTimeout(() => clearInterval(checkInterval), 10000);
     }
 
@@ -68,9 +78,9 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
     return () => {
       const s = document.getElementById(scriptId);
       if (s) s.remove();
-      if (checkInterval) clearInterval(checkInterval); // Bersihkan interval juga
+      if (checkInterval) clearInterval(checkInterval); 
     };
-  }, [defaultHotelSlug]); // Tambahkan dependency defaultHotelSlug
+  }, [defaultHotelSlug]);
 
   return (
     <div className="w-full max-w-7xl mx-auto bg-[#1e1e1e] text-white rounded-2xl md:rounded-[2rem] p-4 md:p-6 shadow-2xl border border-[#2a2a2a] relative z-30">
