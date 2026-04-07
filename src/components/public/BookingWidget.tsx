@@ -4,7 +4,7 @@ import { useEffect } from "react";
 
 export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string }) {
   useEffect(() => {
-    // 1. Memuat CSS Eksternal (Omnihotelier & Bootstrap)
+    // 1. Memuat CSS Eksternal
     const cssLinks = [
       "https://omnihotelier.id/css/omnih-client.css",
       "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
@@ -20,7 +20,7 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
       }
     });
 
-    // 2. Memuat JS Omnihotelier secara dinamis
+    // 2. Memuat JS Omnihotelier
     const scriptId = "omnih-booking-script";
     let existingScript = document.getElementById(scriptId);
 
@@ -34,47 +34,53 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
     script.async = true;
     document.body.appendChild(script);
 
-    // 3. LOGIKA AUTO-SELECT HOTEL (SUDAH DIPERBAIKI)
+    // 3. LOGIKA AUTO-SELECT BERDASARKAN "ID HOTEL" (DIJAMIN AKURAT)
+    let propertyId = "296"; // Default ke Tunjungan
+    
+    if (defaultHotelSlug) {
+      const slug = defaultHotelSlug.toLowerCase();
+      if (slug.includes("jemursari")) {
+        propertyId = "297";
+      } else if (slug.includes("walikota")) {
+        propertyId = "298";
+      } else if (slug.includes("tunjungan")) {
+        propertyId = "296";
+      }
+    }
+
     let checkInterval: NodeJS.Timeout;
 
     if (defaultHotelSlug) {
       checkInterval = setInterval(() => {
-        // PERBAIKAN 1: Cari SEMUA dropdown select, bukan cuma yang pertama
         const selects = document.querySelectorAll('.omnih select');
         
         if (selects.length > 0) {
-          let found = false;
-
           selects.forEach((select) => {
             const selectElement = select as HTMLSelectElement;
             
-            // Loop semua pilihan di dalam dropdown ini
-            Array.from(selectElement.options).forEach((option, index) => {
-              if (option.text.toLowerCase().includes(defaultHotelSlug.toLowerCase())) {
-                // Jika ketemu, pilih opsi ini
-                selectElement.selectedIndex = index; 
-                
-                // PERBAIKAN 2: Trigger event 'input' DAN 'change' agar sistem Vue merespon
+            // Cek apakah dropdown ini memiliki opsi dengan ID Hotel kita (296/297/298)
+            const hasOurProperty = Array.from(selectElement.options).some(opt => opt.value === propertyId);
+
+            if (hasOurProperty) {
+              // Jika dropdown-nya ketemu, paksa ubah nilainya
+              if (selectElement.value !== propertyId) {
+                selectElement.value = propertyId;
                 selectElement.dispatchEvent(new Event('input', { bubbles: true }));
                 selectElement.dispatchEvent(new Event('change', { bubbles: true }));
-                
-                found = true;
+              } else {
+                // Jika nilainya SUDAH BENAR menempel di ID yang kita mau, baru matikan intervalnya
+                clearInterval(checkInterval);
               }
-            });
+            }
           });
-
-          // Jika sudah berhasil menemukan dan merubah hotel, matikan pencarian
-          if (found) {
-            clearInterval(checkInterval);
-          }
         }
-      }, 500);
+      }, 200); // Lakukan pengecekan sangat cepat (setiap 200ms)
       
-      // Hentikan interval otomatis setelah 10 detik
+      // Keamanan: Hentikan interval otomatis setelah 10 detik
       setTimeout(() => clearInterval(checkInterval), 10000);
     }
 
-    // 4. Cleanup saat komponen dibongkar
+    // 4. Cleanup
     return () => {
       const s = document.getElementById(scriptId);
       if (s) s.remove();
@@ -112,7 +118,7 @@ export function BookingWidget({ defaultHotelSlug }: { defaultHotelSlug?: string 
           }
         }
 
-        /* --- 2. PERBAIKAN DI MOBILE (DIBUNGKUS RAPI) --- */
+        /* --- 2. PERBAIKAN DI MOBILE --- */
         @media (max-width: 1023px) {
           .omnih .row {
             display: flex !important;
