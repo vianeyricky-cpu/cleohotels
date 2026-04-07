@@ -5,7 +5,7 @@ import { MapPin, Instagram } from "lucide-react";
 import { getHotels } from "@/actions/getHotels"; 
 import { createClient } from "@supabase/supabase-js";
 import { RoomCarousel } from "@/components/public/RoomCarousel"; 
-import { BookingWidget } from "@/components/public/BookingWidget"; 
+import { SingleBookingWidget } from "@/components/public/SingleBookingWidget";
 import { FacilityGallery } from "@/components/public/FacilityGallery"; // <-- IMPORT KOMPONEN BARU
 
 export const dynamic = "force-dynamic";
@@ -61,7 +61,7 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
 
       {/* --- FLOATING BOOKING BAR --- */}
       <section className="relative z-20 w-full max-w-7xl mx-auto px-4 -mt-16 md:-mt-24 mb-16">
-        <BookingWidget defaultHotelSlug={hotel.slug} />
+      <SingleBookingWidget slug={hotel.slug} />
       </section>
 
       {/* --- OVERVIEW --- */}

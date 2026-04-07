@@ -3,23 +3,35 @@
 import { useEffect } from "react";
 import Script from "next/script";
 
+// === MENGHILANGKAN ERROR TYPESCRIPT ===
+// Mengajari TypeScript bahwa <group-calendar-form> adalah tag yang sah
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      'group-calendar-form': React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
+        group?: string;
+        property?: string;
+        isfallbackcalendar?: string;
+      };
+    }
+  }
+}
+
 export function SingleBookingWidget({ slug }: { slug: string }) {
-  // --- MAPPING ID HOTEL (PERBAIKAN) ---
-  // Menggunakan .includes() agar kebal terhadap variasi slug dari database 
-  // (misal slug-nya "cleo-hotel-walikota" tetap akan terbaca "walikota")
+  // --- MAPPING ID HOTEL (AKURAT & ROBUST) ---
   let propertyId = "296"; // Default fallback (Tunjungan)
   
   const normalizedSlug = slug.toLowerCase();
   if (normalizedSlug.includes("jemursari")) {
     propertyId = "297";
-  } else if (normalizedSlug.includes("walikota")) {
+  } else if (normalizedSlug.includes("walikota") || normalizedSlug.includes("balaikota") || normalizedSlug.includes("mustajab")) {
     propertyId = "298";
   } else if (normalizedSlug.includes("tunjungan")) {
     propertyId = "296";
   }
 
   useEffect(() => {
-    // 1. Load CSS Eksternal
+    // HANYA LOAD CSS EKSTERNAL
     const cssLinks = [
       "https://omnihotelier.id/css/omnih-client.css",
       "https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css",
@@ -34,33 +46,7 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
         document.head.appendChild(link);
       }
     });
-
-    // 2. AUTO-SELECT HOTEL HACK (PERBAIKAN EVENT VUE)
-    const interval = setInterval(() => {
-      const selects = document.querySelectorAll('.omnih select');
-      if (selects.length > 0) {
-        // Cari dropdown yang memiliki opsi hotel dengan ID kita
-        const propertySelect = Array.from(selects).find(select => 
-          Array.from((select as HTMLSelectElement).options).some(opt => opt.value === propertyId)
-        ) as HTMLSelectElement;
-
-        if (propertySelect) {
-          if (propertySelect.value !== propertyId) {
-            // Paksa pilih hotel
-            propertySelect.value = propertyId;
-            
-            // PERBAIKAN: Trigger 'input' dan 'change' agar state Vue/OmniHotelier benar-benar terupdate
-            propertySelect.dispatchEvent(new Event('input', { bubbles: true }));
-            propertySelect.dispatchEvent(new Event('change', { bubbles: true }));
-          }
-          // Berhenti mencari jika sudah sukses
-          clearInterval(interval);
-        }
-      }
-    }, 200);
-
-    return () => clearInterval(interval);
-  }, [propertyId]);
+  }, []); 
 
   return (
     <div className="w-full bg-white rounded-xl shadow-2xl p-4 md:p-6 border border-gray-200 relative z-20">
@@ -158,8 +144,11 @@ export function SingleBookingWidget({ slug }: { slug: string }) {
 
       {/* --- AREA WIDGET --- */}
       <div id="app" className="omnih text-left text-gray-800" key={slug}>
-        {/* @ts-ignore */} 
-        <group-calendar-form group="46" isfallbackcalendar="true"></group-calendar-form>
+        <group-calendar-form 
+          group="46" 
+          property={propertyId} 
+          isfallbackcalendar="true">
+        </group-calendar-form>
       </div>
 
       {/* --- SCRIPT LOAD --- */}
