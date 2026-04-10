@@ -1,33 +1,67 @@
-name: Deploy to cPanel
+name: Deploy to cPanel (Smart Path)
 
 on:
   push:
     branches:
-      - main # Pastikan sesuai dengan nama branch utama Anda (main/master)
+      - main # Pastikan ini sesuai dengan nama branch Anda (main atau master)
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-    - name: Mengeksekusi perintah di Server cPanel
+    # 1. Ambil kode terbaru dari repositori Anda
+    - name: Ambil Kode (Checkout)
+      uses: actions/checkout@v3
+
+    # 2. Siapkan Node.js di dalam server GitHub (Bukan di cPanel)
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18' # Bisa disesuaikan jadi '20' jika Anda pakai Node 20
+
+    # 3. GitHub akan bekerja keras melakukan instalasi dan Build di sini
+    - name: Install & Build Aplikasi
+      run: |
+        npm install
+        npm run build
+
+    # 4. Setelah matang, bungkus (ZIP) file yang penting saja agar transfer cepat
+    - name: Bungkus Hasil Build (ZIP)
+      run: zip -r deploy.zip .next public package.json package-lock.json next.config.*
+
+    # 5. Kirim file ZIP tersebut ke cPanel menggunakan SCP (Secure Copy)
+    - name: Upload ke cPanel (SCP)
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        password: ${{ secrets.SSH_PASSWORD }}
+        port: ${{ secrets.SSH_PORT }}
+        source: "deploy.zip"
+        target: "/home/balibite/cleohotels" # <--- UBAH USERNAME CPANEL ANDA DI SINI
+
+    # 6. Masuk ke cPanel via SSH, Ekstrak, dan Restart Aplikasi
+    - name: Ekstrak & Restart di cPanel
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
-        password: ${{ secrets.SSH_PASSWORD }} # <--- Menggunakan Password cPanel
+        password: ${{ secrets.SSH_PASSWORD }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          # 1. Masuk ke folder project Anda (Ubah path di bawah ini!)
-          cd /home/balibite/cleohotels.id
+          # Masuk ke folder project
+          cd /home/balibite/cleohotels # <--- UBAH JUGA DI SINI
           
-          # 2. Tarik kode terbaru
-          git pull origin main
+          # Ekstrak file zip yang baru datang, dan timpa file lama
+          unzip -o deploy.zip
           
-          # 3. Install dan Build Next.js
-          npm install
-          npm run build
+          # Hapus file zip-nya agar storage hosting tidak penuh
+          rm deploy.zip
           
-          # 4. Trik Auto-Restart Node.js App
+          # Install HANYA library produksi (Ini sangat ringan, cPanel pasti sanggup!)
+          npm install --omit=dev
+          
+          # Restart aplikasi otomatis
           mkdir -p tmp
           touch tmp/restart.txt
-          
