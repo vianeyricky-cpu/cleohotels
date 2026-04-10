@@ -57,7 +57,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
       {/* --- 3. TEKS INTRODUKSI --- */}
       <section className="py-12 px-6 bg-white text-center max-w-4xl mx-auto">
          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-neutral-900">
-           Smart Comfort for Every Journey
+           Smart Comfort for Every Journey Yet
          </h2>
          <p className="text-base md:text-lg text-neutral-600 mb-6 leading-relaxed">
            Cleo Hotels is made for modern travelers who value efficiency, comfort, and great value. 
