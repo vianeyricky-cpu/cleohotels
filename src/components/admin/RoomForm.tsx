@@ -2,13 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Save, Loader2, Plus, Trash2 } from "lucide-react";
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 interface RoomFormProps {
   hotelId: string;
@@ -19,6 +15,12 @@ interface RoomFormProps {
 export default function RoomForm({ hotelId, room, isNew }: RoomFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  // Inisialisasi Supabase dipindah ke dalam komponen
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   const [formData, setFormData] = useState({
     name: room?.name || "",
@@ -171,7 +173,6 @@ export default function RoomForm({ hotelId, room, isNew }: RoomFormProps) {
             {extraImages.map((imgUrl, index) => (
               <div key={index} className="flex items-start gap-3 bg-white p-3 rounded-xl border border-neutral-200 shadow-sm">
                 <div className="flex-1">
-                  {/* Gunakan ImageUpload untuk mempermudah, atau bisa input URL manual */}
                   <ImageUpload value={imgUrl} onChange={(url: string) => updateExtraImage(url, index)} />
                 </div>
                 <button type="button" onClick={() => removeExtraImage(index)} className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition" title="Hapus foto ini">

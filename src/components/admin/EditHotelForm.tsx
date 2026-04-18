@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js"; 
+import { createBrowserClient } from "@supabase/ssr"; 
 import { useRouter } from "next/navigation";
 import { Save, ArrowLeft, Loader2, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { ImageUpload } from "@/components/admin/ImageUpload"; 
-// Import komponen upload multi image
 import { MultiImageUpload } from "@/components/admin/MultiImageUpload"; 
 
 type HotelData = {
@@ -19,11 +18,12 @@ type HotelData = {
   image_url: string;
   maps_url: string;
   google_maps_link: string;
-  images?: string[]; // Tambahkan field images untuk The Experience
+  images?: string[]; 
 };
 
 export function EditHotelForm({ hotel }: { hotel: HotelData }) {
-  const supabase = createClient(
+  // Gunakan createBrowserClient dari @supabase/ssr
+  const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
@@ -39,7 +39,7 @@ export function EditHotelForm({ hotel }: { hotel: HotelData }) {
     image_url: hotel.image_url || "",
     maps_url: hotel.maps_url || "",
     google_maps_link: hotel.google_maps_link || "",
-    images: hotel.images || [], // Inisialisasi state images
+    images: hotel.images || [], 
   });
 
   const handleUpdate = async (e: React.FormEvent) => {
@@ -181,9 +181,9 @@ export function EditHotelForm({ hotel }: { hotel: HotelData }) {
           </h3>
           <div className="w-full">
           <MultiImageUpload 
-  urls={formData.images || []} 
-  onChange={(urls) => setFormData({ ...formData, images: urls })}
-/>
+            urls={formData.images || []} 
+            onChange={(urls) => setFormData({ ...formData, images: urls })}
+          />
             <p className="mt-2 text-xs text-gray-400">
               Upload foto-foto untuk bagian The Experience. Foto-foto ini akan tampil berjejer di halaman utama hotel.
             </p>
