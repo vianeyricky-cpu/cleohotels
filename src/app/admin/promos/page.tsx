@@ -1,16 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 import { Save, Loader2, Megaphone, Download, ArrowUpDown, Trash2, Plus, Edit, Tag } from "lucide-react";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!, 
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
 export default function PromoAdminPage() {
+  // Inisialisasi Supabase menggunakan createBrowserClient agar sesi Admin terbaca
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!, 
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
   const [activeTab, setActiveTab] = useState<"settings" | "leads" | "offers">("settings");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -29,6 +30,7 @@ export default function PromoAdminPage() {
     fetchPromo();
     fetchLeads();
     fetchOffers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sortOrder]);
 
   // --- FETCHING DATA ---
@@ -108,27 +110,43 @@ export default function PromoAdminPage() {
   const handleSaveOffer = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    if (offerForm.id) {
-      await supabase.from("promos").update({
-        title: offerForm.title, description: offerForm.description, image_url: offerForm.image_url,
-        action_text: offerForm.action_text, action_link: offerForm.action_link
-      }).eq("id", offerForm.id);
-    } else {
-      await supabase.from("promos").insert([{
-        title: offerForm.title, description: offerForm.description, image_url: offerForm.image_url,
-        action_text: offerForm.action_text, action_link: offerForm.action_link
-      }]);
+    try {
+      let errorResponse;
+      if (offerForm.id) {
+        const { error } = await supabase.from("promos").update({
+          title: offerForm.title, description: offerForm.description, image_url: offerForm.image_url,
+          action_text: offerForm.action_text, action_link: offerForm.action_link
+        }).eq("id", offerForm.id);
+        errorResponse = error;
+      } else {
+        const { error } = await supabase.from("promos").insert([{
+          title: offerForm.title, description: offerForm.description, image_url: offerForm.image_url,
+          action_text: offerForm.action_text, action_link: offerForm.action_link
+        }]);
+        errorResponse = error;
+      }
+
+      if (errorResponse) throw errorResponse;
+
+      alert("✅ Berhasil! Data promo telah tersimpan.");
+      setIsEditingOffer(false);
+      setOfferForm({ id: "", title: "", description: "", image_url: "", action_text: "SEE MORE", action_link: "" });
+      fetchOffers();
+    } catch (err: any) {
+      alert("❌ Gagal menyimpan: " + err.message);
+    } finally {
+      setSaving(false);
     }
-    setSaving(false);
-    setIsEditingOffer(false);
-    setOfferForm({ id: "", title: "", description: "", image_url: "", action_text: "SEE MORE", action_link: "" });
-    fetchOffers();
   };
 
   const handleDeleteOffer = async (id: string) => {
     if (confirm("Hapus promo/paket ini?")) {
-      await supabase.from("promos").delete().eq("id", id);
-      fetchOffers();
+      const { error } = await supabase.from("promos").delete().eq("id", id);
+      if (error) {
+        alert("Gagal menghapus promo: " + error.message);
+      } else {
+        fetchOffers();
+      }
     }
   };
 
@@ -270,7 +288,7 @@ export default function PromoAdminPage() {
                 </button>
               </div>
             </div>
-            
+
             <div className="overflow-x-auto rounded-xl border border-neutral-100">
               <table className="w-full text-left text-sm">
                 <thead className="bg-neutral-50 text-neutral-500 uppercase tracking-wider">
