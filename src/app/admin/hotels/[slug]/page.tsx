@@ -2,9 +2,9 @@ import { getHotelBySlug } from "@/actions/getHotels";
 import { EditHotelForm } from "@/components/admin/EditHotelForm";
 import { notFound } from "next/navigation";
 
-// --- SERVER COMPONENT ---
-// Halaman ini berjalan di server. Data diambil SEBELUM halaman dikirim ke browser.
-// Keuntungan: Tidak ada loading spinner berputar, data langsung tampil instan.
+// --- TAMBAHKAN BARIS INI ---
+// Memaksa Next.js untuk selalu mengambil data terbaru (bukan dari cache)
+export const dynamic = "force-dynamic";
 
 export default async function EditHotelPage({ params }: { params: { slug: string } }) {
   
@@ -17,7 +17,7 @@ export default async function EditHotelPage({ params }: { params: { slug: string
   }
 
   // 3. Siapkan data yang bersih untuk dikirim ke Client Component (Form)
-  // Kita pastikan tidak ada nilai null (ganti dengan string kosong "") agar Form tidak error
+  // PASTIKAN menambahkan "images" agar galeri "The Experience" tidak kosong
   const hotelData = {
     id: hotel.id,
     slug: hotel.slug,
@@ -27,9 +27,10 @@ export default async function EditHotelPage({ params }: { params: { slug: string
     phone: hotel.phone,
     image_url: hotel.image_url || "",
     maps_url: hotel.maps_url || "",
-    google_maps_link: hotel.google_maps_link || ""
+    google_maps_link: hotel.google_maps_link || "",
+    images: hotel.images || [] // <-- Tambahan penting untuk foto gallery
   };
 
-  // 4. Render Form Edit (Ini adalah Client Component yang kita buat sebelumnya)
+  // 4. Render Form Edit 
   return <EditHotelForm hotel={hotelData} />;
 }
