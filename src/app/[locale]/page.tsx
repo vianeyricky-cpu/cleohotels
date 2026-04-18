@@ -5,6 +5,7 @@ import { ArrowRight, Star, ShieldCheck, Heart } from "lucide-react";
 import { BookingWidget } from "@/components/public/BookingWidget";
 import { createClient } from "@supabase/supabase-js"; 
 import { PromoModal } from "@/components/PromoModal"; 
+export const dynamic = 'force-dynamic';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
   const hotels = await getHotels();

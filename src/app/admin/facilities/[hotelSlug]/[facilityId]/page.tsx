@@ -3,6 +3,10 @@ import FacilityForm from "@/components/admin/FacilityForm";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
+// --- TAMBAHKAN BARIS INI ---
+// Memaksa Next.js untuk selalu mengambil data terbaru (bukan dari cache)
+export const dynamic = "force-dynamic";
+
 export default async function EditFacilityPage({ params }: { params: { hotelSlug: string; facilityId: string } }) {
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
