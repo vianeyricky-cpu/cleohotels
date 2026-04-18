@@ -1,16 +1,18 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from "@supabase/supabase-js";
+import { createBrowserClient } from "@supabase/ssr"; // <-- Ganti import ini
 import { useRouter } from "next/navigation";
 import { Save, Loader2 } from "lucide-react";
 import { MultiImageUpload } from "@/components/admin/MultiImageUpload";
 
 export default function FacilityForm({ hotelId, facility, isNew = false }: { hotelId: string, facility?: any, isNew?: boolean }) {
-  const supabase = createClient(
+  // Gunakan createBrowserClient agar sesi Admin terbaca
+  const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   );
+  
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,26 +30,30 @@ export default function FacilityForm({ hotelId, facility, isNew = false }: { hot
     try {
       const payload = {
         hotelId,
-        ...formData,
+        name: formData.name,
+        type: formData.type,
+        description: formData.description,
+        images: formData.images,
         image: formData.images[0] || null // Thumbnail legacy
       };
 
-      let error;
+      let errorResponse;
+
       if (isNew) {
-        const { error: err } = await supabase.from("Facility").insert(payload);
-        error = err;
+        const { error } = await supabase.from("Facility").insert([payload]);
+        errorResponse = error;
       } else {
-        const { error: err } = await supabase.from("Facility").update(payload).eq("id", facility.id);
-        error = err;
+        const { error } = await supabase.from("Facility").update(payload).eq("id", facility.id);
+        errorResponse = error;
       }
 
-      if (error) throw error;
+      if (errorResponse) throw errorResponse;
       
-      alert("Facility Saved!");
+      alert("✅ Berhasil! Data Facility tersimpan.");
       router.refresh();
       router.back(); 
     } catch (err: any) {
-      alert("Error: " + err.message);
+      alert("❌ Gagal menyimpan: " + err.message);
     } finally {
       setIsLoading(false);
     }
@@ -83,7 +89,7 @@ export default function FacilityForm({ hotelId, facility, isNew = false }: { hot
       <div className="flex justify-end pt-6 border-t mt-4">
         <button type="submit" disabled={isLoading} className="flex items-center gap-2 px-8 py-3 bg-navy-950 text-white font-bold rounded-lg hover:bg-gold-500 hover:text-navy-950 transition">
            {isLoading ? <Loader2 className="animate-spin"/> : <Save size={18} />}
-           Save Facility
+           {isLoading ? "Saving..." : "Save Facility"}
         </button>
       </div>
     </form>
