@@ -1,61 +1,70 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { AdminAuthGate } from "@/components/admin/AdminAuthGate";
-import { supabase } from "@/lib/supabase";
+import { Menu } from "lucide-react"; // Import ikon Menu
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
+  // State untuk kontrol sidebar (default terbuka)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+
+  // Otomatis menutup sidebar jika layar di bawah ukuran tablet/mobile (768px)
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setIsSidebarOpen(false);
+      } else {
+        setIsSidebarOpen(true);
+      }
+    };
+
+    // Jalankan sekali saat pertama dimuat
+    handleResize(); 
+    
+    // Dengarkan perubahan ukuran layar
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <AdminAuthGate>
-      <div className="min-h-screen bg-slate-100 text-navy-900 font-sans">
-        <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[260px,1fr]">
-          
-          {/* SIDEBAR KIRI */}
-          <AdminSidebar />
+      {/* Gunakan flex agar transisi lebar sidebar berjalan mulus */}
+      <div className="flex min-h-screen bg-slate-100 text-navy-900 font-sans overflow-hidden">
+        
+        {/* SIDEBAR KIRI */}
+        <AdminSidebar isOpen={isSidebarOpen} />
 
-          <div className="flex flex-col">
-            {/* HEADER ATAS */}
-            <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 sticky top-0 z-40 shadow-sm">
+        <div className="flex flex-col flex-1 min-w-0 transition-all duration-300">
+          {/* HEADER ATAS */}
+          <header className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-4 sticky top-0 z-40 shadow-sm">
+            <div className="flex items-center gap-4">
+              {/* TOMBOL TOGGLE SIDEBAR */}
+              <button 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-lg transition-colors"
+                title="Toggle Menu"
+              >
+                <Menu size={20} />
+              </button>
+              
               <div>
-                {/* PERUBAHAN NAMA DI SINI */}
                 <h1 className="text-lg font-extrabold text-navy-950 uppercase tracking-wider">
-                  Cleo Management Content
+                  Cleo Management
                 </h1>
-                <p className="text-[11px] text-slate-500 mt-0.5 font-medium italic">
+                <p className="text-[11px] text-slate-500 mt-0.5 font-medium italic hidden md:block">
                   Control center for hotels, rooms, and properties.
                 </p>
               </div>
+            </div>
+          </header>
 
-              {/* TOMBOL LOGOUT */}
-              <button
-                type="button"
-                onClick={async () => {
-                  const confirmLogout = window.confirm("Are you sure you want to logout?");
-                  if (confirmLogout) {
-                    await supabase.auth.signOut();
-                    window.location.reload();
-                  }
-                }}
-                className="rounded-full border border-slate-200 px-5 py-2 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-600 transition-all hover:bg-red-50 hover:text-red-600 hover:border-red-200 active:scale-95 shadow-sm"
-              >
-                Logout Account
-              </button>
-            </header>
-
-            {/* AREA KONTEN UTAMA */}
-            <main className="flex-1 px-6 py-8">
-              <div className="mx-auto max-w-7xl animate-in fade-in slide-in-from-bottom-2 duration-500">
-                {children}
-              </div>
-            </main>
-
-            {/* FOOTER ADMIN (OPSIONAL) */}
-            <footer className="px-6 py-4 border-t border-slate-200 bg-white/50 text-center">
-               <p className="text-[10px] text-slate-400 font-medium">
-                 Cleo Hotels Internal System v2.0 • 2026 Dashboard
-               </p>
-            </footer>
-          </div>
+          {/* AREA KONTEN UTAMA */}
+          <main className="flex-1 px-4 md:px-8 py-8 overflow-y-auto">
+            <div className="mx-auto max-w-6xl animate-in fade-in slide-in-from-bottom-2 duration-500">
+              {children}
+            </div>
+          </main>
         </div>
       </div>
     </AdminAuthGate>
