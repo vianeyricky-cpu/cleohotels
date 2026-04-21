@@ -47,14 +47,30 @@ export function EditHotelForm({ hotel }: { hotel: HotelData }) {
     setIsLoading(true);
 
     try {
+      // 1. Generate slug baru dari input nama
+      // Mengubah "Cleo Hotel Balaikota" menjadi "cleo-hotel-balaikota"
+      const newSlug = formData.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)+/g, "");
+
+      // 2. Gabungkan formData dengan slug yang baru
+      const dataToUpdate = { ...formData, slug: newSlug };
+
       const { error } = await supabase
         .from("Hotel")
-        .update(formData)
+        .update(dataToUpdate)
         .eq("id", hotel.id);
 
       if (!error) {
         alert("✅ Berhasil! Data hotel tersimpan.");
-        router.refresh(); 
+        
+        // 3. Cek apakah slug berubah. Jika iya, redirect ke halaman baru. Jika tidak, cukup refresh.
+        if (newSlug !== hotel.slug) {
+          router.push(`/admin/hotels/${newSlug}`);
+        } else {
+          router.refresh(); 
+        }
       } else {
         alert("❌ Gagal: " + error.message);
       }
