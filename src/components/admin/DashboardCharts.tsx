@@ -42,7 +42,8 @@ export default function DashboardCharts({ roomDistributionData, trafficData, dev
       <div className="bg-white p-6 rounded-[1.5rem] border border-neutral-100 shadow-sm lg:col-span-2 hover:shadow-md transition">
         <div className="mb-6">
           <h3 className="text-lg font-bold text-neutral-900">Traffic Pengunjung Website</h3>
-          <p className="text-sm text-neutral-500">Total pengunjung harian (7 Hari Terakhir)</p>
+          {/* Teks di bawah ini sudah diperbarui menjadi 30 Hari Terakhir */}
+          <p className="text-sm text-neutral-500">Total pengunjung harian (30 Hari Terakhir)</p>
         </div>
         <div className="h-72 w-full min-h-[300px]">
           <ResponsiveContainer width="100%" height="100%" minWidth={0}>
