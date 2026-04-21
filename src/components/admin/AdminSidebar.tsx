@@ -33,12 +33,12 @@ const menuGroups = [
   }
 ];
 
-function withLocale(pathname: string | null, href: string) {
-  if (!pathname) return href;
+// Fungsi ini HANYA dipakai untuk tombol "View Live Website" di paling bawah
+function getLiveWebsiteUrl(pathname: string | null) {
+  if (!pathname) return "/en";
   const segments = pathname.split("/").filter(Boolean);
-  const locale = segments[0] || 'en'; // Default to en if no locale
-  if (href === "/admin") return `/${locale}/admin`;
-  return `/${locale}${href}`;
+  const locale = (segments[0] === 'en' || segments[0] === 'id') ? segments[0] : 'en';
+  return `/${locale}`;
 }
 
 export function AdminSidebar({ isOpen }: { isOpen: boolean }) {
@@ -46,10 +46,8 @@ export function AdminSidebar({ isOpen }: { isOpen: boolean }) {
 
   const checkIsActive = (href: string) => {
     if (!pathname) return false;
-    if (href === "/admin") {
-      return pathname.endsWith("/admin");
-    }
-    return pathname.includes(href);
+    if (href === "/admin") return pathname === "/admin";
+    return pathname.startsWith(href);
   };
 
   const handleLogout = async () => {
@@ -67,7 +65,7 @@ export function AdminSidebar({ isOpen }: { isOpen: boolean }) {
         isOpen ? "w-[280px]" : "w-[80px]"
       )}
     >
-      {/* --- HEADER LOGO --- */}
+      {/* HEADER LOGO */}
       <div className="flex h-24 flex-col justify-center border-b border-white/10 px-6 whitespace-nowrap">
         {isOpen ? (
           <div className="animate-fade-in">
@@ -86,28 +84,27 @@ export function AdminSidebar({ isOpen }: { isOpen: boolean }) {
         )}
       </div>
       
-      {/* --- NAVIGATION MENU --- */}
+      {/* NAVIGATION MENU */}
       <nav className="flex flex-col gap-4 px-4 py-6 flex-1">
         {menuGroups.map((group, idx) => (
           <div key={idx} className="flex flex-col gap-1">
-            {/* Tampilkan judul grup hanya jika sidebar terbuka */}
             {group.title && isOpen && (
               <span className="text-[10px] font-extrabold text-blue-300 uppercase tracking-widest px-2 mb-2 mt-2 whitespace-nowrap">
                 {group.title}
               </span>
             )}
             
-            {/* Beri jarak sedikit jika sidebar tertutup dan ada pergantian grup */}
             {group.title && !isOpen && <div className="h-4"></div>}
             
             {group.items.map((link) => {
-              const href = withLocale(pathname, link.href);
-              const isActive = checkIsActive(link.href);
+              // PERBAIKAN: Langsung gunakan link.href (tanpa withLocale)
+              const href = link.href;
+              const isActive = checkIsActive(href);
               const Icon = link.icon;
               
               return (
                 <Link
-                  key={link.href}
+                  key={href}
                   href={href}
                   title={!isOpen ? link.label : ""}
                   className={clsx(
@@ -127,10 +124,10 @@ export function AdminSidebar({ isOpen }: { isOpen: boolean }) {
         ))}
       </nav>
 
-      {/* --- FOOTER / BOTTOM ACTION --- */}
+      {/* FOOTER / BOTTOM ACTION */}
       <div className="p-4 mt-auto space-y-3 border-t border-white/10">
         <Link 
-          href={withLocale(pathname, "/")} 
+          href={getLiveWebsiteUrl(pathname)} 
           target="_blank"
           title={!isOpen ? "View Live Website" : ""}
           className={clsx(

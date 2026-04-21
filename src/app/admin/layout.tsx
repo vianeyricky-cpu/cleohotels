@@ -12,8 +12,7 @@ export default function AdminLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="bg-gray-50 font-sans text-slate-900 antialiased" suppressHydrationWarning>
-        {/* Semua struktur UI (Sidebar & Header) kini di-*handle* oleh AdminShell */}
+      <body className="bg-slate-50 font-sans text-slate-900 antialiased min-h-screen" suppressHydrationWarning>
         <AdminShell>
            {children}
         </AdminShell>
