@@ -2,19 +2,19 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 import createIntlMiddleware from 'next-intl/middleware';
 
-// 1. Konfigurasi Bahasa (Sesuaikan locales Anda)
-const locales = ["en", "id"]; // Tambahkan "fr" jika memang Anda menggunakannya
+// 1. Konfigurasi Bahasa untuk Website Publik
+const locales = ["en", "id"]; 
 const intlMiddleware = createIntlMiddleware({
   locales,
   defaultLocale: "en",
-  localePrefix: 'always' // Memastikan /en/admin atau /id/admin selalu konsisten
+  localePrefix: 'always' 
 });
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // --- LOGIKA A: SUPABASE COOKIE SYNC ---
-  // Kita buat response awal agar Supabase bisa menulis cookie
+  // Kita buat response awal agar Supabase bisa menulis cookie sesi dengan aman
   let response = NextResponse.next({
     request: { headers: request.headers },
   });
@@ -39,41 +39,26 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  // Ambil user (Lebih aman daripada getSession di middleware)
-  const { data: { user } } = await supabase.auth.getUser();
+  // Memanggil getUser() di sini akan memperbarui token jika hampir kedaluwarsa
+  await supabase.auth.getUser();
 
-  // --- LOGIKA B: PROTEKSI RUTE ADMIN ---
-  // Deteksi apakah path adalah admin (contoh: /admin, /en/admin, /id/admin)
-  const isAdminPath = pathname.startsWith('/admin') || 
-                     locales.some(loc => pathname.startsWith(`/${loc}/admin`));
-  
-  const isLoginPath = pathname.startsWith('/login') || 
-                     locales.some(loc => pathname.startsWith(`/${loc}/login`));
-
-  // 1. Jika BELUM Login & mencoba masuk ke Admin
-  if (!user && isAdminPath) {
-    // Redirect ke halaman login (dengan prefix bahasa agar tidak error)
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  // 2. Jika SUDAH Login & mencoba masuk ke Login lagi
-  if (user && isLoginPath) {
-    return NextResponse.redirect(new URL('/admin', request.url));
+  // --- LOGIKA B: PROTEKSI ADMIN (BYPASS KE ADMINAUTHGATE) ---
+  // Jika user mengakses /admin atau sub-menunya:
+  // KITA LANGSUNG LEWATKAN (return response). 
+  // Biarkan komponen AdminAuthGate.tsx yang memunculkan UI Form Login yang baru!
+  if (pathname.startsWith('/admin')) {
+    return response;
   }
 
   // --- LOGIKA C: PUBLIC WEBSITE & MULTILANGUAGE ---
-  // Jika rute bukan admin/login yang butuh auth, jalankan Intl Middleware
-  if (!isAdminPath && !isLoginPath) {
-    return intlMiddleware(request);
-  }
-
-  return response;
+  // Jika rute bukan /admin, berarti ini adalah halaman publik web (seperti /, /hotels, /about).
+  // Jalankan intlMiddleware agar prefix bahasa (/en atau /id) otomatis ditambahkan.
+  return intlMiddleware(request);
 }
 
 export const config = {
-  // Matcher yang diperluas untuk menangkap semua kemungkinan rute
+  // Matcher yang menangkap semua rute, kecuali API dan file statis gambar/aset
   matcher: [
-    // Jalankan pada semua rute kecuali file statis (image, favicon, dsb)
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],
 };
