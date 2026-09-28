@@ -1,3 +1,4 @@
+import "../../public/vendor/pannellum/pannellum.css";
 import "./[locale]/globals.css";
 import { Inter, Playfair_Display } from "next/font/google";
 

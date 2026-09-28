@@ -1,92 +1,22 @@
-"use client";
-
-import { useState, useEffect, useRef } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
-import Image from "next/image";
-
+'use client';
+import { useEffect, useRef, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import Image from 'next/image';
 export function GlobalLoader() {
-  const [isLoading, setIsLoading] = useState(false);
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
-  
-  // Menggunakan useRef untuk menyimpan waktu mulai loading tanpa memicu render ulang
-  const loadStartTime = useRef<number>(0);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
-
-  // Efek 1: Matikan loading saat URL berubah, tapi WAJIB tunggu minimal 3 detik
+  const [loading, setLoading] = useState(false);
+  const pathname = usePathname(), search = useSearchParams();
+  const timer = useRef<ReturnType<typeof setTimeout>>();
+  useEffect(() => { setLoading(false); clearTimeout(timer.current); }, [pathname, search]);
   useEffect(() => {
-    // Kalau tidak sedang loading, jangan lakukan apa-apa
-    if (!isLoading) return;
-
-    // Hitung berapa lama loading sudah berjalan
-    const elapsed = Date.now() - loadStartTime.current;
-    const MINIMUM_LOADING_TIME = 3000; // 3000 milidetik = 3 detik
-
-    if (elapsed < MINIMUM_LOADING_TIME) {
-      // Jika loading terlalu cepat, tahan sisa waktunya
-      const remainingTime = MINIMUM_LOADING_TIME - elapsed;
-      timeoutRef.current = setTimeout(() => {
-        setIsLoading(false);
-      }, remainingTime);
-    } else {
-      // Jika loading aslinya memang sudah lebih dari 3 detik, langsung matikan
-      setIsLoading(false);
-    }
-
-    // Bersihkan timer jika komponen ditutup
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    const handle = (event: MouseEvent) => {
+      const anchor = (event.target as Element).closest('a');
+      if (!anchor || event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || anchor.target === '_blank' || anchor.hasAttribute('download')) return;
+      if (anchor.origin !== window.location.origin || anchor.pathname + anchor.search === window.location.pathname + window.location.search) return;
+      setLoading(true); clearTimeout(timer.current);
+      timer.current = setTimeout(() => setLoading(false), 12000);
     };
-  }, [pathname, searchParams]); // Efek ini berjalan setiap kali halaman berganti
-
-  // Efek 2: Tangkap setiap klik pada link
-  useEffect(() => {
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = (e.target as Element).closest("a");
-      
-      if (!target) return; 
-      
-      if (
-        target.href &&
-        target.target !== "_blank" &&
-        target.href.startsWith(window.location.origin) &&
-        !e.ctrlKey &&
-        !e.metaKey
-      ) {
-        const currentPath = window.location.pathname + window.location.search;
-        const targetPath = target.pathname + target.search;
-        
-        if (currentPath !== targetPath) {
-          // CATAT WAKTU MULAI KLIK
-          loadStartTime.current = Date.now();
-          setIsLoading(true); 
-        }
-      }
-    };
-
-    document.addEventListener("click", handleAnchorClick);
-    
-    return () => {
-      document.removeEventListener("click", handleAnchorClick);
-    };
+    document.addEventListener('click', handle);
+    return () => { document.removeEventListener('click', handle); clearTimeout(timer.current); };
   }, []);
-
-  if (!isLoading) return null;
-
-  return (
-    <div className="fixed inset-0 z-[99999] flex flex-col items-center justify-center bg-white/90 backdrop-blur-sm transition-opacity duration-500">
-      <div className="relative flex flex-col items-center animate-fade-in-up">
-        {/* LOGO DIPERBESAR (Ubah angka width & height di bawah ini jika ingin lebih besar/kecil lagi) */}
-        <Image 
-          src="/loading-cleo.gif" 
-          alt="Memuat halaman..." 
-          width={240} 
-          height={240} 
-          className="object-contain"
-          unoptimized 
-        />
-      
-      </div>
-    </div>
-  );
+  return loading ? <div role="status" aria-label="Loading page" className="fixed inset-0 z-[99999] flex items-center justify-center bg-white/60 backdrop-blur-md"><Image src="/loading-cleo.gif" alt="Loading Cleo Hotels" width={180} height={180} unoptimized /></div> : null;
 }

@@ -1,95 +1,22 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useParams } from "next/navigation"; 
-import { Menu, X } from "lucide-react";
-
+'use client';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import Image from 'next/image';
+import { usePathname, useParams } from 'next/navigation';
+import { Menu, X, ArrowUpRight } from 'lucide-react';
 export function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
-  
-  const pathname = usePathname();
-  const params = useParams();
-  
-  const locale = (params?.locale as string) || "id";
-  const isHotelsPage = pathname?.includes("/hotels");
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
-  return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-300 ${
-        scrolled || isOpen 
-          ? "bg-white shadow-md py-2" 
-          : "bg-white/95 backdrop-blur-sm py-2 border-b border-neutral-100"
-      }`}
-    >
-      <div className="w-full max-w-7xl mx-auto px-6">
-        <div className="flex items-center justify-between">
-          
-          <Link href={`/${locale}`} className="relative h-10 w-32 md:h-12 md:w-36 z-[101]">
-             <Image 
-               src="/logo.png" 
-               alt="Cleo Hotels" 
-               fill 
-               className="object-contain object-left"
-               priority
-             />
-          </Link>
-
-          <div className="hidden lg:flex items-center gap-10">
-            <NavLink href={`/${locale}`} label="Home" active={pathname === `/${locale}` || pathname === `/${locale}/`} />
-            <NavLink href={`/${locale}/hotels`} label="Our Hotels" active={isHotelsPage} />
-            <NavLink href={`/${locale}/about`} label="About Us" active={pathname?.includes("/about")} />
-            <NavLink href={`/${locale}/contact`} label="Contact" active={pathname?.includes("/contact")} />
-          </div>
-
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden z-[101] p-2 text-neutral-800 transition hover:text-blue-700 focus:outline-none"
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
-      </div>
-
-      <div
-        className={`fixed inset-0 bg-white z-[90] flex flex-col items-center justify-center gap-8 transition-transform duration-300 ease-in-out lg:hidden ${
-          isOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <NavLink href={`/${locale}`} label="Home" onClick={() => setIsOpen(false)} mobile />
-        <NavLink href={`/${locale}/hotels`} label="Our Hotels" onClick={() => setIsOpen(false)} mobile />
-        <NavLink href={`/${locale}/about`} label="About Us" onClick={() => setIsOpen(false)} mobile />
-        <NavLink href={`/${locale}/contact`} label="Contact" onClick={() => setIsOpen(false)} mobile />
-      </div>
-    </nav>
-  );
-}
-
-function NavLink({ href, label, active, mobile, onClick }: { href: string; label: string; active?: boolean; mobile?: boolean; onClick?: () => void; }) {
-  return (
-    <Link
-      href={href}
-      onClick={onClick}
-      className={`font-medium transition-colors hover:text-blue-700 tracking-wide ${
-        mobile ? "text-2xl" : "text-sm" 
-      } ${active ? "text-blue-700 font-bold" : "text-neutral-600"}`}
-    >
-      {label}
-    </Link>
-  );
+  const [open, setOpen] = useState(false), [scrolled, setScrolled] = useState(false);
+  const pathname = usePathname(), params = useParams();
+  const locale = params?.locale === 'id' ? 'id' : 'en', id = locale === 'id';
+  const links = [{ path: '', label: id ? 'Beranda' : 'Home' }, { path: '/hotels', label: id ? 'Hotel Kami' : 'Our Hotels' }, { path: '/promos', label: id ? 'Penawaran' : 'Offers' }, { path: '/about', label: id ? 'Tentang Cleo' : 'Our Story' }, { path: '/contact', label: id ? 'Kontak' : 'Contact' }];
+  useEffect(() => { const handle = () => setScrolled(window.scrollY > 24); handle(); window.addEventListener('scroll', handle, { passive: true }); return () => window.removeEventListener('scroll', handle); }, []);
+  useEffect(() => setOpen(false), [pathname]);
+  const languageHref = (pathname || `/${locale}`).replace(/^\/(en|id)(?=\/|$)/, id ? '/en' : '/id');
+  return <nav className={`site-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
+    <div className="nav-inner"><Link href={`/${locale}`} className="nav-logo"><Image src="/logo.png" alt="Cleo Hotels" fill className="object-contain object-left" priority/></Link>
+      <div className="desktop-nav">{links.map(l => <Link key={l.path} href={`/${locale}${l.path}`} aria-current={pathname === `/${locale}${l.path}` ? 'page' : undefined}>{l.label}</Link>)}</div>
+      <div className="nav-actions"><Link href={languageHref} className="language-switch" aria-label={id ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}>{id ? 'EN' : 'ID'}</Link><Link className="cleo-button nav-book" href={`/${locale}#booking`}>{id ? 'Reservasi' : 'Book your stay'}<ArrowUpRight size={16}/></Link><button className="mobile-toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-nav">{open ? <X/> : <Menu/>}</button></div>
+    </div>
+    {open && <div id="mobile-nav" className="mobile-nav" onKeyDown={e => { if(e.key === 'Escape') setOpen(false); }}>{links.map(l => <Link key={l.path} href={`/${locale}${l.path}`} onClick={() => setOpen(false)}>{l.label}</Link>)}<Link href={`/${locale}#booking`} onClick={() => setOpen(false)}>{id ? 'Reservasi' : 'Book your stay'} →</Link></div>}
+  </nav>;
 }

@@ -36,3 +36,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Cleo Experience: AI concierge, native booking and 360° tours
+
+See [deployment and configuration](docs/DEPLOYMENT.md) for Vercel environment,
+Supabase migration, admin roles, verified branch mappings and optional authorized
+availability adapters. No API keys are included in this repository.
+
+```bash
+npm ci --legacy-peer-deps
+npm test
+npm run typecheck
+npm run lint
+npm run build
+```
+
+Manage the new features at `/admin/experience`. The existing hotel / room /
+facility / promotion managers remain available. Live inventory must be connected
+through an authorized hotel provider before the assistant can confirm stock.

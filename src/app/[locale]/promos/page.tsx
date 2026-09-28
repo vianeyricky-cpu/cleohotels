@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
 
+export const dynamic = "force-dynamic";
+
 export default async function PromosPage() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
@@ -18,6 +20,7 @@ export default async function PromosPage() {
         </p>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {!promos?.length && <p className="text-neutral-500">New offers are on their way. Contact your preferred Cleo Hotel for current packages.</p>}
           {promos?.map((promo) => (
             <div key={promo.id} className="bg-white rounded-2xl overflow-hidden shadow-sm border border-neutral-200 flex flex-col">
               <div className="relative h-64 w-full">

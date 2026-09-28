@@ -31,7 +31,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
           Our Collections
         </p>
         
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-neutral-900 mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-neutral-900 mb-6 tracking-tight animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
           Discover Cleo Locations
         </h1>
         
@@ -48,7 +48,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
             <Link 
               key={hotel.id} 
               href={`/${params.locale}/hotels/${hotel.slug}`}
-              className="group flex flex-col overflow-hidden rounded-[2rem] bg-white border border-neutral-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all duration-300 hover:shadow-xl hover:border-[#1a56db]/30 hover:-translate-y-2"
+              className="group flex flex-col overflow-hidden rounded-xl bg-white border border-neutral-100 shadow-[0_4px_20px_rgb(0,0,0,0.03)] transition-all duration-300 hover:shadow-xl hover:border-[#1a56db]/30 hover:-translate-y-2"
             >
               {/* Gambar Hotel */}
               <div className="relative h-60 w-full overflow-hidden bg-neutral-100">
@@ -68,7 +68,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
 
               {/* Konten Detail Hotel */}
               <div className="flex flex-1 flex-col p-6 md:p-8">
-                <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#1a56db] mb-2">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#1a56db] mb-2">
                   {hotel.tagline || "Business & Leisure"}
                 </p>
                 <h2 className="text-2xl font-bold text-neutral-900 mb-4 group-hover:text-[#1a56db] transition-colors">
@@ -89,7 +89,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
                 {/* Footer Kartu */}
                 <div className="mt-auto flex items-center justify-between">
                   <div className="flex text-[#1a56db] gap-1">
-                     {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" stroke="none" />)}
+                     <span className="text-xs tracking-wider">SURABAYA</span>
                   </div>
                   <span className="flex items-center gap-1.5 text-sm font-bold text-[#1a56db] group-hover:text-blue-800 uppercase tracking-widest transition-colors">
                     View Details <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
@@ -102,11 +102,11 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
       </div>
 
       {/* --- 3. OFFERS & PACKAGES SECTION (Desain Baru Gambar 3) --- */}
-      <section className="py-20 px-6 bg-white relative z-10 mb-16 rounded-[3rem] mx-4 max-w-7xl lg:mx-auto border border-neutral-100 shadow-sm">
+      <section className="py-20 px-6 bg-white relative z-10 mb-16 rounded-2xl mx-4 max-w-7xl lg:mx-auto border border-neutral-100 shadow-sm">
         <div className="w-full mx-auto">
           {/* Header Offers & Packages */}
           <div className="mb-14 text-left border-b border-neutral-100 pb-8 px-4">
-             <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
+             <h2 className="text-3xl md:text-4xl font-semibold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
              <p className="text-neutral-500 text-base md:text-lg max-w-3xl">
                Take advantage of our large variety of packages and special offers created by us and designed with your needs in mind.
              </p>
@@ -118,7 +118,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
               safePromos.map((promo) => (
                 <div key={promo.id} className="flex flex-col group">
                   {/* Gambar Promo dengan Sudut Lengkung */}
-                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-[1.5rem]">
+                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-xl">
                     <Image 
                       src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
                       alt={promo.title} 
@@ -128,7 +128,7 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
                   </div>
                   
                   {/* Teks Konten */}
-                  <h3 className="text-[19px] font-extrabold text-neutral-900 mb-2 uppercase tracking-wide">
+                  <h3 className="text-[19px] font-semibold text-neutral-900 mb-2 uppercase tracking-wide">
                     {promo.title}
                   </h3>
                   <p className="text-neutral-500 text-[15px] mb-6 flex-1 leading-relaxed">
@@ -155,13 +155,13 @@ export default async function HotelsIndexPage({ params }: { params: { locale: st
 
       {/* --- 4. READY TO EXPERIENCE CLEO BANNER --- */}
       <section className="px-6 relative z-10">
-        <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-white to-[#f4f7ff] border border-blue-50/50 rounded-[2.5rem] p-12 md:p-16 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
+        <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-white to-[#f4f7ff] border border-blue-50/50 rounded-2xl p-12 md:p-16 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
           {/* Efek Cahaya Halus */}
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-blue-100/40 rounded-full blur-3xl z-0 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl z-0 pointer-events-none"></div>
           
           <div className="relative z-10">
-            <h2 className="text-3xl md:text-5xl font-extrabold text-neutral-900 mb-6 tracking-tight">
+            <h2 className="text-3xl md:text-5xl font-semibold text-neutral-900 mb-6 tracking-tight">
               Ready to Experience Cleo?
             </h2>
             <p className="text-neutral-600 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">

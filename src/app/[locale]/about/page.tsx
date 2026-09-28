@@ -30,9 +30,9 @@ export default async function AboutPage({ params }: { params: { locale: string }
             <h2 className="text-sm font-bold text-blue-400 tracking-widest uppercase mb-4">
               Our Parent Company
             </h2>
-            <h3 className="text-3xl md:text-5xl font-extrabold text-white mb-6 tracking-tight">
+            <h1 className="text-3xl md:text-5xl font-semibold text-white mb-6 tracking-tight">
               Part of Tanly Hospitality
-            </h3>
+            </h1>
             <p className="text-gray-300 leading-relaxed text-base md:text-lg">
               Cleo Hotels is managed by <strong className="text-white">Tanly Hospitality</strong>, an Indonesian hotel management company operating a growing portfolio of hotels and resorts across the country. Tanly Hospitality manages multiple brands serving different travel needs:
             </p>
@@ -41,7 +41,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
           {/* Grid Brands Tanly Hospitality (Dark Cards) */}
           <div className="grid sm:grid-cols-2 gap-6 mb-16">
             {/* Brand 1 */}
-            <div className="bg-white/5 backdrop-blur-sm p-8 rounded-[1.5rem] border border-white/10 shadow-lg hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
+            <div className="bg-white/5 backdrop-blur-sm p-8 rounded-xl border border-white/10 shadow-lg hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-blue-500/20 p-2 rounded-full text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
                   <Check size={20} strokeWidth={3} />
@@ -54,7 +54,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
             </div>
 
             {/* Brand 2 */}
-            <div className="bg-white/5 backdrop-blur-sm p-8 rounded-[1.5rem] border border-white/10 shadow-lg hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
+            <div className="bg-white/5 backdrop-blur-sm p-8 rounded-xl border border-white/10 shadow-lg hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-blue-500/20 p-2 rounded-full text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
                   <Check size={20} strokeWidth={3} />
@@ -67,7 +67,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
             </div>
 
             {/* Brand 3 */}
-            <div className="bg-white/5 backdrop-blur-sm p-8 rounded-[1.5rem] border border-white/10 shadow-lg hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
+            <div className="bg-white/5 backdrop-blur-sm p-8 rounded-xl border border-white/10 shadow-lg hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-blue-500/20 p-2 rounded-full text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
                   <Check size={20} strokeWidth={3} />
@@ -80,7 +80,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
             </div>
 
             {/* Brand 4 */}
-            <div className="bg-white/5 backdrop-blur-sm p-8 rounded-[1.5rem] border border-white/10 shadow-lg hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
+            <div className="bg-white/5 backdrop-blur-sm p-8 rounded-xl border border-white/10 shadow-lg hover:border-blue-500/50 hover:bg-white/10 transition-all duration-300 group">
               <div className="flex items-center gap-3 mb-4">
                 <div className="bg-blue-500/20 p-2 rounded-full text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors">
                   <Check size={20} strokeWidth={3} />
@@ -109,7 +109,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
         <div className="w-full max-w-7xl mx-auto">
           {/* Header Offers & Packages */}
           <div className="mb-14 text-left border-b border-neutral-100 pb-8">
-             <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
+             <h2 className="text-3xl md:text-4xl font-semibold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
              <p className="text-neutral-500 text-base md:text-lg max-w-3xl">
                Take advantage of our large variety of packages and special offers created by us and designed with your needs in mind.
              </p>
@@ -121,7 +121,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
               safePromos.map((promo) => (
                 <div key={promo.id} className="flex flex-col group">
                   {/* Gambar Promo dengan Sudut Lengkung */}
-                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-[1.5rem]">
+                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-xl">
                     <Image 
                       src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
                       alt={promo.title} 
@@ -131,7 +131,7 @@ export default async function AboutPage({ params }: { params: { locale: string }
                   </div>
                   
                   {/* Teks Konten */}
-                  <h3 className="text-[19px] font-extrabold text-neutral-900 mb-2 uppercase tracking-wide">
+                  <h3 className="text-[19px] font-semibold text-neutral-900 mb-2 uppercase tracking-wide">
                     {promo.title}
                   </h3>
                   <p className="text-neutral-500 text-[15px] mb-6 flex-1 leading-relaxed">
@@ -158,13 +158,13 @@ export default async function AboutPage({ params }: { params: { locale: string }
 
       {/* --- 3. DISCOVER CLEO SECTION --- */}
       <section className="py-24 px-6 bg-white">
-        <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-white to-[#f8faff] border border-blue-50/50 rounded-[2.5rem] p-12 md:p-20 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
+        <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-white to-[#f8faff] border border-blue-50/50 rounded-2xl p-12 md:p-20 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
           {/* Subtle Glow Background */}
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl z-0 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-blue-50/30 rounded-full blur-3xl z-0 pointer-events-none"></div>
           
           <div className="relative z-10">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-neutral-900 mb-6 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-semibold text-neutral-900 mb-6 tracking-tight">
               Best Affordable Hotel in Surabaya Starts Here.
             </h2>
             <p className="text-neutral-600 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">

@@ -4,7 +4,7 @@ import { Instagram, Facebook, Phone, Mail, MapPin } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-[#0f172a] text-white border-t border-blue-900/30 pt-20 pb-10">
+    <footer className="bg-[#082944] text-white border-t border-blue-900/30 pt-20 pb-10">
       <div className="mx-auto max-w-7xl px-6 grid gap-16 md:grid-cols-2 lg:grid-cols-4">
         
         {/* KOLOM 1: BRAND (LOGO DENGAN BACKGROUND PUTIH) */}
@@ -27,12 +27,10 @@ export function Footer() {
             <span className="block font-bold text-blue-400 mt-2">#EnjoyLife</span>
           </p>
           <div className="flex gap-4">
-            <a href="https://instagram.com/cleohotels" target="_blank" className="p-3 rounded-full bg-white/5 hover:bg-blue-600 hover:text-white transition border border-white/10">
+            <a href="https://instagram.com/cleohotels" target="_blank" aria-label="Instagram Cleo Hotels" rel="noopener noreferrer" className="p-3 rounded-full bg-white/5 hover:bg-blue-600 hover:text-white transition border border-white/10">
               <Instagram size={20} />
             </a>
-            <a href="#" className="p-3 rounded-full bg-white/5 hover:bg-blue-600 hover:text-white transition border border-white/10">
-              <Facebook size={20} />
-            </a>
+
           </div>
         </div>
 
@@ -69,7 +67,7 @@ export function Footer() {
           <div className="grid sm:grid-cols-2 gap-4">
             
             {/* Jemursari */}
-            <div className="p-6 rounded-2xl bg-[#162032] border border-white/5 hover:border-blue-500/50 hover:bg-[#1a263b] transition group">
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/30 hover:border-blue-500/50 hover:bg-[#1a263b] transition group">
               <h4 className="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition">Cleo Jemursari</h4>
               <p className="text-[10px] text-gray-400 mb-4 uppercase tracking-widest">Business & Transit Hub</p>
               <a href="tel:+62318483000" className="flex items-center gap-2 text-sm text-white font-medium hover:text-blue-400 transition">
@@ -78,7 +76,7 @@ export function Footer() {
             </div>
 
             {/* Walikota Mustajab */}
-            <div className="p-6 rounded-2xl bg-[#162032] border border-white/5 hover:border-blue-500/50 hover:bg-[#1a263b] transition group">
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/30 hover:border-blue-500/50 hover:bg-[#1a263b] transition group">
               <h4 className="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition">Cleo Walikota</h4>
               <p className="text-[10px] text-gray-400 mb-4 uppercase tracking-widest">Heritage & Civic Center</p>
               <a href="tel:+62315489000" className="flex items-center gap-2 text-sm text-white font-medium hover:text-blue-400 transition">
@@ -87,7 +85,7 @@ export function Footer() {
             </div>
 
             {/* Tunjungan */}
-            <div className="p-6 rounded-2xl bg-[#162032] border border-white/5 hover:border-blue-500/50 hover:bg-[#1a263b] transition group">
+            <div className="p-6 rounded-2xl bg-white/5 border border-white/30 hover:border-blue-500/50 hover:bg-[#1a263b] transition group">
               <h4 className="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition">Cleo Tunjungan</h4>
               <p className="text-[10px] text-gray-400 mb-4 uppercase tracking-widest">Lifestyle & Shopping</p>
               <a href="tel:+62315323330" className="flex items-center gap-2 text-sm text-white font-medium hover:text-blue-400 transition">
