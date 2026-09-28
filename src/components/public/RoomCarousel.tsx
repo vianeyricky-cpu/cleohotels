@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import TourLaunch from "@/components/tour/TourLaunch";
+import type { TourGroup } from "@/lib/cleo/tour";
 import { Maximize, Users, BedDouble, ChevronLeft, ChevronRight, X } from "lucide-react";
 
-export function RoomCarousel({ rooms }: { rooms: any[] }) {
+export function RoomCarousel({ rooms, tours = [], locale = 'en' }: { rooms: any[]; tours?: TourGroup[]; locale?: string }) {
   const [currentIndex, setCurrentIndex] = useState(0);
   
   // 1. TAMBAHAN: State untuk menyimpan gambar yang sedang di-klik
@@ -27,6 +29,7 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
   };
 
   const activeRoom = rooms[currentIndex];
+  const activeTour = tours.find(group => group.placement.type === 'room' && group.placement.targetId === String(activeRoom.id));
 
   return (
     <div className="w-full">
@@ -118,6 +121,8 @@ export function RoomCarousel({ rooms }: { rooms: any[] }) {
           ))}
         </div>
       )}
+
+      <TourLaunch key={activeRoom.id} group={activeTour} locale={locale}/>
 
       {/* --- SUB GALLERY (FOTO TAMBAHAN / THUMBNAILS) --- */}
       {activeRoom?.images && activeRoom.images.length > 0 && (
