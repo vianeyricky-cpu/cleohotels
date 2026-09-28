@@ -45,7 +45,7 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
       <section className="relative h-[80vh] min-h-[600px] w-full flex flex-col justify-end pb-32 pt-[120px]">
         <div className="absolute inset-0 z-0 bg-neutral-900">
           <Image src={hotel.image_url || "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80"} alt={hotel.name} fill className="object-cover" priority />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/25" />
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="inline-block border border-white/20 bg-black/20 backdrop-blur-md rounded-full px-5 py-2 mb-6">

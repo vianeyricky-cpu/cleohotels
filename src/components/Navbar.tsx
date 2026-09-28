@@ -12,7 +12,10 @@ export function Navbar() {
   useEffect(() => { const handle = () => setScrolled(window.scrollY > 24); handle(); window.addEventListener('scroll', handle, { passive: true }); return () => window.removeEventListener('scroll', handle); }, []);
   useEffect(() => setOpen(false), [pathname]);
   const languageHref = (pathname || `/${locale}`).replace(/^\/(en|id)(?=\/|$)/, id ? '/en' : '/id');
-  return <nav className={`site-nav ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
+  const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
+  const darkHero = pathname === `/${locale}/about` || pathname === `/${locale}/contact` || new RegExp(`^/${locale}/hotels/[^/]+/?$`).test(pathname || '');
+  const overlay = (isHome || darkHero) && !scrolled && !open;
+  return <nav className={`site-nav ${overlay ? 'is-overlay' : 'has-surface'} ${overlay && darkHero ? 'on-dark-hero' : ''} ${scrolled ? 'is-scrolled' : ''}`} aria-label="Main navigation">
     <div className="nav-inner"><Link href={`/${locale}`} className="nav-logo"><Image src="/logo.png" alt="Cleo Hotels" fill className="object-contain object-left" priority/></Link>
       <div className="desktop-nav">{links.map(l => <Link key={l.path} href={`/${locale}${l.path}`} aria-current={pathname === `/${locale}${l.path}` ? 'page' : undefined}>{l.label}</Link>)}</div>
       <div className="nav-actions"><Link href={languageHref} className="language-switch" aria-label={id ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}>{id ? 'EN' : 'ID'}</Link><Link className="cleo-button nav-book" href={`/${locale}#booking`}>{id ? 'Reservasi' : 'Book your stay'}<ArrowUpRight size={16}/></Link><button className="mobile-toggle" onClick={() => setOpen(!open)} aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} aria-controls="mobile-nav">{open ? <X/> : <Menu/>}</button></div>

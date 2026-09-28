@@ -1,3 +1,4 @@
+import { roomAmenities } from "@/lib/cleo/room";
 import { supabase } from "@/lib/supabase"; // <--- FIX: Pakai path yang benar
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -102,8 +103,8 @@ export default async function HotelRoomsPage({
                   Amenities
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {room.amenities ? (
-                    room.amenities.split(",").map((item, i) => (
+                  {roomAmenities(room.amenities).length > 0 ? (
+                    roomAmenities(room.amenities).map((item, i) => (
                       <span
                         key={i}
                         className="flex items-center gap-1 rounded-full bg-navy-50 px-2 py-1 text-[10px] font-medium text-navy-800 border border-navy-100"

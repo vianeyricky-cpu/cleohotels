@@ -117,22 +117,30 @@ button:disabled { cursor:not-allowed; opacity:.5; }
 .cleo-button { display:inline-flex; align-items:center; justify-content:center; gap:10px; background:var(--cleo-navy); color:white; padding:16px 23px; border:1px solid transparent; border-radius:6px; font-size:12px; font-weight:600; transition:background .2s,transform .2s; white-space:nowrap; }
 a.cleo-button { color:white; }
 .cleo-button:hover { background:#1b5894; }
-.site-nav { position:fixed; z-index:100; top:0; left:0; right:0; background:#ffffffee; border-bottom:1px solid #dce5ed80; transition:background .35s,box-shadow .35s; }
-.site-nav.is-scrolled { background:#ffffffc7; backdrop-filter:blur(22px) saturate(140%); box-shadow:0 5px 25px #0829440b; }
+.site-nav { position:fixed; z-index:100; top:0; left:0; right:0; background:transparent; border-bottom:1px solid transparent; color:#082944; transition:background .3s,box-shadow .3s,color .3s; }
+.site-nav.has-surface { background:#fff; border-bottom-color:#dce5ed; }
+.site-nav.is-scrolled { background:#fffffff5; backdrop-filter:blur(18px) saturate(140%); box-shadow:0 5px 25px #0829440b; }
+.site-nav.is-overlay { background:transparent; backdrop-filter:none; box-shadow:none; }
+.site-nav.on-dark-hero { color:white; }
+.site-nav.on-dark-hero .desktop-nav { color:#fff; text-shadow:0 1px 6px #0007; }
+.site-nav.on-dark-hero .desktop-nav a:hover,.site-nav.on-dark-hero .desktop-nav a[aria-current] { color:#b8ddff; }
+.site-nav.on-dark-hero .nav-logo img { filter:brightness(0) invert(1); }
+.site-nav.on-dark-hero .nav-book { border-color:#ffffff70; background:#08294488; }
+.site-nav a:focus-visible,.site-nav button:focus-visible { outline:2px solid #3184c8; outline-offset:5px; }
 .nav-inner { max-width:1328px; padding:16px 32px; margin:auto; display:flex; align-items:center; justify-content:space-between; gap:24px; }
 .nav-logo { position:relative; width:130px; height:42px; flex-shrink:0; }
-.desktop-nav { display:flex; gap:30px; font-size:12px; color:#526779; }
+.desktop-nav { display:flex; gap:clamp(22px,2.4vw,34px); font-size:16px; font-weight:500; color:#153e5d; }
 .desktop-nav a[aria-current],.desktop-nav a:hover { color:#1b5894; }
 .nav-actions { display:flex; align-items:center; gap:20px; }
-.language-switch { font-size:11px; font-weight:700; }
-.nav-book { padding:12px 18px; }
+.language-switch { font-size:14px; font-weight:700; }
+.nav-book { padding:13px 20px; font-size:14px; }
 .mobile-toggle { display:none; }
-.mobile-nav { padding:24px; background:white; display:grid; gap:24px; border-top:1px solid var(--cleo-line); }
+.mobile-nav { font-size:18px; padding:24px; background:white; display:grid; gap:24px; border-top:1px solid var(--cleo-line); }
 .home-hero { position:relative; min-height:650px; height:83vh; max-height:920px; overflow:hidden; display:flex; align-items:center; background:#dce5eb; }
 .hero-photo { position:absolute; inset:0; }
 .hero-photo img { object-position:65% 50%; }
 .hero-shade { position:absolute; inset:0; background:linear-gradient(90deg,#f2f7fbeF 0%,#f2f7fbdc 27%,#f2f7fb65 50%,transparent 77%); }
-.hero-content { position:relative; width:100%; max-width:1280px; margin:auto; padding:30px 32px 90px; }
+.hero-content { position:relative; width:100%; max-width:1280px; margin:auto; padding:110px 32px 90px; }
 .hero-content h1 { font-size:clamp(44px,5.3vw,80px); max-width:750px; margin:22px 0; }
 .hero-content h1 em { font-weight:400; color:#286598; }
 .hero-content p { max-width:400px; font-size:14px; line-height:1.9; color:#3e5d73; }
@@ -183,19 +191,23 @@ a.cleo-button { color:white; }
 .concierge-root { position:fixed; right:24px; bottom:24px; z-index:120; }
 .concierge-toggle { display:flex; align-items:center; gap:10px; padding:16px 21px; border-radius:40px; background:#082944; color:white; font-size:12px; box-shadow:0 6px 30px #08294435; margin-left:auto; border:1px solid #ffffff35; }
 .chat-online { width:6px; height:6px; background:#98d6c1; border-radius:50%; }
-.concierge-panel { width:380px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 110px); background:white; border-radius:16px; box-shadow:0 18px 70px #08294430; border:1px solid #dce5ed; margin-bottom:12px; display:flex; flex-direction:column; overflow:hidden; }
+.concierge-panel { width:410px; max-width:calc(100vw - 32px); max-height:calc(100dvh - 110px); background:white; border-radius:16px; box-shadow:0 18px 70px #08294430; border:1px solid #dce5ed; margin-bottom:12px; display:flex; flex-direction:column; overflow:hidden; }
 .concierge-panel header { display:flex; justify-content:space-between; padding:22px; background:#082944; color:white; gap:12px; }
-.concierge-panel header h2 { font-size:24px; margin:0; }
+.concierge-panel header h2 { font-size:26px; margin:0; }
 .concierge-panel header .eyebrow { color:#a2c9e8; font-size:8px; margin-bottom:8px; }
-.concierge-branch { padding:15px 18px; border-bottom:1px solid #e4ebf1; }
+.concierge-branch { padding:12px 18px; border-bottom:1px solid #e4ebf1; }
 .concierge-branch label { display:block; font-size:10px; margin-bottom:7px; }
 .concierge-branch select { width:100%; font-size:12px; border:1px solid #dce5ed; background:#f5f8fb; border-radius:6px; padding:10px; }
-.concierge-messages { overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:12px; min-height:100px; max-height:290px; font-size:12px; line-height:1.7; }
+.concierge-messages { overflow-y:auto; overscroll-behavior:contain; padding:18px; display:flex; flex-direction:column; gap:12px; min-height:100px; max-height:320px; font-size:13px; line-height:1.7; }
 .chat-assistant { padding:13px; background:#f0f5f9; border-radius:0 12px 12px 12px; white-space:pre-wrap; }
 .chat-user { padding:12px 15px; background:#1c548b; color:white; border-radius:12px 0 12px 12px; max-width:90%; align-self:flex-end; white-space:pre-wrap; }
 .chat-assistant a { display:flex; align-items:center; gap:6px; color:#155da0; margin-top:10px; font-weight:600; }
-.concierge-actions { padding:8px 18px; display:flex; gap:8px; }
+.concierge-actions { padding:8px 18px; display:flex; gap:8px; flex-wrap:wrap; }
 .concierge-actions button { font-size:10px; border:1px solid #d3e0ec; border-radius:30px; padding:7px 12px; }
+.concierge-language { display:flex; align-items:center; gap:10px; padding:9px 18px; background:#f8fafc; border-bottom:1px solid #e4ebf1; }
+.concierge-language label { font-size:11px; color:#526779; }
+.concierge-language select { flex:1; min-width:0; font-size:11px; border:0; padding:5px; background:transparent; color:#153e5d; }
+.chat-typing { display:flex; align-items:center; gap:8px; font-size:11px; color:#526779; }
 .concierge-compose { padding:10px 18px; display:flex; gap:8px; border-top:1px solid #e8eef4; }
 .concierge-compose input { flex:1; min-width:0; padding:10px 0; font-size:12px; outline:none; }
 .concierge-compose button { background:#082944; color:white; border-radius:6px; padding:10px; }
@@ -223,6 +235,8 @@ a.cleo-button { color:white; }
   .desktop-nav { display:none; }.mobile-toggle { display:block; }.nav-inner { padding:14px 22px; }.booking-fields { grid-template-columns:2fr 1fr 1fr; }.hero-content h1 { font-size:58px; }.hero-content { padding-left:32px; }
 }
 @media(max-width:640px) {
-  .nav-inner { padding:12px 18px; gap:12px; }.nav-logo { width:100px; height:34px; }.nav-actions { gap:14px; }.nav-book { display:none; }.home-hero { height:650px; min-height:unset; }.hero-content { padding:40px 24px 140px; align-self:flex-start; }.hero-content h1 { font-size:43px; }.hero-content p { max-width:300px; font-size:12px; }.hero-shade { background:linear-gradient(90deg,#eef5fbe8,#eef5fbbe 58%,#eef5fb30); }.hero-caption { display:none; }.hero-photo img { object-position:65% center; }.booking-panel { padding:20px; }.booking-fields { grid-template-columns:1fr 1fr; gap:12px; }.booking-fields label:first-child,.booking-fields .cleo-button { grid-column:span 2; }.booking-fields label:nth-child(4),.booking-fields label:nth-child(5) { grid-column:auto; }.booking-heading { font-size:8px; }.booking-heading span:last-child { display:none; }.booking-bottom { font-size:9px; }.home-intro { padding:25px 24px 55px; }.tour-viewer { height:520px; }.tour-title { top:15px; left:15px; max-width:65%; }.tour-book { top:auto; bottom:140px; left:20px; transform:none; }.tour-controls { right:15px; top:15px; }.tour-cover h3 { font-size:30px; }.concierge-root { right:16px; bottom:16px; }.concierge-panel { max-height:calc(100dvh - 95px); }.concierge-messages { max-height:220px; }.concierge-toggle { padding:13px 17px; }.admin-card { padding:16px; }
+  .nav-inner { padding:12px 18px; gap:12px; }.nav-logo { width:100px; height:34px; }.nav-actions { gap:14px; }.nav-book { display:none; }.home-hero { height:650px; min-height:unset; }.hero-content { padding:122px 24px 140px; align-self:flex-start; }.hero-content h1 { font-size:43px; }.hero-content p { max-width:300px; font-size:12px; }.hero-shade { background:linear-gradient(90deg,#eef5fbe8,#eef5fbbe 58%,#eef5fb30); }.hero-caption { display:none; }.hero-photo img { object-position:65% center; }.booking-panel { padding:20px; }.booking-fields { grid-template-columns:1fr 1fr; gap:12px; }.booking-fields label:first-child,.booking-fields .cleo-button { grid-column:span 2; }.booking-fields label:nth-child(4),.booking-fields label:nth-child(5) { grid-column:auto; }.booking-heading { font-size:8px; }.booking-heading span:last-child { display:none; }.booking-bottom { font-size:9px; }.home-intro { padding:25px 24px 55px; }.tour-viewer { height:520px; }.tour-title { top:15px; left:15px; max-width:65%; }.tour-book { top:auto; bottom:140px; left:20px; transform:none; }.tour-controls { right:15px; top:15px; }.tour-cover h3 { font-size:30px; }.concierge-root { right:16px; bottom:16px; }.concierge-panel { max-height:calc(100dvh - 95px); }.concierge-messages { max-height:220px; }.concierge-toggle { padding:13px 17px; }.admin-card { padding:16px; }
 }
 @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; }.scroll-reveal { opacity:1; filter:none; transform:none; transition:none; }.cleo-site * { animation:none!important; transition:none!important; } }
+
+@media (prefers-reduced-motion: reduce) { .site-nav { transition:none; } }
