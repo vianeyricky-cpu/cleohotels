@@ -1,3 +1,4 @@
+import { HotelTour } from "@/components/tour/HotelTour";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -48,9 +49,9 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
         </div>
         <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
           <div className="inline-block border border-white/20 bg-black/20 backdrop-blur-md rounded-full px-5 py-2 mb-6">
-            <span className="text-[#4aa4ff] font-extrabold tracking-widest text-xs md:text-sm uppercase drop-shadow-md">{displayTagline}</span>
+            <span className="text-[#4aa4ff] font-semibold tracking-widest text-xs md:text-sm uppercase drop-shadow-md">{displayTagline}</span>
           </div>
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-extrabold text-white mb-6 tracking-tight drop-shadow-lg">{hotel.name}</h1>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-semibold text-white mb-6 tracking-tight drop-shadow-lg">{hotel.name}</h1>
           <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm md:text-base font-medium">
             <div className="flex items-center gap-2"><MapPin size={22} className="text-[#4aa4ff]" /><span className="drop-shadow-md">{hotel.address}</span></div>
             <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-white/50"></div>
@@ -77,11 +78,13 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
         <RoomCarousel rooms={rooms || []} />
       </section>
 
+      <HotelTour slug={hotel.slug} name={hotel.name} locale={params.locale} />
+
       {/* --- DYNAMIC FACILITIES SECTION --- */}
       <section className="max-w-7xl mx-auto px-6 mb-12">
-        <div className="bg-neutral-50 rounded-[3rem] p-8 md:p-12 border border-neutral-100 shadow-sm">
+        <div className="bg-neutral-50 rounded-2xl p-8 md:p-12 border border-neutral-100 shadow-sm">
           <div className="mb-12 text-center md:text-left">
-            <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-4">Hotel Facilities</h2>
+            <h2 className="text-3xl md:text-4xl font-semibold text-neutral-900 mb-4">Hotel Facilities</h2>
             <p className="text-neutral-600 text-lg">Enhance your stay with our premium facilities tailored for your needs.</p>
           </div>
 

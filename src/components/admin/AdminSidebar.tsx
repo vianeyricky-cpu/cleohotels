@@ -7,7 +7,7 @@ import {
   ExternalLink, LogOut, ShieldCheck 
 } from "lucide-react"; 
 import clsx from "clsx";
-import { supabase } from "@/lib/supabase";
+import { supabaseClient as supabase } from "@/lib/supabase/client";
 
 const menuGroups = [
   {
@@ -29,6 +29,7 @@ const menuGroups = [
     items: [
       { href: "/admin/promos", label: "Promos & Offers", icon: Tag },
       { href: "/admin/settings", label: "Hero Homepage", icon: Settings },
+      { href: "/admin/experience", label: "Concierge & 360°", icon: ConciergeBell },
     ]
   }
 ];

@@ -32,11 +32,11 @@ export default async function HotelRoomsPage({
   const typedRooms = (rooms || []) as Room[];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
       <div className="mb-8 flex items-center gap-4">
         <Link
           href={`/${params.locale}/hotels/${params.slug}`}
-          className="rounded-full bg-gray-100 p-2 text-gray-600 transition hover:bg-gold-500 hover:text-white"
+          className="rounded-full bg-gray-100 p-2 text-gray-600 transition hover:bg-blue-700 hover:text-white"
         >
           <ArrowLeft size={20} />
         </Link>
@@ -80,15 +80,15 @@ export default async function HotelRoomsPage({
 
               <div className="mb-4 flex flex-wrap gap-4 text-xs text-gray-600">
                 <div className="flex items-center gap-1">
-                  <Users size={14} className="text-gold-500" />
+                  <Users size={14} className="text-blue-400" />
                   <span>{room.capacity} Pax</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Ruler size={14} className="text-gold-500" />
+                  <Ruler size={14} className="text-blue-400" />
                   <span>{room.size} m²</span>
                 </div>
                 <div className="flex items-center gap-1">
-                  <Bed size={14} className="text-gold-500" />
+                  <Bed size={14} className="text-blue-400" />
                   <span>{room.bedType || "King Bed"}</span>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export default async function HotelRoomsPage({
                         key={i}
                         className="flex items-center gap-1 rounded-full bg-navy-50 px-2 py-1 text-[10px] font-medium text-navy-800 border border-navy-100"
                       >
-                        <Check size={10} className="text-gold-500" />
+                        <Check size={10} className="text-blue-400" />
                         {item.trim()}
                       </span>
                     ))
@@ -120,9 +120,9 @@ export default async function HotelRoomsPage({
                 </div>
               </div>
 
-              <button className="mt-2 w-full rounded-lg bg-navy-900 py-3 text-sm font-bold text-white transition hover:bg-gold-500 hover:text-navy-900">
-                Book This Room
-              </button>
+              <Link href={`/${params.locale}/hotels/${params.slug}#booking`} className="mt-2 w-full text-center rounded-lg bg-navy-900 py-3 text-sm font-bold text-white transition hover:bg-blue-700">
+                Check dates at this hotel
+              </Link>
             </div>
           </div>
         ))}
@@ -133,6 +133,6 @@ export default async function HotelRoomsPage({
           </div>
         )}
       </div>
-    </div>
+    </main>
   );
 }

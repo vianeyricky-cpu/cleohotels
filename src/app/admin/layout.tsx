@@ -11,12 +11,6 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="bg-slate-50 font-sans text-slate-900 antialiased min-h-screen" suppressHydrationWarning>
-        <AdminShell>
-           {children}
-        </AdminShell>
-      </body>
-    </html>
+    <div className="admin-theme min-h-screen bg-slate-50 text-slate-900"><AdminShell>{children}</AdminShell></div>
   );
 }

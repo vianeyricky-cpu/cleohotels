@@ -9,6 +9,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
   const hotels = await getHotels();
+  const id = params.locale === "id";
 
   // Koneksi Supabase Server-Side
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
@@ -36,36 +37,34 @@ export default async function HomePage({ params }: { params: { locale: string } 
       {/* --- POPUP DIPASANG DI SINI --- */}
       <PromoModal promo={promoPopupData} />
 
-      {/* --- 1. HERO BANNER SECTION --- */}
-      <section className="relative h-[65vh] md:h-[80vh] min-h-[500px] w-full flex items-center justify-center overflow-hidden bg-neutral-100">
-        <div className="absolute inset-0 z-0">
-          <Image 
-            src={heroImage} 
-            alt="Cleo Hotels Hero Promo" 
-            fill 
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/10" /> 
+      <section className="home-hero">
+        <div className="hero-photo"><Image src={heroImage} alt="Cleo Hotels Surabaya" fill className="object-cover" priority sizes="100vw" /></div>
+        <div className="hero-shade" />
+        <div className="hero-content"><span className="eyebrow">CLEO HOTELS · SURABAYA</span>
+          <h1>{id ? <>Singgah nyaman.<br/><em>Nikmati perjalanan.</em></> : <>A simpler stay.<br/><em>A brighter day.</em></>}</h1>
+          <p>{id ? "Tiga lokasi strategis. Kenyamanan yang Anda butuhkan. Temukan ruang untuk beristirahat di tengah cerita perjalanan Anda." : "Three city locations. Thoughtful comfort. Find your own little escape in the heart of Surabaya."}</p>
+          <Link href={`/${params.locale}/hotels`} className="hero-explore">{id ? "Temukan hotel Anda" : "Discover your Cleo"}<ArrowRight size={18}/></Link>
         </div>
+        <div className="hero-caption"><span>SMART CHOICE. EASY STAY.</span><strong>#EnjoyLife</strong></div>
       </section>
 
       {/* --- 2. FLOATING DARK BOOKING BAR SECTION --- */}
-      <section className="relative z-20 w-full max-w-6xl mx-auto px-4 -mt-20 md:-mt-24 mb-16">
+      <section className="relative z-20 w-full max-w-7xl mx-auto px-4 -mt-12 md:-mt-20 mb-16">
         <BookingWidget />
       </section>
 
       {/* --- 3. TEKS INTRODUKSI --- */}
-      <section className="py-12 px-6 bg-white text-center max-w-4xl mx-auto">
+      <section className="home-intro py-12 px-6 max-w-7xl mx-auto">
+         <span className="eyebrow">WELCOME TO CLEO</span>
          <h2 className="text-3xl md:text-5xl font-bold mb-6 text-neutral-900">
-           Smart Comfort for Every Journey
+           {id ? "Ruang nyaman untuk setiap perjalanan." : "Thoughtful comfort. Effortlessly Cleo."}
          </h2>
          <p className="text-base md:text-lg text-neutral-600 mb-6 leading-relaxed">
            Cleo Hotels is made for modern travelers who value efficiency, comfort, and great value. 
            Whether you're in Surabaya for business or leisure, enjoy a simple, convenient stay in a strategic city location.
          </p>
          <p className="text-lg font-bold text-neutral-900 mb-2">Smart choice. Easy stay.</p>
-         <p className="text-xl font-extrabold text-blue-700">#EnjoyLife</p>
+         <p className="text-xl font-semibold text-blue-700">#EnjoyLife</p>
       </section>
 
       {/* --- 4. OUR VALUES SECTION (DIKEMBALIKAN / TIDAK DIHAPUS) --- */}
@@ -77,21 +76,21 @@ export default async function HomePage({ params }: { params: { locale: string } 
           </div>
           
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-[1.5rem] bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
+            <div className="p-8 rounded-xl bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
               <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                 <Heart size={24} />
               </div>
               <h3 className="text-xl font-bold mb-3 text-neutral-900">Touching Hearts</h3>
               <p className="text-neutral-500 text-sm leading-relaxed">Our mission is to provide experiences that genuinely touch the hearts of our guests through thoughtful service.</p>
             </div>
-            <div className="p-8 rounded-[1.5rem] bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
+            <div className="p-8 rounded-xl bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
               <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                 <Star size={24} />
               </div>
               <h3 className="text-xl font-bold mb-3 text-neutral-900">High Value</h3>
               <p className="text-neutral-500 text-sm leading-relaxed">Smart comfort combined with strategic locations, offering exceptional value for business and transit travelers.</p>
             </div>
-            <div className="p-8 rounded-[1.5rem] bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
+            <div className="p-8 rounded-xl bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
               <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
                 <ShieldCheck size={24} />
               </div>
@@ -107,7 +106,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
         <div className="w-full max-w-7xl mx-auto">
           {/* Header Offers & Packages */}
           <div className="mb-14 text-left">
-             <h2 className="text-3xl md:text-4xl font-extrabold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
+             <h2 className="text-3xl md:text-4xl font-semibold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
              <p className="text-neutral-500 text-base md:text-lg max-w-3xl">
                Take advantage of our large variety of packages and special offers created by us and designed with your needs in mind.
              </p>
@@ -119,7 +118,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
               safePromos.map((promo) => (
                 <div key={promo.id} className="flex flex-col group">
                   {/* Gambar Promo dengan Sudut Lengkung */}
-                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-[1.5rem]">
+                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-xl">
                     <Image 
                       src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
                       alt={promo.title} 
@@ -129,7 +128,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
                   </div>
                   
                   {/* Teks Konten */}
-                  <h3 className="text-[19px] font-extrabold text-neutral-900 mb-2 uppercase tracking-wide">
+                  <h3 className="text-[19px] font-semibold text-neutral-900 mb-2 uppercase tracking-wide">
                     {promo.title}
                   </h3>
                   <p className="text-neutral-500 text-[15px] mb-6 flex-1 leading-relaxed">
@@ -157,10 +156,10 @@ export default async function HomePage({ params }: { params: { locale: string } 
       {/* --- 6. HOTELS LIST --- */}
       <section id="hotels" className="py-24 px-6 bg-neutral-50 border-t border-neutral-100">
         <div className="w-full max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-neutral-900">Our Locations</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-neutral-900">{id ? "Tiga lokasi. Satu rasa nyaman." : "Three locations. Your kind of stay."}</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {hotels.map((hotel) => (
-              <Link href={`/${params.locale}/hotels/${hotel.slug}`} key={hotel.id} className="group relative block h-[420px] overflow-hidden rounded-[2rem] shadow-md hover:shadow-2xl transition-shadow duration-300">
+              <Link href={`/${params.locale}/hotels/${hotel.slug}`} key={hotel.id} className="group relative block h-[420px] overflow-hidden rounded-xl shadow-md hover:shadow-2xl transition-shadow duration-300">
                 <Image
                   src={hotel.image_url || "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000"}
                   alt={hotel.name}
