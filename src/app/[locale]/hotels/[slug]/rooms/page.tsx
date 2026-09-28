@@ -1,4 +1,6 @@
 import { roomAmenities } from "@/lib/cleo/room";
+import { getPublishedTourGroups } from "@/lib/cleo/published-tours";
+import TourLaunch from "@/components/tour/TourLaunch";
 import { supabase } from "@/lib/supabase"; // <--- FIX: Pakai path yang benar
 import { notFound } from "next/navigation";
 import Image from "next/image";
@@ -31,6 +33,7 @@ export default async function HotelRoomsPage({
 
   // Casting data rooms ke tipe Room[] agar TypeScript tidak bingung
   const typedRooms = (rooms || []) as Room[];
+  const tours = await getPublishedTourGroups([hotel], { rooms: typedRooms, facilities: [] });
 
   return (
     <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
@@ -121,6 +124,7 @@ export default async function HotelRoomsPage({
                 </div>
               </div>
 
+              <TourLaunch group={tours.find(group => group.placement.type === 'room' && group.placement.targetId === String(room.id))} locale={params.locale}/>
               <Link href={`/${params.locale}/hotels/${params.slug}#booking`} className="mt-2 w-full text-center rounded-lg bg-navy-900 py-3 text-sm font-bold text-white transition hover:bg-blue-700">
                 Check dates at this hotel
               </Link>

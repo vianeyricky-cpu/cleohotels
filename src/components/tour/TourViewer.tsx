@@ -3,9 +3,9 @@ import { useEffect, useRef, useState } from 'react';
 import Script from 'next/script';
 import { Maximize, Minimize, Plus, Minus, RotateCw, Pause, ArrowUpRight, RefreshCw } from 'lucide-react';
 import type { TourScene, PanoramaViewer } from '@/lib/cleo/tour';
-export default function TourViewer({ scenes, title, bookingHref, onView }: { scenes: TourScene[]; title: string; bookingHref?: string; onView?: (scene: string, pitch: number, yaw: number) => void }) {
+export default function TourViewer({ scenes, title, bookingHref, onView, autoStart = false }: { scenes: TourScene[]; title: string; bookingHref?: string; onView?: (scene: string, pitch: number, yaw: number) => void; autoStart?: boolean }) {
   const node = useRef<HTMLDivElement>(null), container = useRef<HTMLDivElement>(null), instance = useRef<PanoramaViewer>();
-  const [ready, setReady] = useState(false), [started, setStarted] = useState(!!onView), [error, setError] = useState(''), [loading, setLoading] = useState(true), [retry, setRetry] = useState(0);
+  const [ready, setReady] = useState(false), [started, setStarted] = useState(autoStart || !!onView), [error, setError] = useState(''), [loading, setLoading] = useState(true), [retry, setRetry] = useState(0);
   const [active, setActive] = useState(scenes[0]?.id), [rotating, setRotating] = useState(false), [fullscreen, setFullscreen] = useState(false);
   useEffect(() => { if (window.pannellum) setReady(true); }, []);
   useEffect(() => {

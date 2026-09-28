@@ -1,4 +1,5 @@
 import { HotelTour } from "@/components/tour/HotelTour";
+import { getPublishedTourGroups } from "@/lib/cleo/published-tours";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -37,6 +38,7 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
   const displayTagline = hotel.slug.includes("jemursari") 
     ? "Business & Culinary District" 
     : (hotel.tagline || "Smart Comfort Hotel");
+  const tours = await getPublishedTourGroups([hotel], { rooms: rooms || [], facilities: facilities || [] });
 
   return (
     <main className="min-h-screen bg-white text-neutral-900 pb-24">
@@ -75,10 +77,10 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
 
       {/* --- ROOMS SLIDER SECTION --- */}
       <section className="max-w-7xl mx-auto px-6 py-6 mb-20">
-        <RoomCarousel rooms={rooms || []} />
+        <RoomCarousel rooms={rooms || []} tours={tours.filter(group => group.placement.type === 'room')} locale={params.locale}/>
       </section>
 
-      <HotelTour slug={hotel.slug} name={hotel.name} locale={params.locale} />
+      <HotelTour groups={tours} locale={params.locale} />
 
       {/* --- DYNAMIC FACILITIES SECTION --- */}
       <section className="max-w-7xl mx-auto px-6 mb-12">
@@ -89,7 +91,7 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
           </div>
 
           {/* Render Gallery Fasilitas di sini */}
-          <FacilityGallery facilities={facilities || []} />
+          <FacilityGallery facilities={facilities || []} tours={tours.filter(group => group.placement.type === 'facility')} locale={params.locale}/>
 
         </div>
       </section>

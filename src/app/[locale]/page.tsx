@@ -5,6 +5,8 @@ import { ArrowRight, Star, ShieldCheck, Heart } from "lucide-react";
 import { BookingWidget } from "@/components/public/BookingWidget";
 import { createClient } from "@supabase/supabase-js"; 
 import { PromoModal } from "@/components/PromoModal"; 
+import { getPublishedTourGroups } from "@/lib/cleo/published-tours";
+import TourGallery from "@/components/tour/TourGallery";
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
@@ -30,6 +32,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
   // 3. Ambil 3 Promo/Offers Terbaru untuk Section Card
   const { data: promos } = await supabase.from("promos").select("*").order("created_at", { ascending: false }).limit(3);
   const safePromos = promos || []; 
+  const tours = await getPublishedTourGroups(hotels);
 
   return (
     <main className="home-page min-h-screen bg-white text-neutral-900">
@@ -66,6 +69,8 @@ export default async function HomePage({ params }: { params: { locale: string } 
          <p className="text-lg font-bold text-neutral-900 mb-2">Smart choice. Easy stay.</p>
          <p className="text-xl font-semibold text-blue-700">#EnjoyLife</p>
       </section>
+
+      <TourGallery groups={tours} locale={params.locale}/>
 
       {/* --- 4. OUR VALUES SECTION (DIKEMBALIKAN / TIDAK DIHAPUS) --- */}
       <section className="py-20 px-6 bg-neutral-50 border-t border-neutral-100">

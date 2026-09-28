@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import TourLaunch from "@/components/tour/TourLaunch";
+import type { TourGroup } from "@/lib/cleo/tour";
 import { X } from "lucide-react";
 
-export function FacilityGallery({ facilities }: { facilities: any[] }) {
+export function FacilityGallery({ facilities, tours = [], locale = 'en' }: { facilities: any[]; tours?: TourGroup[]; locale?: string }) {
   // State untuk menyimpan URL gambar yang sedang di-klik (diperbesar)
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -99,6 +101,7 @@ export function FacilityGallery({ facilities }: { facilities: any[] }) {
               <p className="text-neutral-600 text-sm leading-relaxed line-clamp-3">
                 {facility.description}
               </p>
+              <TourLaunch group={tours.find(group => group.placement.type === 'facility' && group.placement.targetId === String(facility.id))} locale={locale}/>
             </div>
 
           </div>
