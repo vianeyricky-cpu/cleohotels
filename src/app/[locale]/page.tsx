@@ -32,7 +32,7 @@ export default async function HomePage({ params }: { params: { locale: string } 
   const safePromos = promos || []; 
 
   return (
-    <main className="min-h-screen bg-white text-neutral-900 pt-[60px]">
+    <main className="home-page min-h-screen bg-white text-neutral-900">
       
       {/* --- POPUP DIPASANG DI SINI --- */}
       <PromoModal promo={promoPopupData} />
