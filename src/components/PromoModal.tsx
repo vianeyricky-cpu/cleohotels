@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { X, Send, CheckCircle2, Loader2 } from "lucide-react";
 
@@ -11,6 +11,14 @@ const supabase = createClient(
 
 export function PromoModal({ promo }: { promo: any }) {
   const [isOpen, setIsOpen] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+  useEffect(() => {
+    if (!isOpen) return;
+    dialog.current?.showModal();
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = previous; };
+  }, [isOpen]);
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,7 +29,7 @@ export function PromoModal({ promo }: { promo: any }) {
     if (promo && promo.is_active) {
       // Gunakan sessionStorage agar popup tidak muncul terus-terusan mengganggu jika user sudah menutupnya
       const hasSeenPromo = sessionStorage.getItem("cleo_promo_seen");
-      
+
       if (!hasSeenPromo) {
         // Tunda 3 detik sebelum popup muncul agar lebih natural
         const timer = setTimeout(() => setIsOpen(true), 3000);
@@ -37,6 +45,7 @@ export function PromoModal({ promo }: { promo: any }) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
 
     // Simpan data pengunjung ke tabel PromoLeads
@@ -59,12 +68,13 @@ export function PromoModal({ promo }: { promo: any }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-navy-950/80 backdrop-blur-sm animate-fade-in">
+    <dialog ref={dialog} className="promo-dialog" aria-label={promo.title} onCancel={handleClose} onClose={handleClose}>
       <div className="relative w-full max-w-lg bg-white rounded-[2rem] shadow-2xl overflow-hidden animate-slide-up">
-        
+
         {/* Tombol Tutup (X) */}
-        <button 
+        <button
           onClick={handleClose}
+          aria-label="Close promotion"
           className="absolute top-4 right-4 z-10 p-2 bg-white/20 hover:bg-white/50 backdrop-blur-md text-white rounded-full transition"
         >
           <X size={20} className={promo.image ? "text-white" : "text-neutral-500"} />
@@ -74,9 +84,9 @@ export function PromoModal({ promo }: { promo: any }) {
         {promo.image && (
           <div className="w-full h-48 sm:h-56 bg-neutral-200 relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              src={promo.image} 
-              alt={promo.title} 
+            <img
+              src={promo.image}
+              alt={promo.title}
               className="w-full h-full object-cover"
             />
             {/* Gradient untuk membuat teks di bawahnya lebih terbaca */}
@@ -98,33 +108,33 @@ export function PromoModal({ promo }: { promo: any }) {
             <>
               <h3 className="text-2xl font-bold text-neutral-900 mb-2 mt-2">{promo.title}</h3>
               <p className="text-neutral-500 mb-6">{promo.description}</p>
-              
+
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <input 
-                    type="email" 
-                    required 
-                    placeholder="Alamat Email Anda" 
+                  <input
+                    type="email" aria-label="Alamat email" autoComplete="email"
+                    required
+                    placeholder="Alamat Email Anda"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:ring-2 focus:ring-[#1a56db] text-neutral-900"
                   />
                 </div>
                 <div>
-                  <input 
-                    type="tel" 
-                    required 
-                    placeholder="Nomor WhatsApp" 
+                  <input
+                    type="tel" aria-label="Nomor WhatsApp" autoComplete="tel"
+                    required
+                    placeholder="Nomor WhatsApp"
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:ring-2 focus:ring-[#1a56db] text-neutral-900"
                   />
                 </div>
-                
-                <button 
-                  type="submit" 
+
+                <button
+                  type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 bg-[#f05136] text-white px-6 py-4 rounded-xl font-bold hover:bg-orange-600 transition shadow-lg shadow-orange-500/30 disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-[#2462a9] text-white px-6 py-4 rounded-xl font-bold hover:bg-[#082944] transition shadow-lg shadow-blue-500/10 disabled:opacity-50"
                 >
                   {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                   {loading ? "Memproses..." : "Dapatkan Promo Sekarang"}
@@ -135,6 +145,6 @@ export function PromoModal({ promo }: { promo: any }) {
         </div>
 
       </div>
-    </div>
+    </dialog>
   );
 }

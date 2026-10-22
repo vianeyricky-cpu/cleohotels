@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@supabase/supabase-js";
-import { Check } from "lucide-react"; 
+import { Check } from "lucide-react";
+import { OffersSection } from "@/components/public/OffersSection";
 
 // TAMBAHKAN BARIS INI: Memaksa Next.js untuk selalu mengambil data terbaru dari database
 export const dynamic = "force-dynamic";
@@ -11,14 +12,14 @@ export default async function AboutPage({ params }: { params: { locale: string }
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
   const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
   const supabase = createClient(supabaseUrl, supabaseKey);
-  
+
   // Ambil 3 Promo Terbaru
   const { data: promos } = await supabase.from("promos").select("*").order("created_at", { ascending: false }).limit(3);
-  const safePromos = promos || []; 
+  const safePromos = promos || [];
 
   return (
-    <main className="min-h-screen bg-white text-neutral-900">
-      
+    <main id="main-content" className="about-page min-h-screen bg-white text-neutral-900">
+
       {/* --- 1. TANLY HOSPITALITY SECTION (DARK THEME / PREMIUM LOOK) --- */}
       <section className="relative pt-[140px] pb-24 px-6 bg-[#0f172a] overflow-hidden">
         {/* Efek Cahaya (Glow) di Background agar tidak terlalu flat */}
@@ -104,65 +105,15 @@ export default async function AboutPage({ params }: { params: { locale: string }
         </div>
       </section>
 
-      {/* --- 2. OFFERS & PACKAGES SECTION (Desain Baru Gambar 3) --- */}
-      <section className="py-20 px-6 bg-white border-y border-neutral-100">
-        <div className="w-full max-w-7xl mx-auto">
-          {/* Header Offers & Packages */}
-          <div className="mb-14 text-left border-b border-neutral-100 pb-8">
-             <h2 className="text-3xl md:text-4xl font-semibold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
-             <p className="text-neutral-500 text-base md:text-lg max-w-3xl">
-               Take advantage of our large variety of packages and special offers created by us and designed with your needs in mind.
-             </p>
-          </div>
-          
-          {/* Grid Layout Promo (Tanpa Border Card) */}
-          <div className="grid md:grid-cols-3 gap-x-10 gap-y-12">
-            {safePromos.length > 0 ? (
-              safePromos.map((promo) => (
-                <div key={promo.id} className="flex flex-col group">
-                  {/* Gambar Promo dengan Sudut Lengkung */}
-                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-xl">
-                    <Image 
-                      src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
-                      alt={promo.title} 
-                      fill 
-                      className="object-cover transition-transform duration-700 group-hover:scale-105" 
-                    />
-                  </div>
-                  
-                  {/* Teks Konten */}
-                  <h3 className="text-[19px] font-semibold text-neutral-900 mb-2 uppercase tracking-wide">
-                    {promo.title}
-                  </h3>
-                  <p className="text-neutral-500 text-[15px] mb-6 flex-1 leading-relaxed">
-                    {promo.description}
-                  </p>
-                  
-                  {/* Tombol Outline Oval */}
-                  <div>
-                    <Link 
-                      href={promo.action_link || "#"} 
-                      className="inline-flex items-center justify-center px-7 py-2.5 border border-neutral-300 rounded-full text-xs font-bold text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 transition-colors uppercase tracking-widest"
-                    >
-                      {promo.action_text || "SEE MORE"} &rarr;
-                    </Link>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-neutral-400 italic col-span-3 py-10">Belum ada promo yang tersedia.</p>
-            )}
-          </div>
-        </div>
-      </section>
+      <OffersSection offers={safePromos} locale={params.locale}/>
 
       {/* --- 3. DISCOVER CLEO SECTION --- */}
-      <section className="py-24 px-6 bg-white">
+      <section className="story-cta py-24 px-6 bg-white">
         <div className="w-full max-w-5xl mx-auto bg-gradient-to-br from-white to-[#f8faff] border border-blue-50/50 rounded-2xl p-12 md:p-20 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] relative overflow-hidden">
           {/* Subtle Glow Background */}
           <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl z-0 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-blue-50/30 rounded-full blur-3xl z-0 pointer-events-none"></div>
-          
+
           <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl font-semibold text-neutral-900 mb-6 tracking-tight">
               Best Affordable Hotel in Surabaya Starts Here.
@@ -170,8 +121,8 @@ export default async function AboutPage({ params }: { params: { locale: string }
             <p className="text-neutral-600 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
               Explore Cleo Hotels and book direct for the best price.
             </p>
-            <Link 
-              href={`/${params.locale}/hotels`} 
+            <Link
+              href={`/${params.locale}/hotels`}
               className="inline-block bg-[#1a56db] text-white font-bold px-12 py-4 rounded-full hover:bg-blue-800 hover:shadow-lg transition-all duration-300 uppercase tracking-widest text-sm"
             >
               Discover Now
