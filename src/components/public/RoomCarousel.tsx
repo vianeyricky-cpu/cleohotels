@@ -5,6 +5,7 @@ import { BedDouble, ChevronLeft, ChevronRight, Maximize, Users } from 'lucide-re
 import TourLaunch from '@/components/tour/TourLaunch';
 import type { TourGroup } from '@/lib/cleo/tour';
 import type { Room } from '@/types';
+import { roomFact } from '@/lib/cleo/room';
 import { ImageLightbox } from './ImageLightbox';
 
 export function RoomCarousel({ rooms, tours = [], locale = 'en' }: { rooms: Room[]; tours?: TourGroup[]; locale?: string }) {
@@ -20,7 +21,7 @@ export function RoomCarousel({ rooms, tours = [], locale = 'en' }: { rooms: Room
     </div>
     <div className="room-feature" aria-live="polite">
       <button className="room-feature-image" type="button" onClick={() => setSelectedImage(activeRoom.image || 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80')} aria-label={`${id ? 'Perbesar foto' : 'Enlarge photo'} ${activeRoom.name}`}><Image src={activeRoom.image || 'https://images.unsplash.com/photo-1611892440504-42a792e24d32?q=80'} alt={activeRoom.name} fill sizes="(max-width: 800px) 100vw, 60vw" className="object-cover"/><span><Maximize size={17}/></span></button>
-      <div className="room-feature-copy"><span className="eyebrow">CLEO COMFORT</span><h3>{activeRoom.name}</h3><p>{activeRoom.description || 'Enjoy stylish comfort for a relaxing and restful stay.'}</p><div className="room-specs">{activeRoom.size && <span><Maximize size={18} strokeWidth={1.3}/>{activeRoom.size} m²</span>}{activeRoom.capacity && <span><Users size={18} strokeWidth={1.3}/>{activeRoom.capacity} {id ? 'tamu' : 'guests'}</span>}{activeRoom.bedType && <span><BedDouble size={18} strokeWidth={1.3}/>{activeRoom.bedType}</span>}</div><TourLaunch key={activeRoom.id} group={activeTour} locale={locale}/></div>
+      <div className="room-feature-copy"><span className="eyebrow">CLEO COMFORT</span><h3>{activeRoom.name}</h3><p>{activeRoom.description || 'Enjoy stylish comfort for a relaxing and restful stay.'}</p><div className="room-specs">{activeRoom.size && <span><Maximize size={18} strokeWidth={1.3}/>{roomFact(activeRoom.size, 'm²')}</span>}{activeRoom.capacity && <span><Users size={18} strokeWidth={1.3}/>{roomFact(activeRoom.capacity, id ? 'tamu' : 'guests')}</span>}{activeRoom.bedType && <span><BedDouble size={18} strokeWidth={1.3}/>{activeRoom.bedType}</span>}</div><TourLaunch key={activeRoom.id} group={activeTour} locale={locale}/></div>
     </div>
     {rooms.length > 1 && <div className="carousel-dots">{rooms.map((room, index) => <button type="button" key={room.id} aria-label={`${id ? 'Lihat kamar' : 'View room'} ${room.name}`} aria-pressed={index === currentIndex} onClick={() => setCurrentIndex(index)}><span/></button>)}</div>}
     {activeRoom.images?.length > 0 && <div className="room-thumbnails"><p>{id ? 'Foto lainnya' : 'More Views'}</p><div>{activeRoom.images.map((src, index) => <button type="button" key={`${src}-${index}`} onClick={() => setSelectedImage(src)} aria-label={`${activeRoom.name}, ${id ? 'foto' : 'view'} ${index + 1}`}><Image src={src} alt={`${activeRoom.name} view ${index + 1}`} fill sizes="130px" className="object-cover"/></button>)}</div></div>}

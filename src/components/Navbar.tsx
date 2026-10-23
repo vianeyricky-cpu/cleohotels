@@ -40,7 +40,8 @@ export function Navbar() {
   const isHome = pathname === `/${locale}` || pathname === `/${locale}/`;
   const darkHero = isHome || pathname === `/${locale}/about` || new RegExp(`^/${locale}/hotels/[^/]+/?$`).test(pathname || '');
   const overlay = darkHero && !scrolled;
-  const bookingHref = new RegExp(`^/${locale}/hotels/[^/]+/?$`).test(pathname || '') ? `${pathname}#booking` : `/${locale}#booking`;
+  const hotelSlug = pathname?.match(new RegExp(`^/${locale}/hotels/([^/]+)(?:/rooms)?/?$`))?.[1];
+  const bookingHref = hotelSlug ? `/${locale}/hotels/${hotelSlug}#booking` : `/${locale}#booking`;
   return <>
     <a href="#main-content" className="skip-link">{id ? 'Langsung ke konten' : 'Skip to content'}</a>
     <header className={`site-nav ${overlay ? 'is-overlay on-dark-hero' : 'has-surface'} ${scrolled ? 'is-scrolled' : ''}`}>

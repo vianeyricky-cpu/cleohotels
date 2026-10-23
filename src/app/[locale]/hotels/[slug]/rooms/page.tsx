@@ -1,4 +1,4 @@
-import { roomAmenities } from "@/lib/cleo/room";
+import { roomAmenities, roomFact } from "@/lib/cleo/room";
 import { getPublishedTourGroups } from "@/lib/cleo/published-tours";
 import TourLaunch from "@/components/tour/TourLaunch";
 import { supabase } from "@/lib/supabase"; // <--- FIX: Pakai path yang benar
@@ -85,11 +85,11 @@ export default async function HotelRoomsPage({
               <div className="mb-4 flex flex-wrap gap-4 text-xs text-gray-600">
                 <div className="flex items-center gap-1">
                   <Users size={14} className="text-blue-400" />
-                  <span>{room.capacity} Pax</span>
+                  <span>{roomFact(room.capacity, params.locale === 'id' ? 'tamu' : 'guests')}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Ruler size={14} className="text-blue-400" />
-                  <span>{room.size} m²</span>
+                  <span>{roomFact(room.size, 'm²')}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Bed size={14} className="text-blue-400" />
