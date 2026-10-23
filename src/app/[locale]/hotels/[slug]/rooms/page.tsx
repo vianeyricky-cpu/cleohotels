@@ -72,8 +72,10 @@ export default async function HotelRoomsPage({
                 </div>
               )}
               <div className="absolute bottom-2 right-2 rounded bg-black/70 px-2 py-1 text-xs font-bold text-white">
-                Rp {room.price?.toLocaleString("id-ID") || 0}
-                <span className="text-[10px] font-normal"> /night</span>
+                {Number(room.price) > 0 ? <>
+                  Rp {Number(room.price).toLocaleString("id-ID")}
+                  <span className="text-[10px] font-normal"> /night</span>
+                </> : <span>{params.locale === 'id' ? 'Cek harga terbaru' : 'Check latest rates'}</span>}
               </div>
             </div>
 
