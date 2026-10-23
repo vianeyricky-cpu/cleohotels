@@ -36,11 +36,11 @@ export default async function HotelRoomsPage({
   const tours = await getPublishedTourGroups([hotel], { rooms: typedRooms, facilities: [] });
 
   return (
-    <main className="max-w-7xl mx-auto px-6 pt-32 pb-20">
+    <main id="main-content" className="rooms-page page-width pt-32 pb-20">
       <div className="mb-8 flex items-center gap-4">
         <Link
           href={`/${params.locale}/hotels/${params.slug}`}
-          className="rounded-full bg-gray-100 p-2 text-gray-600 transition hover:bg-blue-700 hover:text-white"
+          aria-label="Back to hotel" className="rounded-full bg-gray-100 p-2 text-gray-600 transition hover:bg-blue-700 hover:text-white"
         >
           <ArrowLeft size={20} />
         </Link>
@@ -52,7 +52,7 @@ export default async function HotelRoomsPage({
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="rooms-grid grid gap-8 md:grid-cols-2 lg:grid-cols-3">
         {typedRooms.map((room) => (
           <div
             key={room.id}

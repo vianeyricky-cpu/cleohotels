@@ -1,191 +1,48 @@
-import Image from "next/image";
-import Link from "next/link";
-import { getHotels } from "@/actions/getHotels"; 
-import { ArrowRight, Star, ShieldCheck, Heart } from "lucide-react"; 
-import { BookingWidget } from "@/components/public/BookingWidget";
-import { createClient } from "@supabase/supabase-js"; 
-import { PromoModal } from "@/components/PromoModal"; 
-import { getPublishedTourGroups } from "@/lib/cleo/published-tours";
-import TourGallery from "@/components/tour/TourGallery";
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowDown, ArrowRight, Building2, Compass, Gift, Heart, Phone, ShieldCheck, Star } from 'lucide-react';
+import { createClient } from '@supabase/supabase-js';
+import { getHotels } from '@/actions/getHotels';
+import { BookingWidget } from '@/components/public/BookingWidget';
+import { HotelCollection } from '@/components/public/HotelCollection';
+import { OffersSection } from '@/components/public/OffersSection';
+import { PromoModal } from '@/components/PromoModal';
+import { getPublishedTourGroups } from '@/lib/cleo/published-tours';
+import TourGallery from '@/components/tour/TourGallery';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
   const hotels = await getHotels();
-  const id = params.locale === "id";
-
-  // Koneksi Supabase Server-Side
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-  const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || "";
-  const supabase = createClient(supabaseUrl, supabaseKey);
-  
-  // 1. Ambil Gambar Hero Dinamis
-  const { data: setting } = await supabase.from('settings').select('value').eq('key', 'hero_image').maybeSingle();
-  const heroImage = setting?.value || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=3270";
-
-  // 2. Ambil Data Popup Promo yang Aktif
-  const { data: promoPopupData } = await supabase
-    .from("PromoPopup")
-    .select("*")
-    .eq("is_active", true)
-    .maybeSingle();
-
-  // 3. Ambil 3 Promo/Offers Terbaru untuk Section Card
-  const { data: promos } = await supabase.from("promos").select("*").order("created_at", { ascending: false }).limit(3);
-  const safePromos = promos || []; 
+  const id = params.locale === 'id';
+  const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || '', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
+  const [{ data: setting }, { data: promoPopupData }, { data: promos }] = await Promise.all([
+    supabase.from('settings').select('value').eq('key', 'hero_image').maybeSingle(),
+    supabase.from('PromoPopup').select('*').eq('is_active', true).maybeSingle(),
+    supabase.from('promos').select('*').order('created_at', { ascending: false }).limit(3),
+  ]);
+  const heroImage = setting?.value || 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=3270';
   const tours = await getPublishedTourGroups(hotels);
-
-  return (
-    <main className="home-page min-h-screen bg-white text-neutral-900">
-      
-      {/* --- POPUP DIPASANG DI SINI --- */}
-      <PromoModal promo={promoPopupData} />
-
-      <section className="home-hero">
-        <div className="hero-photo"><Image src={heroImage} alt="Cleo Hotels Surabaya" fill className="object-cover" priority sizes="100vw" /></div>
-        <div className="hero-shade" />
-        <div className="hero-content"><span className="eyebrow">CLEO HOTELS · SURABAYA</span>
-          <h1>{id ? <>Singgah nyaman.<br/><em>Nikmati perjalanan.</em></> : <>A simpler stay.<br/><em>A brighter day.</em></>}</h1>
-          <p>{id ? "Tiga lokasi strategis. Kenyamanan yang Anda butuhkan. Temukan ruang untuk beristirahat di tengah cerita perjalanan Anda." : "Three city locations. Thoughtful comfort. Find your own little escape in the heart of Surabaya."}</p>
-          <Link href={`/${params.locale}/hotels`} className="hero-explore">{id ? "Temukan hotel Anda" : "Discover your Cleo"}<ArrowRight size={18}/></Link>
-        </div>
-        <div className="hero-caption"><span>SMART CHOICE. EASY STAY.</span><strong>#EnjoyLife</strong></div>
-      </section>
-
-      {/* --- 2. FLOATING DARK BOOKING BAR SECTION --- */}
-      <section className="relative z-20 w-full max-w-7xl mx-auto px-4 -mt-12 md:-mt-20 mb-16">
-        <BookingWidget />
-      </section>
-
-      {/* --- 3. TEKS INTRODUKSI --- */}
-      <section className="home-intro py-12 px-6 max-w-7xl mx-auto">
-         <span className="eyebrow">WELCOME TO CLEO</span>
-         <h2 className="text-3xl md:text-5xl font-bold mb-6 text-neutral-900">
-           {id ? "Ruang nyaman untuk setiap perjalanan." : "Thoughtful comfort. Effortlessly Cleo."}
-         </h2>
-         <p className="text-base md:text-lg text-neutral-600 mb-6 leading-relaxed">
-           Cleo Hotels is made for modern travelers who value efficiency, comfort, and great value. 
-           Whether you're in Surabaya for business or leisure, enjoy a simple, convenient stay in a strategic city location.
-         </p>
-         <p className="text-lg font-bold text-neutral-900 mb-2">Smart choice. Easy stay.</p>
-         <p className="text-xl font-semibold text-blue-700">#EnjoyLife</p>
-      </section>
-
-      <TourGallery groups={tours} locale={params.locale}/>
-
-      {/* --- 4. OUR VALUES SECTION (DIKEMBALIKAN / TIDAK DIHAPUS) --- */}
-      <section className="py-20 px-6 bg-neutral-50 border-t border-neutral-100">
-        <div className="w-full max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-             <span className="text-blue-600 font-bold tracking-widest text-xs uppercase">Our Values</span>
-             <h2 className="text-3xl md:text-4xl font-bold mt-2 text-neutral-900">#EnjoyLife with Cleo</h2>
-          </div>
-          
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="p-8 rounded-xl bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
-              <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                <Heart size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-neutral-900">Touching Hearts</h3>
-              <p className="text-neutral-500 text-sm leading-relaxed">Our mission is to provide experiences that genuinely touch the hearts of our guests through thoughtful service.</p>
-            </div>
-            <div className="p-8 rounded-xl bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
-              <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                <Star size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-neutral-900">High Value</h3>
-              <p className="text-neutral-500 text-sm leading-relaxed">Smart comfort combined with strategic locations, offering exceptional value for business and transit travelers.</p>
-            </div>
-            <div className="p-8 rounded-xl bg-white border border-neutral-200 shadow-sm hover:shadow-xl hover:border-blue-600/30 transition-all duration-300 group">
-              <div className="w-14 h-14 bg-blue-50 rounded-full flex items-center justify-center mb-6 text-blue-600 group-hover:bg-blue-600 group-hover:text-white transition-colors duration-300">
-                <ShieldCheck size={24} />
-              </div>
-              <h3 className="text-xl font-bold mb-3 text-neutral-900">Trusted Management</h3>
-              <p className="text-neutral-500 text-sm leading-relaxed">Proudly managed by Tanly Hospitality, affiliated with Vasa Hotel & Solaris, ensuring quality standards.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* --- 5. OFFERS & PACKAGES SECTION (DESAIN BARU) --- */}
-      <section className="py-20 px-6 bg-white border-t border-neutral-100">
-        <div className="w-full max-w-7xl mx-auto">
-          {/* Header Offers & Packages */}
-          <div className="mb-14 text-left">
-             <h2 className="text-3xl md:text-4xl font-semibold text-neutral-900 mb-4 tracking-tight">Offers & Packages</h2>
-             <p className="text-neutral-500 text-base md:text-lg max-w-3xl">
-               Take advantage of our large variety of packages and special offers created by us and designed with your needs in mind.
-             </p>
-          </div>
-          
-          {/* Grid Layout Promo (Tanpa Border Card) */}
-          <div className="grid md:grid-cols-3 gap-x-10 gap-y-12">
-            {safePromos.length > 0 ? (
-              safePromos.map((promo) => (
-                <div key={promo.id} className="flex flex-col group">
-                  {/* Gambar Promo dengan Sudut Lengkung */}
-                  <div className="relative h-60 w-full mb-5 overflow-hidden rounded-xl">
-                    <Image 
-                      src={promo.image_url || "https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80"} 
-                      alt={promo.title} 
-                      fill 
-                      className="object-cover transition-transform duration-700 group-hover:scale-105" 
-                    />
-                  </div>
-                  
-                  {/* Teks Konten */}
-                  <h3 className="text-[19px] font-semibold text-neutral-900 mb-2 uppercase tracking-wide">
-                    {promo.title}
-                  </h3>
-                  <p className="text-neutral-500 text-[15px] mb-6 flex-1 leading-relaxed">
-                    {promo.description}
-                  </p>
-                  
-                  {/* Tombol Outline Oval */}
-                  <div>
-                    <Link 
-                      href={promo.action_link || "#"} 
-                      className="inline-flex items-center justify-center px-7 py-2.5 border border-neutral-300 rounded-full text-xs font-bold text-neutral-700 hover:border-neutral-900 hover:text-neutral-900 transition-colors uppercase tracking-widest"
-                    >
-                      {promo.action_text || "SEE MORE"} &rarr;
-                    </Link>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p className="text-neutral-400 italic col-span-3 py-10">Belum ada promo yang tersedia.</p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* --- 6. HOTELS LIST --- */}
-      <section id="hotels" className="py-24 px-6 bg-neutral-50 border-t border-neutral-100">
-        <div className="w-full max-w-7xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-neutral-900">{id ? "Tiga lokasi. Satu rasa nyaman." : "Three locations. Your kind of stay."}</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {hotels.map((hotel) => (
-              <Link href={`/${params.locale}/hotels/${hotel.slug}`} key={hotel.id} className="group relative block h-[420px] overflow-hidden rounded-xl shadow-md hover:shadow-2xl transition-shadow duration-300">
-                <Image
-                  src={hotel.image_url || "https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=1000"}
-                  alt={hotel.name}
-                  fill
-                  className="object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90" />
-                <div className="absolute bottom-0 p-8 w-full">
-                  <p className="text-blue-400 text-xs font-bold tracking-widest uppercase mb-2">{hotel.tagline}</p>
-                  <h3 className="text-2xl font-bold text-white mb-3">{hotel.name}</h3>
-                  <div className="flex items-center text-white/80 text-sm gap-2 font-medium">
-                    <span>Explore Hotel</span>
-                    <ArrowRight size={18} className="transition-transform group-hover:translate-x-1" />
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-    </main>
-  );
+  const shortcuts = [
+    { href: '#hotels', icon: Building2, label: id ? 'Hotel Kami' : 'Our Hotels' },
+    { href: '#offers', icon: Gift, label: id ? 'Penawaran' : 'Special Offers' },
+    ...(tours.length ? [{ href: '#virtual-tours', icon: Compass, label: id ? 'Jelajah 360°' : 'Explore in 360°' }] : []),
+    { href: `/${params.locale}/about`, icon: Heart, label: id ? 'Tentang Cleo' : 'Our Story' },
+    { href: `/${params.locale}/contact`, icon: Phone, label: id ? 'Hubungi Kami' : 'Contact Us' },
+  ];
+  return <main id="main-content" className="home-page">
+    <PromoModal promo={promoPopupData}/>
+    <section className="home-hero">
+      <div className="hero-photo"><Image src={heroImage} alt="Cleo Hotels Surabaya" fill className="object-cover" priority sizes="100vw"/></div><div className="hero-shade"/>
+      <div className="hero-content page-width"><span className="eyebrow">CLEO HOTELS · SURABAYA</span><h1>{id ? <>Singgah nyaman.<br/><em>Nikmati perjalanan.</em></> : <>A simpler stay.<br/><em>A brighter day.</em></>}</h1><p>{id ? 'Tiga lokasi strategis. Kenyamanan yang Anda butuhkan. Temukan ruang untuk beristirahat di tengah cerita perjalanan Anda.' : 'Three city locations. Thoughtful comfort. Find your own little escape in the heart of Surabaya.'}</p><Link href={`/${params.locale}/hotels`} className="hero-explore">{id ? 'Temukan hotel Anda' : 'Discover your Cleo'}<ArrowRight size={19}/></Link></div>
+      <div className="hero-caption"><span>SMART CHOICE. EASY STAY.</span><strong>#EnjoyLife</strong></div>
+      <nav className="hero-shortcuts" aria-label={id ? 'Jelajahi pengalaman Cleo' : 'Explore the Cleo experience'}>{shortcuts.map(item => <Link key={item.href} href={item.href}><item.icon size={27} strokeWidth={1.15}/><span>{item.label}</span></Link>)}</nav>
+      <a href="#booking" className="hero-scroll" aria-label={id ? 'Lihat reservasi' : 'Scroll to booking'}><ArrowDown size={17}/></a>
+    </section>
+    <section className="booking-strip"><div className="page-width"><BookingWidget/></div></section>
+    <section className="home-intro page-width"><div><span className="eyebrow">WELCOME TO CLEO</span><h2>{id ? 'Ruang nyaman untuk setiap perjalanan.' : 'Thoughtful comfort. Effortlessly Cleo.'}</h2></div><div className="intro-copy"><p>Cleo Hotels is made for modern travelers who value efficiency, comfort, and great value. Whether you're in Surabaya for business or leisure, enjoy a simple, convenient stay in a strategic city location.</p><div className="intro-signoff"><span>Smart choice. Easy stay.</span><strong>#EnjoyLife</strong></div></div></section>
+    <section id="hotels" className="editorial-section hotel-section"><div className="page-width"><div className="section-heading heading-with-link"><div><span className="eyebrow">{id ? 'TEMUKAN TEMPAT SINGGAH ANDA' : 'IN THE HEART OF SURABAYA'}</span><h2>{id ? 'Tiga lokasi. Satu rasa nyaman.' : 'Three locations. Your kind of stay.'}</h2></div><Link href={`/${params.locale}/hotels`} className="text-link">{id ? 'Semua hotel' : 'View all hotels'}<ArrowRight size={17}/></Link></div><HotelCollection hotels={hotels} locale={params.locale}/></div></section>
+    <TourGallery groups={tours} locale={params.locale}/>
+    <OffersSection offers={promos || []} locale={params.locale}/>
+    <section className="values-section"><div className="values-photo"><Image src={hotels.find(hotel => hotel.slug.includes('tunjungan'))?.image_url || heroImage} alt="Cleo Hotel Tunjungan" fill sizes="(max-width: 900px) 100vw, 50vw" className="object-cover"/><span>CLEO HOTELS · ENJOY LIFE</span></div><div className="values-content"><span className="eyebrow">OUR VALUES</span><h2>#EnjoyLife<br/><em>with Cleo.</em></h2><div className="value-row"><Heart size={23} strokeWidth={1.3}/><div><h3>Touching Hearts</h3><p>Our mission is to provide experiences that genuinely touch the hearts of our guests through thoughtful service.</p></div></div><div className="value-row"><Star size={23} strokeWidth={1.3}/><div><h3>High Value</h3><p>Smart comfort combined with strategic locations, offering exceptional value for business and transit travelers.</p></div></div><div className="value-row"><ShieldCheck size={23} strokeWidth={1.3}/><div><h3>Trusted Management</h3><p>Proudly managed by Tanly Hospitality, affiliated with Vasa Hotel & Solaris, ensuring quality standards.</p></div></div><Link href={`/${params.locale}/about`} className="text-link">{id ? 'Cerita Cleo' : 'Discover our story'}<ArrowRight size={17}/></Link></div></section>
+  </main>;
 }

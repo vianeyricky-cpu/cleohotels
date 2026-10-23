@@ -1,5 +1,4 @@
-import { Mail, MapPin, Phone, Clock, Instagram, Facebook } from "lucide-react";
-import Image from "next/image";
+import { Mail, MapPin, Phone, Instagram } from "lucide-react";
 
 export const metadata = {
   title: "Contact Us - Cleo Hotels",
@@ -9,7 +8,7 @@ export const metadata = {
 export default function ContactPage() {
   return (
     // PERUBAHAN DI SINI: pt-24 diubah menjadi pt-36 md:pt-48
-    <main className="min-h-screen bg-navy-950 text-white pt-36 md:pt-48 pb-20">
+    <main id="main-content" className="contact-page min-h-screen bg-navy-950 text-white pt-36 md:pt-48 pb-20">
       {/* HEADER SECTION */}
       <div className="container mx-auto px-6 mb-16 text-center">
         <p className="text-blue-400 font-bold tracking-[0.2em] text-xs uppercase mb-4">
@@ -58,7 +57,7 @@ export default function ContactPage() {
             <h3 className="text-xl font-bold mb-2">Follow Us</h3>
             <p className="text-gray-400 text-sm mb-4">Stay updated with latest offers</p>
             <div className="flex justify-center gap-4">
-              <a href="https://instagram.com/cleohotels" target="_blank" className="text-blue-300 hover:text-white transition">
+              <a href="https://instagram.com/cleohotels" target="_blank" rel="noopener noreferrer" className="text-blue-300 hover:text-white transition">
                 @cleohotels
               </a>
             </div>

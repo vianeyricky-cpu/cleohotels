@@ -1,5 +1,6 @@
 import "../../public/vendor/pannellum/pannellum.css";
 import "./[locale]/globals.css";
+import "./[locale]/public-design.css";
 import { Inter, Playfair_Display } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
