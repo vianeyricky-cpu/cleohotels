@@ -45,16 +45,16 @@ export default function TourViewer({ scenes, title, bookingHref, onView, autoSta
     {started && <>
       <div className="tour-title"><span>360° VIRTUAL TOUR</span><strong>{scenes.find(s => s.id === active)?.title}</strong></div>
       {loading && !error && <div className="tour-status" role="status">Loading panorama…</div>}
-      {error && <div className="tour-status" role="alert"><p>{error}</p><button onClick={() => setRetry(n => n + 1)}><RefreshCw size={16}/> Coba kembali</button></div>}
+      {error && <div className="tour-status" role="alert"><p>{error}</p><button onClick={() => setRetry(n => n + 1)}><RefreshCw size={18}/> Coba kembali</button></div>}
       <div className="tour-controls">
-        <button aria-label="Zoom in" onClick={() => instance.current?.setHfov(Math.max(45, instance.current.getHfov()-10))}><Plus size={18}/></button>
-        <button aria-label="Zoom out" onClick={() => instance.current?.setHfov(Math.min(120, instance.current.getHfov()+10))}><Minus size={18}/></button>
-        <button aria-label={rotating ? 'Pause rotation' : 'Auto rotate'} aria-pressed={rotating} onClick={() => { if (rotating) instance.current?.stopAutoRotate(); else instance.current?.startAutoRotate(-1); setRotating(!rotating); }}>{rotating ? <Pause size={18}/> : <RotateCw size={18}/>}</button>
-        <button aria-label={fullscreen ? 'Exit fullscreen' : 'Fullscreen'} onClick={async () => { try { if (fullscreen) await document.exitFullscreen(); else if (container.current?.requestFullscreen) await container.current.requestFullscreen(); else setError('Fullscreen tidak didukung browser ini.'); } catch { setError('Fullscreen tidak tersedia.'); } }}>{fullscreen ? <Minimize size={18}/> : <Maximize size={18}/>}</button>
+        <button aria-label="Zoom in" onClick={() => instance.current?.setHfov(Math.max(45, instance.current.getHfov()-10))}><Plus size={20}/></button>
+        <button aria-label="Zoom out" onClick={() => instance.current?.setHfov(Math.min(120, instance.current.getHfov()+10))}><Minus size={20}/></button>
+        <button aria-label={rotating ? 'Pause rotation' : 'Auto rotate'} aria-pressed={rotating} onClick={() => { if (rotating) instance.current?.stopAutoRotate(); else instance.current?.startAutoRotate(-1); setRotating(!rotating); }}>{rotating ? <Pause size={20}/> : <RotateCw size={20}/>}</button>
+        <button aria-label={fullscreen ? 'Exit fullscreen' : 'Fullscreen'} onClick={async () => { try { if (fullscreen) await document.exitFullscreen(); else if (container.current?.requestFullscreen) await container.current.requestFullscreen(); else setError('Fullscreen tidak didukung browser ini.'); } catch { setError('Fullscreen tidak tersedia.'); } }}>{fullscreen ? <Minimize size={20}/> : <Maximize size={20}/>}</button>
         {onView && <button className="tour-capture" onClick={() => { const v = instance.current; if(v) onView(active, Math.round(v.getPitch()*10)/10, Math.round(v.getYaw()*10)/10); }}>Ambil arah pandang</button>}
       </div>
       <div className="tour-scenes" aria-label="Pilih ruangan">{scenes.map(scene => <button key={scene.id} aria-pressed={scene.id === active} onClick={() => instance.current?.loadScene(scene.id)}><img src={scene.panorama} alt="" loading="lazy"/><span>{scene.title}</span></button>)}</div>
-      {bookingHref && <a className="tour-book" href={bookingHref}>Book this hotel <ArrowUpRight size={15}/></a>}
+      {bookingHref && <a className="tour-book" href={bookingHref}>Book this hotel <ArrowUpRight size={17}/><span className="sr-only">opens booking</span></a>}
     </>}
   </div>;
 }

@@ -45,17 +45,17 @@ export function Navbar() {
   return <>
     <a href="#main-content" className="skip-link">{id ? 'Langsung ke konten' : 'Skip to content'}</a>
     <header className={`site-nav ${overlay ? 'is-overlay on-dark-hero' : 'has-surface'} ${scrolled ? 'is-scrolled' : ''}`}>
-      <div className="nav-utility"><Link href={`/${locale}/about`}>BY TANLY HOSPITALITY</Link><span className="utility-motto">SMART CHOICE. EASY STAY.</span><div><Link href={`/${locale}/contact`}>{id ? 'Hubungi kami' : 'Contact us'}</Link><Link href={languageHref} className="language-switch" aria-label={id ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}><Globe2 size={13}/>{id ? 'EN' : 'ID'}</Link></div></div>
+      <div className="nav-utility"><Link href={`/${locale}/about`}>BY TANLY HOSPITALITY</Link><span className="utility-motto">SMART CHOICE. EASY STAY.</span><div><Link href={`/${locale}/contact`}>{id ? 'Hubungi kami' : 'Contact us'}</Link><Link href={languageHref} className="language-switch" aria-label={id ? 'Switch to English' : 'Ganti ke Bahasa Indonesia'}><Globe2 size={16}/>{id ? 'EN' : 'ID'}</Link></div></div>
       <nav className="nav-inner" aria-label={id ? 'Navigasi utama' : 'Main navigation'}>
-        <button ref={trigger} className="menu-trigger" onClick={() => setOpen(true)} aria-label={id ? 'Buka menu' : 'Open menu'} aria-expanded={open} aria-controls="site-menu"><Menu size={25} strokeWidth={1.3}/><span>MENU</span></button>
-        <Link href={`/${locale}`} className="nav-logo" aria-label="Cleo Hotels"><Image src="/logo.png" alt="Cleo Hotels" fill className="object-contain" priority sizes="132px"/></Link>
-        <Link className="cleo-button nav-book" href={bookingHref}>{id ? 'Reservasi' : 'Book your stay'}<ArrowUpRight size={16}/></Link>
+        <button ref={trigger} className="menu-trigger" onClick={() => setOpen(true)} aria-label={id ? 'Buka menu' : 'Open menu'} aria-expanded={open} aria-controls="site-menu"><Menu size={26} strokeWidth={1.3}/><span>MENU</span></button>
+        <Link href={`/${locale}`} className="nav-logo" aria-label="Cleo Hotels"><Image src="/logo.png" alt="Cleo Hotels" fill className="object-contain" priority sizes="140px"/></Link>
+        <Link className="cleo-button nav-book" href={bookingHref}>{id ? 'Reservasi' : 'Book your stay'}<ArrowUpRight size={18}/></Link>
       </nav>
     </header>
     <dialog ref={dialog} id="site-menu" className="site-menu" aria-label={id ? 'Menu navigasi' : 'Navigation menu'} onCancel={() => setOpen(false)} onClose={() => { setOpen(false); trigger.current?.focus(); }} onClick={event => { if (event.target === event.currentTarget) setOpen(false); }}>
       <div className="menu-surface"><div className="menu-top"><span className="eyebrow">CLEO HOTELS · SURABAYA</span><button className="icon-button" onClick={() => setOpen(false)} aria-label={id ? 'Tutup menu' : 'Close menu'}><X size={24}/></button></div>
         <nav aria-label={id ? 'Jelajahi Cleo' : 'Explore Cleo'}>{links.map((link, index) => <Link key={link.path} href={`/${locale}${link.path}`} onClick={() => setOpen(false)} aria-current={pathname === `/${locale}${link.path}` ? 'page' : undefined}><span className="menu-index">0{index + 1}</span><span>{link.label}<small>{id ? '' : link.detail}</small></span><ArrowRight size={22} strokeWidth={1.2}/></Link>)}</nav>
-        <div className="menu-bottom"><Link href={bookingHref} className="cleo-button" onClick={() => setOpen(false)}>{id ? 'Rencanakan kunjungan' : 'Plan your stay'}<ArrowUpRight size={16}/></Link><Link href={languageHref} onClick={() => setOpen(false)}><Globe2 size={16}/>{id ? 'English' : 'Bahasa Indonesia'}</Link></div><p className="menu-signature">#EnjoyLife</p>
+        <div className="menu-bottom"><Link href={bookingHref} className="cleo-button" onClick={() => setOpen(false)}>{id ? 'Rencanakan kunjungan' : 'Plan your stay'}<ArrowUpRight size={18}/></Link><Link href={languageHref} onClick={() => setOpen(false)}><Globe2 size={18}/>{id ? 'English' : 'Bahasa Indonesia'}</Link></div><p className="menu-signature">#EnjoyLife</p>
       </div>
     </dialog>
   </>;

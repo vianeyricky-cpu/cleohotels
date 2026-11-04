@@ -8,7 +8,7 @@ import { getHotels } from "@/actions/getHotels";
 import { createClient } from "@supabase/supabase-js";
 import { RoomCarousel } from "@/components/public/RoomCarousel"; 
 import { SingleBookingWidget } from "@/components/public/SingleBookingWidget";
-import { FacilityGallery } from "@/components/public/FacilityGallery"; // <-- IMPORT KOMPONEN BARU
+import { FacilityGallery } from "@/components/public/FacilityGallery";
 
 export const dynamic = "force-dynamic";
 
@@ -59,7 +59,7 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
           <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm md:text-base font-medium">
             <div className="flex items-center gap-2"><MapPin size={22} className="text-[#4aa4ff]" /><span className="drop-shadow-md">{hotel.address}</span></div>
             <div className="hidden md:block w-1.5 h-1.5 rounded-full bg-white/50"></div>
-            <Link href="https://instagram.com/cleohotels" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#4aa4ff] transition drop-shadow-md"><Instagram size={20} />@cleohotels</Link>
+            <Link href="https://instagram.com/cleohotels" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-[#4aa4ff] transition drop-shadow-md"><Instagram size={22} />@cleohotels</Link>
           </div>
         </div>
       </section>
@@ -81,7 +81,7 @@ export default async function HotelDetailPage({ params }: { params: { locale: st
       {/* --- ROOMS SLIDER SECTION --- */}
       <section id="rooms" className="page-width py-6 mb-20">
         <RoomCarousel rooms={rooms || []} tours={tours.filter(group => group.placement.type === 'room')} locale={params.locale}/>
-        <Link href={`/${params.locale}/hotels/${hotel.slug}/rooms`} className="text-link">{id ? "Lihat semua tipe kamar" : "View all room types"}<ArrowRight size={17}/></Link>
+        <Link href={`/${params.locale}/hotels/${hotel.slug}/rooms`} className="text-link">{id ? "Lihat semua tipe kamar" : "View all room types"}<ArrowRight size={18}/></Link>
       </section>
 
       <HotelTour groups={tours} locale={params.locale} />

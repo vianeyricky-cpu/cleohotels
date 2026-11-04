@@ -75,9 +75,9 @@ export function PromoModal({ promo }: { promo: any }) {
         <button
           onClick={handleClose}
           aria-label="Close promotion"
-          className="absolute top-4 right-4 z-10 p-2 bg-white/20 hover:bg-white/50 backdrop-blur-md text-white rounded-full transition"
+          className="absolute top-4 right-4 z-10 p-2.5 bg-white/20 hover:bg-white/50 backdrop-blur-md text-white rounded-full transition"
         >
-          <X size={20} className={promo.image ? "text-white" : "text-neutral-500"} />
+          <X size={22} className={promo.image ? "text-white" : "text-neutral-500"} />
         </button>
 
         {/* Gambar Promo */}
@@ -99,15 +99,15 @@ export function PromoModal({ promo }: { promo: any }) {
           {success ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <CheckCircle2 size={32} />
+                <CheckCircle2 size={34} />
               </div>
               <h3 className="text-2xl font-bold text-neutral-900 mb-2">Terima Kasih!</h3>
-              <p className="text-neutral-500">Promo eksklusif telah kami kirimkan ke kontak Anda.</p>
+              <p className="text-neutral-500 text-base">Promo eksklusif telah kami kirimkan ke kontak Anda.</p>
             </div>
           ) : (
             <>
               <h3 className="text-2xl font-bold text-neutral-900 mb-2 mt-2">{promo.title}</h3>
-              <p className="text-neutral-500 mb-6">{promo.description}</p>
+              <p className="text-neutral-500 mb-6 text-base">{promo.description}</p>
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
@@ -117,7 +117,7 @@ export function PromoModal({ promo }: { promo: any }) {
                     placeholder="Alamat Email Anda"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:ring-2 focus:ring-[#1a56db] text-neutral-900"
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:ring-2 focus:ring-[#1a56db] text-neutral-900 text-base"
                   />
                 </div>
                 <div>
@@ -127,14 +127,14 @@ export function PromoModal({ promo }: { promo: any }) {
                     placeholder="Nomor WhatsApp"
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
-                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:ring-2 focus:ring-[#1a56db] text-neutral-900"
+                    className="w-full px-4 py-3 bg-neutral-50 border border-neutral-200 rounded-xl outline-none focus:ring-2 focus:ring-[#1a56db] text-neutral-900 text-base"
                   />
                 </div>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 bg-[#2462a9] text-white px-6 py-4 rounded-xl font-bold hover:bg-[#082944] transition shadow-lg shadow-blue-500/10 disabled:opacity-50"
+                  className="w-full flex items-center justify-center gap-2 bg-[#2462a9] text-white px-6 py-4 rounded-xl font-bold hover:bg-[#082944] transition shadow-lg shadow-blue-500/10 disabled:opacity-50 text-base"
                 >
                   {loading ? <Loader2 size={20} className="animate-spin" /> : <Send size={20} />}
                   {loading ? "Memproses..." : "Dapatkan Promo Sekarang"}
