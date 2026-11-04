@@ -1104,6 +1104,15 @@
   font-size: 13px;
   color: #9eb8cb;
 }
+.footer-bottom a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s;
+}
+.footer-bottom a:hover {
+  color: #9ed0f4;
+}
 
 /* Hotel Detail Page */
 .cleo-site .hotel-detail-hero {

@@ -19,6 +19,6 @@ export function Footer() {
       <div className="footer-explore"><h3>{id ? 'Jelajahi' : 'Explore'}</h3><Link href={`/${locale}/hotels`}>{id ? 'Hotel Kami' : 'Our Hotels'}</Link><Link href={`/${locale}/promos`}>Offers & Packages</Link><Link href={`/${locale}/about`}>{id ? 'Tentang Cleo' : 'Our Story'}</Link><Link href={`/${locale}/contact`}>{id ? 'Kontak' : 'Contact Us'}</Link></div>
       <div className="footer-contact"><h3>{id ? 'Hubungi Kami' : 'Contact Us'}</h3><span>{id ? 'Dukungan surel' : 'Email Support'}</span><a href="mailto:info@cleohotels.id">info@cleohotels.id</a><span>{id ? 'Kantor Pusat' : 'Head Office'}</span><p>Surabaya, East Java,<br/>Indonesia</p></div>
       <div className="footer-locations"><h3>{id ? 'Lokasi Kami' : 'Our Locations'}</h3>{locations.map(location => <div key={location.name}><h4>{location.name}</h4><p>{location.type}</p><a href={location.href}>{location.phone}<ArrowUpRight size={16}/></a></div>)}</div>
-    </div><div className="footer-bottom"><p>© {new Date().getFullYear()} Cleo Hotels by Tanly Hospitality. All rights reserved.</p><span>Dev. by Askara Indonesia</span></div>
+    </div><div className="footer-bottom"><p>© {new Date().getFullYear()} Cleo Hotels by Tanly Hospitality. All rights reserved.</p><span>Dev. by <a href="https://askaraindonesia.com" target="_blank" rel="noopener noreferrer">Askara Indonesia</a></span></div>
   </div></footer>;
 }
