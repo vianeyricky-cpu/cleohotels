@@ -29,6 +29,18 @@
   margin-right: auto;
 }
 
+/* Catalog outage booking and contacts */
+.cleo-site .catalog-unavailable { padding-top: 160px; padding-bottom: 80px; }
+.catalog-unavailable-heading { max-width: 760px; margin-bottom: 36px; }
+.catalog-unavailable-heading h1 { font-size: clamp(32px, 5vw, 64px); margin: 16px 0; }
+.catalog-unavailable-heading p { color: var(--cleo-muted); }
+.catalog-contact-section { margin-top: 48px; }
+.catalog-contact-section h2 { font-size: clamp(24px, 3vw, 36px); margin-bottom: 24px; }
+.catalog-contacts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); gap: 24px; margin-bottom: 24px; }
+.catalog-contacts article { padding: 24px; border: 1px solid var(--cleo-line); border-radius: 16px; }
+.catalog-contacts h3 { margin-bottom: 16px; font-size: 20px; }
+.catalog-contacts a { display: inline-flex; align-items: center; gap: 10px; min-height: 44px; }
+
 /* Eyebrows & Badges */
 .cleo-site .eyebrow {
   display: inline-block;

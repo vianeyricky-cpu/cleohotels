@@ -2,7 +2,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowDown, ArrowRight, Building2, Compass, Gift, Heart, Phone, ShieldCheck, Star } from 'lucide-react';
 import { createClient } from '@supabase/supabase-js';
-import { getHotels } from '@/actions/getHotels';
+import { getPublicHotels } from '@/lib/public-hotels';
+import { CatalogUnavailable } from '@/components/public/CatalogUnavailable';
 import { BookingWidget } from '@/components/public/BookingWidget';
 import { HotelCollection } from '@/components/public/HotelCollection';
 import { OffersSection } from '@/components/public/OffersSection';
@@ -12,7 +13,8 @@ import TourGallery from '@/components/tour/TourGallery';
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage({ params }: { params: { locale: string } }) {
-  const hotels = await getHotels();
+  const hotels = await getPublicHotels();
+  if (!hotels) return <CatalogUnavailable locale={params.locale}/>;
   const id = params.locale === 'id';
   const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL || '', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '');
   const [{ data: setting }, { data: promoPopupData }, { data: promos }] = await Promise.all([

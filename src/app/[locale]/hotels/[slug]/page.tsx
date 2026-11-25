@@ -4,7 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowRight, MapPin, Instagram } from "lucide-react";
-import { getHotels } from "@/actions/getHotels"; 
+import { getPublicHotels } from "@/lib/public-hotels";
+import { CatalogUnavailable } from "@/components/public/CatalogUnavailable";
 import { createClient } from "@supabase/supabase-js";
 import { RoomCarousel } from "@/components/public/RoomCarousel"; 
 import { SingleBookingWidget } from "@/components/public/SingleBookingWidget";
@@ -14,7 +15,8 @@ export const dynamic = "force-dynamic";
 
 export default async function HotelDetailPage({ params }: { params: { locale: string, slug: string } }) {
   
-  const hotels = await getHotels();
+  const hotels = await getPublicHotels();
+  if (!hotels) return <CatalogUnavailable locale={params.locale} hotelSlug={params.slug}/>;
   const hotel = hotels.find((h: any) => h.slug === params.slug);
 
   if (!hotel) return notFound();

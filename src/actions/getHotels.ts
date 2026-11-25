@@ -13,7 +13,7 @@ export async function getHotels(): Promise<Hotel[]> {
     .order("id", { ascending: true }); // Tambahkan sort biar rapi
 
   if (error) {
-    throw new Error(error.message);
+    throw new Error(`Hotel catalog request failed (${error.code || 'upstream error'}): ${error.message || 'Database service unavailable'}`);
   }
 
   return (data ?? []) as Hotel[];

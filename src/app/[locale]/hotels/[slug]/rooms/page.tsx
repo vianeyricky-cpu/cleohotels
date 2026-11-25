@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Users, Ruler, Bed, Check } from "lucide-react";
 import type { Room } from "@/types"; // Import Type Room
+import { CatalogUnavailable } from "@/components/public/CatalogUnavailable";
 
 export const dynamic = "force-dynamic";
 
@@ -16,12 +17,16 @@ export default async function HotelRoomsPage({
   params: { slug: string; locale: string };
 }) {
   // 1. Ambil Data Hotel
-  const { data: hotel } = await supabase
+  const { data: hotel, error: hotelError } = await supabase
     .from("Hotel")
     .select("id, name, slug")
     .eq("slug", params.slug)
     .single();
 
+  if (hotelError && hotelError.code !== 'PGRST116') {
+    console.error('Public room catalog unavailable:', hotelError);
+    return <CatalogUnavailable locale={params.locale} hotelSlug={params.slug}/>;
+  }
   if (!hotel) return notFound();
 
   // 2. Ambil Data Room
